@@ -21,4 +21,4 @@ Esta es una aplicacion para administrar fechas de corte y de Pago de tarjetas de
 
 ## Alcance
 
-- Inicialmente se plantea que sea una App Web Responsive para poderla usar en telefonos y Tablets, pero luego haremos que la escalara a se una App Movil.
+- Inicialmente se plantea que sea una App Web Responsive para poderla usar en telefonos y Tablets, pero luego haremos que escale a una App Movil.
