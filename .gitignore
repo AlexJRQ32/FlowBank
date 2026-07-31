@@ -24,6 +24,10 @@ dist/
 .env.local
 .env.*.local
 
+# Secretos de producción (no commiteables)
+appsettings.Production.json
+appsettings.*.Production.json
+
 # OS
 Thumbs.db
 .DS_Store
