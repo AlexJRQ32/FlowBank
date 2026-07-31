@@ -1,0 +1,43 @@
+@use "../abstracts/variables" as *;
+
+// ============================================================================
+// Botones de modal - compartidos entre formularios (dark fintech)
+// ============================================================================
+
+.btn-modal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 $spacing-5;
+  border-radius: $radius-full;
+  font-family: $font-body;
+  font-size: 14px;
+  font-weight: $font-weight-bold;
+  transition: background 0.2s, transform 0.2s, opacity 0.2s;
+
+  &--primary {
+    background: $landing-gradient;
+    color: $landing-on-accent;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: $app-text-muted;
+    border: 1px solid $app-border;
+
+    &:hover {
+      border-color: $app-border-strong;
+      color: $app-text;
+    }
+  }
+}

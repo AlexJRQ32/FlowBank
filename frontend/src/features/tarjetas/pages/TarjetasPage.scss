@@ -1,0 +1,272 @@
+@use "../../../styles/abstracts/variables" as *;
+@use "../../../styles/abstracts/mixins" as *;
+
+// ============================================================================
+// Página de tarjetas - dark fintech
+// ============================================================================
+
+.tarjetas-page {
+  max-width: 960px;
+  margin: 0 auto;
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: $spacing-5;
+    margin-bottom: $spacing-6;
+
+    h1 {
+      font-family: $font-display;
+      font-size: $font-size-3xl;
+      font-weight: 500;
+      color: $app-text;
+      margin: 0 0 $spacing-1;
+    }
+
+    p {
+      font-family: $font-body;
+      color: $app-text-muted;
+      margin: 0;
+      font-size: 15px;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: $spacing-3;
+    flex-shrink: 0;
+
+    .dashboard__btn {
+      min-height: 42px;
+    }
+  }
+
+  &__error {
+    padding: $spacing-4;
+    border-radius: $radius-md;
+    background: rgba($app-danger, 0.1);
+    border: 1px solid rgba($app-danger, 0.3);
+    color: $app-danger;
+    font-family: $font-body;
+    font-size: 14px;
+    margin-bottom: $spacing-4;
+  }
+
+  &__empty {
+    color: $app-text-muted;
+    font-family: $font-body;
+    font-style: italic;
+  }
+
+  &__empty-state {
+    text-align: center;
+    padding: $spacing-10 $spacing-4;
+    border: 1px dashed $app-border-strong;
+    border-radius: $radius-lg;
+    background: rgba($app-surface, 0.4);
+
+    .inline-flex {
+      color: $app-accent;
+      margin: 0 auto $spacing-4;
+      cursor: default;
+    }
+
+    h2 {
+      font-family: $font-display;
+      font-size: $font-size-xl;
+      font-weight: 500;
+      color: $app-text;
+      margin: 0 0 $spacing-2;
+    }
+
+    p {
+      font-family: $font-body;
+      color: $app-text-muted;
+      margin: 0 auto $spacing-6;
+      max-width: 340px;
+    }
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-3;
+  }
+
+  &__card {
+    display: flex;
+    align-items: center;
+    gap: $spacing-4;
+    padding: $spacing-4 $spacing-5;
+    background: rgba($app-surface, 0.55);
+    border: 1px solid $app-border;
+    border-radius: $radius-lg;
+    transition: border-color 0.2s, transform 0.2s;
+
+    &:hover {
+      border-color: $app-border-strong;
+      transform: translateY(-2px);
+    }
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: $radius-md;
+    background: rgba($app-accent, 0.12);
+    color: $app-accent;
+    flex-shrink: 0;
+
+    .inline-flex {
+      cursor: default;
+    }
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+
+    h3 {
+      font-family: $font-body;
+      font-size: 16px;
+      font-weight: $font-weight-bold;
+      color: $app-text;
+      margin: 0 0 2px;
+    }
+
+    p {
+      font-family: $font-body;
+      font-size: 13px;
+      color: $app-text-muted;
+      margin: 0;
+    }
+  }
+
+  &__dates {
+    display: flex;
+    gap: $spacing-5;
+
+    div {
+      text-align: center;
+
+      small {
+        display: block;
+        font-family: $font-body;
+        font-size: 9.5px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: $app-text-faint;
+        margin-bottom: 2px;
+      }
+
+      strong {
+        font-family: $font-display;
+        font-size: 15px;
+        font-weight: 500;
+        color: $app-accent-soft;
+      }
+    }
+  }
+
+  &__deuda {
+    text-align: right;
+    padding: $spacing-1 $spacing-4;
+    border-left: 1px solid $app-border;
+    min-width: 120px;
+
+    small {
+      display: block;
+      font-family: $font-body;
+      font-size: 9.5px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: $app-text-faint;
+      margin-bottom: 2px;
+    }
+
+    strong {
+      font-family: $font-display;
+      font-size: 17px;
+      font-weight: 500;
+      color: $app-danger;
+      white-space: nowrap;
+    }
+  }
+
+  &__tipo {
+    font-family: $font-body;
+    font-size: 11px;
+    font-weight: $font-weight-semibold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: $spacing-1 $spacing-3;
+    border-radius: $radius-full;
+    background: rgba($app-accent, 0.1);
+    color: $app-accent-soft;
+    flex-shrink: 0;
+  }
+
+  &__delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-full;
+    color: $app-text-faint;
+    transition: color 0.2s, background 0.2s;
+
+    .inline-flex {
+      cursor: default;
+    }
+
+    &:hover {
+      color: $app-danger;
+      background: rgba($app-danger, 0.12);
+    }
+  }
+}
+
+@include respond(mobile) {
+  .tarjetas-page {
+    &__header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &__actions {
+      justify-content: stretch;
+
+      .app-btn {
+        flex: 1;
+        justify-content: center;
+      }
+    }
+
+    &__card {
+      flex-wrap: wrap;
+      gap: $spacing-3;
+
+      &__dates {
+        order: 3;
+        width: 100%;
+        padding-top: $spacing-3;
+        border-top: 1px solid $app-border;
+      }
+    }
+
+    &__deuda {
+      border-left: none;
+      min-width: 0;
+      text-align: left;
+      padding: 0;
+    }
+  }
+}

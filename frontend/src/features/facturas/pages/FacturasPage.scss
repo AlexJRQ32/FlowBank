@@ -1,0 +1,366 @@
+@use "../../../styles/abstracts/variables" as *;
+@use "../../../styles/abstracts/mixins" as *;
+
+// ============================================================================
+// Página de facturas - dark fintech
+// ============================================================================
+
+.facturas-page {
+  max-width: 960px;
+  margin: 0 auto;
+
+  &__header {
+    margin-bottom: $spacing-6;
+
+    h1 {
+      font-family: $font-display;
+      font-size: $font-size-3xl;
+      font-weight: 500;
+      color: $app-text;
+      margin: 0 0 $spacing-1;
+    }
+
+    p {
+      font-family: $font-body;
+      color: $app-text-muted;
+      margin: 0;
+      font-size: 15px;
+      max-width: 560px;
+    }
+  }
+
+  &__error {
+    padding: $spacing-4;
+    border-radius: $radius-md;
+    background: rgba($app-danger, 0.1);
+    border: 1px solid rgba($app-danger, 0.3);
+    color: $app-danger;
+    font-family: $font-body;
+    font-size: 14px;
+    margin-bottom: $spacing-4;
+  }
+
+  &__uploader {
+    margin-bottom: $spacing-8;
+  }
+
+  &__drop {
+    width: 100%;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-3;
+    padding: $spacing-6;
+    background: rgba($app-surface, 0.4);
+    border: 2px dashed $app-border-strong;
+    border-radius: $radius-lg;
+    color: $app-text-muted;
+    transition: border-color 0.2s, background 0.2s;
+
+    &:hover {
+      border-color: $app-accent;
+      background: rgba($app-accent, 0.05);
+    }
+
+    .inline-flex {
+      cursor: default;
+      color: $app-accent;
+    }
+
+    strong {
+      font-family: $font-body;
+      font-size: 16px;
+      color: $app-text;
+    }
+
+    span {
+      font-family: $font-body;
+      font-size: 13px;
+    }
+  }
+
+  &__preview {
+    position: relative;
+
+    img {
+      width: 100%;
+      max-height: 420px;
+      object-fit: contain;
+      border-radius: $radius-lg;
+      border: 1px solid $app-border;
+      background: $color-black;
+    }
+  }
+
+  &__cambiar {
+    position: absolute;
+    top: $spacing-4;
+    right: $spacing-4;
+    padding: $spacing-2 $spacing-4;
+    border-radius: $radius-full;
+    background: rgba($app-surface-raised, 0.9);
+    border: 1px solid $app-border;
+    color: $app-text;
+    font-family: $font-body;
+    font-size: 13px;
+    font-weight: $font-weight-semibold;
+    backdrop-filter: blur(8px);
+    transition: border-color 0.2s;
+
+    &:hover {
+      border-color: $app-accent;
+    }
+  }
+
+  &__processing {
+    font-family: $font-body;
+    font-size: 14px;
+    color: $app-accent-soft;
+    text-align: center;
+    margin: $spacing-4 0 0;
+    animation: pulse 1.5s ease infinite;
+  }
+
+  &__form {
+    margin-top: $spacing-6;
+    padding: $spacing-6;
+    background: rgba($app-surface, 0.55);
+    border: 1px solid $app-border;
+    border-radius: $radius-lg;
+
+    h3 {
+      font-family: $font-display;
+      font-size: $font-size-lg;
+      font-weight: 500;
+      color: $app-text;
+      margin: 0 0 $spacing-5;
+    }
+  }
+
+  &__fields {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-4;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-1;
+
+    &--full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-family: $font-body;
+      font-size: $font-size-xs;
+      font-weight: $font-weight-semibold;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: $app-text-muted;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 44px;
+      padding: 0 $spacing-3;
+      background: $app-input-bg;
+      border: 1px solid $app-input-border;
+      border-radius: $radius-md;
+      font-family: $font-body;
+      font-size: 14px;
+      color: $app-text;
+      transition: border-color 0.2s, box-shadow 0.2s;
+
+      &:focus {
+        outline: none;
+        border-color: $app-accent;
+        box-shadow: 0 0 0 3px rgba($app-accent, 0.15);
+      }
+
+      &::placeholder {
+        color: $app-text-faint;
+      }
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236ee7b7' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right $spacing-3 center;
+      padding-right: $spacing-8;
+      cursor: pointer;
+
+      option {
+        background: $app-surface-raised;
+        color: $app-text;
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-3;
+    margin-top: $spacing-6;
+  }
+
+  &__section-title {
+    font-family: $font-display;
+    font-size: $font-size-xl;
+    font-weight: 500;
+    color: $app-text;
+    margin: 0 0 $spacing-5;
+  }
+
+  &__empty {
+    color: $app-text-muted;
+    font-family: $font-body;
+    font-style: italic;
+  }
+
+  &__empty-state {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    padding: $spacing-5;
+    background: rgba($app-surface, 0.4);
+    border: 1px dashed $app-border-strong;
+    border-radius: $radius-lg;
+
+    .inline-flex {
+      cursor: default;
+      color: $app-text-faint;
+    }
+
+    p {
+      font-family: $font-body;
+      color: $app-text-muted;
+      margin: 0;
+    }
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-3;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-4;
+    padding: $spacing-4 $spacing-5;
+    background: rgba($app-surface, 0.55);
+    border: 1px solid $app-border;
+    border-radius: $radius-lg;
+    transition: border-color 0.2s, transform 0.2s;
+
+    &:hover {
+      border-color: $app-border-strong;
+      transform: translateY(-2px);
+    }
+
+    &-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      border-radius: $radius-md;
+      background: rgba($app-accent, 0.12);
+      color: $app-accent;
+      flex-shrink: 0;
+
+      .inline-flex {
+        cursor: default;
+      }
+    }
+
+    &-info {
+      flex: 1;
+      min-width: 0;
+
+      h3 {
+        font-family: $font-body;
+        font-size: 15px;
+        font-weight: $font-weight-bold;
+        color: $app-text;
+        margin: 0 0 2px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      p {
+        font-family: $font-body;
+        font-size: 12.5px;
+        color: $app-text-muted;
+        margin: 0;
+      }
+    }
+
+    &-monto {
+      font-family: $font-display;
+      font-size: 17px;
+      font-weight: 500;
+      color: $app-accent-soft;
+      white-space: nowrap;
+    }
+  }
+
+  &__delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: $radius-full;
+    color: $app-text-faint;
+    transition: color 0.2s, background 0.2s;
+
+    .inline-flex {
+      cursor: default;
+    }
+
+    &:hover {
+      color: $app-danger;
+      background: rgba($app-danger, 0.12);
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@include respond(compact) {
+  .facturas-page {
+    &__fields {
+      grid-template-columns: 1fr;
+    }
+
+    &__field--full {
+      grid-column: auto;
+    }
+
+    &__item {
+      flex-wrap: wrap;
+    }
+
+    &__item-monto {
+      order: 3;
+      width: 100%;
+      padding-top: $spacing-3;
+      border-top: 1px solid $app-border;
+    }
+  }
+}

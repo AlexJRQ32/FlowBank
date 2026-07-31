@@ -1,0 +1,132 @@
+@use "../../../styles/abstracts/variables" as *;
+@use "../../../styles/abstracts/mixins" as *;
+
+// ============================================================================
+// StatCards - tarjetas de resumen (patrón OpenPaw) en dark fintech
+// ============================================================================
+
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-4;
+  margin-bottom: $spacing-8;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+  padding: $spacing-5 $spacing-6;
+  background: rgba($app-surface, 0.55);
+  border: 1px solid $app-border;
+  border-radius: $radius-lg;
+  transition: border-color 0.2s, transform 0.2s;
+
+  &:hover {
+    border-color: $app-border-strong;
+    transform: translateY(-2px);
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: $radius-lg;
+    flex-shrink: 0;
+
+    .inline-flex {
+      cursor: default;
+    }
+
+    &--blue {
+      background: rgba($color-info, 0.15);
+      color: $color-info;
+    }
+
+    &--green {
+      background: rgba($app-accent, 0.15);
+      color: $app-accent-soft;
+    }
+
+    &--orange {
+      background: rgba($color-warning, 0.15);
+      color: $color-warning;
+    }
+
+    &--purple {
+      background: rgba($color-purple, 0.15);
+      color: $color-purple;
+    }
+
+    &--gray {
+      background: rgba($app-text-muted, 0.12);
+      color: $app-text-muted;
+    }
+  }
+
+  &__number {
+    font-family: $font-display;
+    font-size: $font-size-3xl;
+    font-weight: 500;
+    color: $app-text;
+    line-height: 1.1;
+  }
+
+  &__label {
+    margin-top: $spacing-1;
+    font-family: $font-body;
+    font-size: 13px;
+    color: $app-text-muted;
+  }
+}
+
+@include respond(tablet) {
+  .stat-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-3;
+  }
+
+  .stat-card {
+    padding: $spacing-4;
+
+    &__icon {
+      width: 40px;
+      height: 40px;
+    }
+
+    &__number {
+      font-size: $font-size-xl;
+    }
+
+    &__label {
+      font-size: 11px;
+    }
+  }
+}
+
+@include respond(compact) {
+  .stat-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-2;
+  }
+
+  .stat-card {
+    padding: $spacing-3;
+    gap: $spacing-3;
+
+    &__icon {
+      width: 34px;
+      height: 34px;
+    }
+
+    &__number {
+      font-size: $font-size-lg;
+    }
+
+    &__label {
+      font-size: 10px;
+    }
+  }
+}

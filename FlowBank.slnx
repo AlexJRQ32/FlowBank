@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/backend/">
+    <Project Path="backend/FlowBank.Core/FlowBank.Core.csproj" />
+    <Project Path="backend/FlowBank.Data/FlowBank.Data.csproj" />
+    <Project Path="backend/FlowBank.WebAPI/FlowBank.WebAPI.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,10 @@
+// ============================================================================
+// FlowBank - Punto de entrada de estilos globales
+// Importa variables, mixins y estilos base. Los estilos de cada feature se
+// importan en su propio componente .scss co-localizado.
+// ============================================================================
+
+@use "abstracts/variables";
+@use "base/reset";
+@use "components/buttons";
+@use "components/app-buttons";

@@ -1,0 +1,79 @@
+// ============================================================================
+// FlowBank - Mixins y helpers reutilizables
+// ============================================================================
+
+@use "variables" as *;
+
+// ---------------------------------------------------------------- Media queries
+// Convención DESKTOP-FIRST (estándar OpenPaw): layout desktop por defecto y
+// @media (max-width: Xpx) para sobreescribir hacia abajo.
+@mixin respond($breakpoint) {
+  @if $breakpoint == tablet {
+    @media (max-width: $breakpoint-tablet) { @content; }
+  } @else if $breakpoint == mobile {
+    @media (max-width: $breakpoint-mobile) { @content; }
+  } @else if $breakpoint == compact {
+    @media (max-width: $breakpoint-compact) { @content; }
+  } @else if $breakpoint == tiny {
+    @media (max-width: $breakpoint-tiny) { @content; }
+  } @else {
+    @error "Breakpoint #{$breakpoint} no definido. Usa: tablet, mobile, compact o tiny.";
+  }
+}
+
+// Alias mobile-first para páginas que se diseñen deliberadamente compactas base
+// (contraejemplo OpenPaw: ProfilePage.css). No es la convención por defecto.
+@mixin respond-min($breakpoint) {
+  @if $breakpoint == tablet {
+    @media (min-width: $breakpoint-tablet) { @content; }
+  } @else if $breakpoint == mobile {
+    @media (min-width: $breakpoint-mobile) { @content; }
+  } @else if $breakpoint == compact {
+    @media (min-width: $breakpoint-compact) { @content; }
+  } @else if $breakpoint == tiny {
+    @media (min-width: $breakpoint-tiny) { @content; }
+  } @else {
+    @error "Breakpoint #{$breakpoint} no definido. Usa: tablet, mobile, compact o tiny.";
+  }
+}
+
+// Reduce la animación para usuarios con preferencia de movimiento reducido
+// (accesibilidad, patrón global de OpenPaw en global.css:59).
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+// ---------------------------------------------------------------- Flex helpers
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// ---------------------------------------------------------------- Texto
+@mixin truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// ---------------------------------------------------------------- Elementos
+@mixin card {
+  background-color: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+}

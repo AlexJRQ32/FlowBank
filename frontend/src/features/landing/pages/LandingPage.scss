@@ -1,0 +1,1335 @@
+﻿@use "../../../styles/abstracts/variables" as *;
+@use "../../../styles/abstracts/mixins" as *;
+
+// ============================================================================
+// Landing - identidad FlowBank (dark fintech editorial)
+// DirecciÃ³n visual propia: serif Fraunces + verde esmeralda + fondo oscuro.
+// ConvenciÃ³n desktop-first (max-width) en responsive.
+// ============================================================================
+
+// ---------------------------------------------------------------- Navbar (glass)
+.navbar {
+  position: fixed;
+  top: $spacing-5;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(90%, 1100px);
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 $spacing-5;
+  background: $overlay-navbar;
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid $landing-border;
+  border-radius: $radius-full;
+  box-shadow: $shadow-navbar;
+  z-index: 1000;
+
+  &-brand {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+
+    img {
+      width: 30px;
+      height: 30px;
+      border-radius: $radius-sm;
+    }
+
+    span {
+      font-family: $font-body;
+      font-size: 17px;
+      font-weight: $font-weight-bold;
+      color: $landing-text;
+      letter-spacing: -0.3px;
+    }
+  }
+
+  &-links {
+    display: flex;
+    align-items: center;
+    gap: $spacing-1;
+
+    a {
+      padding: $spacing-2 $spacing-4;
+      color: $landing-text-muted;
+      text-decoration: none;
+      font-family: $font-body;
+      font-size: 14px;
+      font-weight: $font-weight-medium;
+      border-radius: $radius-full;
+      transition: color 0.2s, background 0.2s;
+
+      &:hover {
+        color: $landing-accent-soft;
+        background: rgba($landing-accent, 0.08);
+      }
+    }
+
+    .btn-nav {
+      padding: $spacing-2 $spacing-5;
+      background: $landing-gradient;
+      color: $landing-on-accent;
+      border-radius: $radius-full;
+      font-weight: $font-weight-bold;
+
+      &:hover {
+        background: linear-gradient(135deg, $landing-accent-soft, $landing-accent-deep);
+        color: $landing-on-accent;
+      }
+    }
+
+    .navbar-user-pill {
+      display: flex;
+      align-items: center;
+      gap: $spacing-2;
+      padding: $spacing-1 $spacing-4 $spacing-1 $spacing-1;
+      border: 1px solid $landing-border;
+      border-radius: $radius-full;
+      background: rgba($landing-surface, 0.5);
+      transition: border-color 0.2s, background 0.2s;
+
+      &:hover {
+        border-color: rgba($landing-accent, 0.5);
+        background: rgba($landing-accent, 0.08);
+      }
+    }
+
+    .navbar-user-avatar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: $landing-gradient;
+      color: $landing-on-accent;
+      font-size: 13px;
+      font-weight: $font-weight-bold;
+      flex-shrink: 0;
+    }
+
+    .navbar-user-name {
+      font-size: 13px;
+      font-weight: $font-weight-semibold;
+      color: $landing-text;
+      max-width: 90px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
+  &-burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    border-radius: $radius-md;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+
+    span {
+      display: block;
+      height: 2px;
+      width: 100%;
+      background: $landing-text;
+      border-radius: $radius-full;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    &[aria-expanded="true"] {
+      span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+      }
+
+      span:nth-child(2) {
+        opacity: 0;
+      }
+
+      span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------- Menú móvil (modal pegado al navbar)
+.mobile-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 998;
+  animation: menuBackdropIn 0.2s ease;
+}
+
+.mobile-menu {
+  position: fixed;
+  top: calc(#{$spacing-5} + 64px);
+  right: $spacing-5;
+  transform: translateY(-8px);
+  width: min(85%, 300px);
+  background: $landing-surface;
+  border: 1px solid $landing-border;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-modal;
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+
+  &--open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+              &__nav {
+    display: flex;
+    flex-direction: column;
+    padding: $spacing-3;
+
+    a {
+      display: flex;
+      align-items: center;
+      gap: $spacing-3;
+      padding: $spacing-3 $spacing-3;
+      border-radius: $radius-md;
+      font-family: $font-body;
+      font-size: 15px;
+      font-weight: $font-weight-medium;
+      color: $landing-text;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+
+      svg {
+        color: $landing-accent;
+        flex-shrink: 0;
+      }
+
+      &:hover {
+        background: rgba($landing-accent, 0.08);
+      }
+    }
+  }
+
+  &__divider {
+    height: 1px;
+    margin: $spacing-1 0;
+    background: $landing-border;
+  }
+
+  &__cta {
+    justify-content: center;
+    padding: $spacing-4 !important;
+    background: $landing-gradient;
+    color: $landing-on-accent !important;
+    font-weight: $font-weight-bold;
+    border-radius: $radius-lg !important;
+
+    svg {
+      color: $landing-on-accent !important;
+    }
+
+    &:hover {
+      background: linear-gradient(135deg, $landing-accent-soft, $landing-accent-deep) !important;
+    }
+  }
+}
+
+@keyframes menuBackdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// ---------------------------------------------------------------- Base
+.landing {
+  background: $landing-bg;
+  color: $landing-text;
+  overflow: hidden;
+}
+
+em {
+  font-family: $font-display;
+  font-style: normal;
+  font-weight: 500;
+  color: $landing-accent;
+}
+
+.section-kicker {
+  font-family: $font-body;
+  font-size: 13px;
+  font-weight: $font-weight-bold;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: $landing-accent;
+  margin: 0 0 $spacing-4;
+}
+
+.section-title {
+  font-family: $font-display;
+  font-size: clamp(34px, 5vw, 56px);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -1.5px;
+  margin: 0;
+  color: $landing-text;
+}
+
+// ---------------------------------------------------------------- Hero
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: $spacing-8;
+  padding: 130px clamp($spacing-6, 6vw, 96px) 80px;
+  max-width: 1440px;
+  margin: 0 auto;
+  overflow: hidden;
+
+  &-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+
+    &--a {
+      width: 520px;
+      height: 520px;
+      background: rgba($landing-accent, 0.16);
+      top: -140px;
+      right: -80px;
+    }
+
+    &--b {
+      width: 420px;
+      height: 420px;
+      background: rgba($color-secondary, 0.12);
+      bottom: -160px;
+      left: -120px;
+    }
+  }
+
+  &-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.35;
+    background-image:
+      linear-gradient(rgba($landing-accent, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba($landing-accent, 0.05) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, $color-black 30%, transparent 75%);
+  }
+
+  &-copy {
+    position: relative;
+    z-index: 2;
+  }
+
+  &-eyebrow {
+    font-family: $font-body;
+    font-size: 13px;
+    font-weight: $font-weight-semibold;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: $landing-accent;
+    margin: 0 0 $spacing-5;
+  }
+
+  &-title {
+    font-family: $font-display;
+    font-size: clamp(46px, 6.5vw, 84px);
+    font-weight: 500;
+    line-height: 1.02;
+    letter-spacing: -2.5px;
+    margin: 0 0 $spacing-6;
+    color: $landing-text;
+  }
+
+  &-sub {
+    font-family: $font-body;
+    font-size: clamp(16px, 1.6vw, 19px);
+    line-height: 1.7;
+    color: $landing-text-muted;
+    max-width: 520px;
+    margin: 0 0 $spacing-8;
+  }
+
+  &-actions {
+    display: flex;
+    gap: $spacing-4;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: $spacing-10;
+  }
+
+  &-stats {
+    display: flex;
+    gap: clamp($spacing-6, 5vw, $spacing-10);
+    margin: 0;
+    padding-top: $spacing-6;
+    border-top: 1px solid $landing-border;
+  }
+
+  &-stat {
+    dt {
+      font-family: $font-display;
+      font-size: clamp(22px, 2.6vw, 30px);
+      font-weight: 500;
+      color: $landing-accent-soft;
+      line-height: 1.1;
+    }
+
+    dd {
+      margin: 0;
+      font-family: $font-body;
+      font-size: 12px;
+      font-weight: $font-weight-semibold;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: $landing-text-muted;
+      margin-top: $spacing-1;
+    }
+  }
+}
+
+// Botones
+.btn-primary,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-2;
+  min-height: 52px;
+  padding: 0 $spacing-6;
+  border-radius: $radius-full;
+  font-family: $font-body;
+  font-size: 15px;
+  font-weight: $font-weight-bold;
+  text-decoration: none;
+  transition: transform 0.25s, box-shadow 0.25s, background 0.25s;
+}
+
+.btn-primary {
+  background: $landing-gradient;
+  color: $landing-on-accent;
+  box-shadow: 0 4px 14px rgba($landing-accent, 0.25);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba($landing-accent, 0.3);
+  }
+}
+
+.btn-ghost {
+  color: $landing-text;
+  border: 1px solid $landing-border;
+  background: rgba($landing-surface, 0.4);
+
+  &:hover {
+    border-color: rgba($landing-accent, 0.5);
+    color: $landing-accent-soft;
+    transform: translateY(-2px);
+  }
+}
+
+// Tarjeta de crÃ©dito flotante (CSS)
+.hero-card-wrap {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 420px;
+}
+
+.cc {
+  position: relative;
+  width: min(360px, 100%);
+  aspect-ratio: 1.586;
+  border-radius: 22px;
+  padding: 24px 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background:
+    radial-gradient(120% 90% at 15% 0%, $cc-shine-bright 0%, transparent 50%),
+    $cc-gradient;
+  border: 1px solid rgba($landing-accent-soft, 0.25);
+  box-shadow:
+    $cc-shadow-landing,
+    $cc-inset-highlight;
+  transform: rotate(-6deg);
+  animation: cardFloat 6s ease-in-out infinite;
+
+  &-chip {
+    width: 42px;
+    height: 32px;
+    border-radius: 6px;
+    background: $cc-chip-gradient;
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 6px;
+      border-radius: 3px;
+      border: 1px solid $cc-chip-border;
+      background: repeating-linear-gradient(90deg, transparent 0 4px, $cc-chip-lines 4px 5px);
+    }
+  }
+
+  &-brand {
+    position: absolute;
+    top: 24px;
+    right: 26px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    img {
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
+    }
+
+    span {
+      font-family: $font-body;
+      font-size: 15px;
+      font-weight: $font-weight-bold;
+      color: $cc-text;
+    }
+  }
+
+  &-number {
+    font-family: $font-body;
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    color: $cc-text;
+    margin-top: $spacing-6;
+  }
+
+  &-meta {
+    display: flex;
+    gap: $spacing-8;
+  }
+
+  &-field {
+    span {
+      display: block;
+      font-family: $font-body;
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: $cc-text-muted;
+      margin-bottom: 3px;
+    }
+
+    strong {
+      font-family: $font-body;
+      font-size: 14px;
+      font-weight: $font-weight-semibold;
+      color: $landing-text;
+    }
+  }
+
+  &-wave {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 44%;
+    background: radial-gradient(60% 120% at 20% 100%, rgba($landing-accent, 0.18), transparent 70%);
+    border-radius: 0 0 22px 22px;
+    pointer-events: none;
+  }
+}
+
+.hero-card-float {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  padding: 12px 16px;
+  border-radius: $radius-lg;
+  background: $overlay-card-float;
+  border: 1px solid $landing-border;
+  backdrop-filter: blur(12px);
+  box-shadow: $shadow-card-hover;
+
+  small {
+    display: block;
+    font-family: $font-body;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: $landing-text-muted;
+  }
+
+  strong {
+    font-family: $font-display;
+    font-size: 18px;
+    color: $landing-text;
+  }
+
+  &--small {
+    top: 8%;
+    left: 0;
+    animation: floatA 7s ease-in-out infinite;
+  }
+
+  &--large {
+    bottom: 6%;
+    right: 0;
+    animation: floatB 8s ease-in-out infinite;
+  }
+}
+
+.hf-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: $landing-accent;
+  box-shadow: 0 0 14px $landing-glow;
+}
+
+.hf-check {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba($landing-accent, 0.18);
+  color: $landing-accent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+// ---------------------------------------------------------------- Ticker
+.ticker {
+  border-top: 1px solid $landing-border;
+  border-bottom: 1px solid $landing-border;
+  padding: $spacing-4 0;
+  overflow: hidden;
+  background: $landing-bg-elevated;
+  position: relative;
+}
+
+.ticker-track {
+  display: flex;
+  gap: $spacing-10;
+  width: max-content;
+  animation: ticker 30s linear infinite;
+}
+
+.ticker-item {
+  font-family: $font-body;
+  font-size: 14px;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: $landing-text-muted;
+  white-space: nowrap;
+}
+
+// ---------------------------------------------------------------- About
+.about {
+  padding: clamp($spacing-10, 10vw, 120px) clamp($spacing-6, 6vw, 96px);
+  max-width: 1440px;
+  margin: 0 auto;
+
+  &-head {
+    margin-bottom: $spacing-10;
+  }
+
+  &-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp($spacing-8, 6vw, $spacing-10);
+    align-items: start;
+  }
+
+  &-lead {
+    font-family: $font-body;
+    font-size: clamp(17px, 1.8vw, 21px);
+    line-height: 1.7;
+    color: $landing-text;
+    margin: 0;
+  }
+
+  &-highlights {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-4;
+  }
+}
+
+.highlight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-4;
+  padding: $spacing-5;
+  background: rgba($landing-surface, 0.5);
+  border: 1px solid $landing-border;
+  border-radius: $radius-lg;
+  transition: border-color 0.25s, transform 0.25s;
+
+  &:hover {
+    border-color: rgba($landing-accent, 0.4);
+    transform: translateX(4px);
+  }
+
+  .inline-flex {
+    cursor: default;
+    color: $landing-accent;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  div {
+    strong {
+      display: block;
+      font-family: $font-body;
+      font-size: 15px;
+      font-weight: $font-weight-bold;
+      color: $landing-text;
+      margin-bottom: 3px;
+    }
+
+    small {
+      font-family: $font-body;
+      font-size: 13px;
+      line-height: 1.5;
+      color: $landing-text-muted;
+    }
+  }
+}
+
+// ---------------------------------------------------------------- Features
+.features {
+  padding: clamp($spacing-10, 10vw, 120px) clamp($spacing-6, 6vw, 96px);
+  background: $landing-bg-elevated;
+  border-top: 1px solid $landing-border;
+  border-bottom: 1px solid $landing-border;
+
+  &-head {
+    max-width: 620px;
+    margin-bottom: $spacing-10;
+  }
+
+  &-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $spacing-5;
+
+    // Los contenedores Reveal (motion.div) son los grid items
+    > * {
+      min-width: 0;
+    }
+  }
+}
+
+.feature-card {
+  position: relative;
+  padding: $spacing-6;
+  background: rgba($landing-surface, 0.45);
+  border: 1px solid $landing-border;
+  border-radius: $radius-lg;
+  transition: transform 0.3s, border-color 0.3s, background 0.3s;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(80% 60% at 50% 0%, rgba($landing-accent, 0.12), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+    border-color: rgba($landing-accent, 0.4);
+    background: rgba($landing-surface, 0.7);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &__num {
+    position: absolute;
+    top: $spacing-4;
+    right: $spacing-5;
+    font-family: $font-display;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 600;
+    color: $landing-accent;
+    opacity: 0.6;
+  }
+
+  .inline-flex {
+    color: $landing-accent;
+    margin-bottom: $spacing-5;
+    cursor: default;
+  }
+
+  h3 {
+    font-family: $font-body;
+    font-size: 17px;
+    font-weight: $font-weight-bold;
+    color: $landing-text;
+    margin: 0 0 $spacing-2;
+  }
+
+  p {
+    font-family: $font-body;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: $landing-text-muted;
+    margin: 0;
+  }
+}
+
+// ---------------------------------------------------------------- Como funciona
+.how {
+  padding: clamp($spacing-10, 10vw, 120px) clamp($spacing-6, 6vw, 96px);
+  max-width: 1440px;
+  margin: 0 auto;
+
+  &-head {
+    max-width: 620px;
+    margin-bottom: $spacing-12;
+  }
+}
+
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-6;
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 26px;
+    left: 8%;
+    right: 8%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, $landing-accent 30%, $landing-accent 70%, transparent);
+    opacity: 0.35;
+  }
+
+  // Los contenedores Reveal (motion.div) son los grid items
+  > * {
+    min-width: 0;
+  }
+}
+
+.step {
+  text-align: center;
+  padding: 0 $spacing-4;
+
+  &__num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: $landing-bg;
+    border: 1px solid rgba($landing-accent, 0.5);
+    color: $landing-accent;
+    font-family: $font-display;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: $spacing-5;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 0 6px $landing-bg;
+  }
+
+  h3 {
+    font-family: $font-body;
+    font-size: 18px;
+    font-weight: $font-weight-bold;
+    color: $landing-text;
+    margin: 0 0 $spacing-2;
+  }
+
+  p {
+    font-family: $font-body;
+    font-size: 14px;
+    line-height: 1.6;
+    color: $landing-text-muted;
+    margin: 0 auto;
+    max-width: 260px;
+  }
+}
+
+// ---------------------------------------------------------------- CTA
+.cta {
+  position: relative;
+  text-align: center;
+  padding: clamp($spacing-10, 12vw, 140px) $spacing-6;
+  overflow: hidden;
+
+  &-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(60% 80% at 50% 120%, rgba($landing-accent, 0.25), transparent 70%),
+      linear-gradient(180deg, $landing-bg 0%, $landing-bg-elevated 100%);
+    pointer-events: none;
+  }
+
+  &-title {
+    position: relative;
+    font-family: $font-display;
+    font-size: clamp(32px, 4.5vw, 54px);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -1.5px;
+    max-width: 720px;
+    margin: 0 auto $spacing-5;
+    color: $landing-text;
+  }
+
+  &-sub {
+    position: relative;
+    font-family: $font-body;
+    font-size: 17px;
+    color: $landing-text-muted;
+    margin: 0 auto $spacing-8;
+    max-width: 460px;
+  }
+
+  .btn-primary {
+    position: relative;
+  }
+}
+
+.btn-primary--light {
+  background: $landing-text;
+  color: $landing-bg;
+
+  &:hover {
+    background: $landing-accent-soft;
+  }
+}
+
+// ---------------------------------------------------------------- Footer
+.footer {
+  padding: 56px $spacing-6 40px;
+  background: $landing-bg-elevated;
+  text-align: center;
+  border-top: 1px solid $landing-border;
+
+  &-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-3;
+    margin-bottom: $spacing-5;
+
+    img {
+      width: 26px;
+      height: 26px;
+      border-radius: $radius-sm;
+    }
+
+    span {
+      font-family: $font-body;
+      font-size: 16px;
+      font-weight: $font-weight-bold;
+      color: $landing-text;
+    }
+  }
+
+  &-links {
+    display: flex;
+    justify-content: center;
+    gap: $spacing-6;
+    margin-bottom: $spacing-6;
+    flex-wrap: wrap;
+
+    a {
+      font-family: $font-body;
+      color: $landing-text-muted;
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+
+      &:hover {
+        color: $landing-accent-soft;
+      }
+    }
+  }
+
+  p {
+    font-family: $font-body;
+    margin: 0;
+    color: rgba($landing-text-muted, 0.6);
+    font-size: 12px;
+  }
+}
+
+// ---------------------------------------------------------------- Animaciones
+@keyframes cardFloat {
+  0%, 100% { transform: rotate(-6deg) translateY(0); }
+  50% { transform: rotate(-4deg) translateY(-12px); }
+}
+
+@keyframes floatA {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(6px, -14px); }
+}
+
+@keyframes floatB {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-8px, 10px); }
+}
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+// ============================================================================
+// Responsive - convenciÃ³n desktop-first (max-width)
+// ============================================================================
+
+// Tablet (corte principal)
+@include respond(tablet) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding-top: 150px;
+    text-align: center;
+
+    &-copy {
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    &-sub {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    &-actions {
+      justify-content: center;
+    }
+
+    &-stats {
+      justify-content: center;
+    }
+  }
+
+  .hero-card-wrap {
+    margin-top: $spacing-6;
+  }
+
+  .about-body {
+    grid-template-columns: 1fr;
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .steps {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+// MÃ³vil medio
+@include respond(mobile) {
+  .navbar {
+    top: 12px;
+    width: calc(100% - 24px);
+    padding: 0 6px 0 14px;
+    height: 54px;
+
+    &-links a:not(.navbar-user-pill) {
+      display: none;
+    }
+
+    &-brand span {
+      font-size: 15px;
+    }
+
+    &-burger {
+      display: flex;
+    }
+
+    .navbar-user-name {
+      display: none;
+    }
+
+    .navbar-user-avatar {
+      width: 28px;
+      height: 28px;
+      font-size: 12px;
+    }
+  }
+
+  .mobile-menu {
+    top: calc(#{\-3} + 54px);
+  }
+
+  .mobile-menu {
+    top: calc(#{$spacing-3} + 54px);
+  }
+
+  .hero {
+    padding: 120px 20px 60px;
+    gap: $spacing-6;
+
+    &-title {
+      font-size: clamp(40px, 11vw, 56px);
+    }
+
+    &-sub {
+      font-size: 15.5px;
+    }
+
+    &-stats {
+      flex-wrap: wrap;
+      gap: $spacing-6;
+      justify-content: flex-start;
+      text-align: left;
+    }
+  }
+
+  .btn-primary,
+  .btn-ghost {
+    min-height: 48px;
+    font-size: 14px;
+    padding: 0 $spacing-5;
+  }
+
+  .hero-card-wrap {
+    min-height: 360px;
+  }
+
+  .cc {
+    width: min(320px, 100%);
+  }
+
+  .hero-card-float--small {
+    left: -6px;
+  }
+
+  .hero-card-float--large {
+    right: -6px;
+  }
+
+  .ticker-item {
+    font-size: 12px;
+  }
+
+  .about,
+  .features,
+  .how {
+    padding: 72px 20px;
+  }
+
+  // Patrón OpenPaw: highlights y features en 2 columnas en móvil
+  .about-highlights {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-3;
+  }
+
+  .highlight-item {
+    padding: $spacing-4;
+
+    div strong {
+      font-size: 13px;
+    }
+
+    div small {
+      font-size: 11px;
+    }
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-3;
+  }
+
+  .feature-card {
+    padding: $spacing-5 $spacing-4;
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      margin-bottom: $spacing-3;
+    }
+
+    h3 {
+      font-size: 15px;
+    }
+
+    p {
+      font-size: 13px;
+    }
+  }
+
+  // Patrón OpenPaw: pasos en 3 columnas con línea conectora
+  .steps {
+    grid-template-columns: repeat(3, 1fr);
+    gap: $spacing-4;
+
+    &::before {
+      top: 24px;
+    }
+  }
+
+  .step {
+    padding: 0 $spacing-2;
+
+    &__num {
+      width: 48px;
+      height: 48px;
+      font-size: 16px;
+      margin-bottom: $spacing-4;
+    }
+
+    h3 {
+      font-size: 16px;
+    }
+
+    p {
+      font-size: 13px;
+    }
+  }
+
+  .cta {
+    padding: 80px 20px;
+  }
+
+  .footer {
+    padding: 40px 20px 32px;
+
+    &-links {
+      gap: $spacing-4;
+    }
+  }
+}
+
+// MÃ³vil muy pequeÃ±o
+@include respond(tiny) {
+  .hero-stats {
+    gap: $spacing-4;
+  }
+
+  .hero-stat dd {
+    font-size: 10px;
+  }
+
+  // Patrón OpenPaw: botones full-width en pantallas muy pequeñas
+  .btn-primary,
+  .btn-ghost {
+    width: 100%;
+  }
+
+  .about-highlights {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-2;
+  }
+
+  .highlight-item {
+    padding: $spacing-3;
+
+    div strong {
+      font-size: 12px;
+    }
+
+    div small {
+      font-size: 10px;
+    }
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-2;
+  }
+
+  .feature-card {
+    padding: $spacing-4 $spacing-3;
+
+    .feature-icon {
+      width: 34px;
+      height: 34px;
+      margin-bottom: $spacing-2;
+    }
+
+    h3 {
+      font-size: 14px;
+    }
+
+    p {
+      font-size: 12px;
+    }
+  }
+
+  .steps {
+    gap: $spacing-2;
+
+    &::before {
+      top: 20px;
+    }
+  }
+
+  .step {
+    padding: 0 $spacing-1;
+
+    &__num {
+      width: 40px;
+      height: 40px;
+      font-size: 14px;
+      margin-bottom: $spacing-2;
+    }
+
+    h3 {
+      font-size: 14px;
+    }
+
+    p {
+      font-size: 12px;
+    }
+  }
+
+  .cc-number {
+    font-size: 17px;
+    letter-spacing: 2px;
+  }
+
+  .hero-card-float--small {
+    top: 2%;
+  }
+
+  .hero-card-float--large {
+    bottom: 2%;
+  }
+}
+

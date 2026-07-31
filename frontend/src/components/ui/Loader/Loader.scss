@@ -1,0 +1,40 @@
+@use "../../../styles/abstracts/variables" as *;
+@use "../../../styles/abstracts/mixins" as *;
+
+// ============================================================================
+// Loader sencillo - dark fintech
+// ============================================================================
+
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-3;
+  padding: $spacing-8 $spacing-4;
+
+  &--full {
+    min-height: 50svh;
+  }
+
+  &__spinner {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 3px solid rgba($app-accent, 0.15);
+    border-top-color: $app-accent;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+  }
+
+  &__label {
+    font-family: $font-body;
+    font-size: 14px;
+    color: $app-text-muted;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

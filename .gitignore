@@ -1,0 +1,29 @@
+# .NET
+bin/
+obj/
+publish-deploy/
+publish-*/
+*.user
+*.suo
+*.userprefs
+*.vs/
+.vs/
+TestResults/
+
+# Frontend
+node_modules/
+dist/
+.vite/
+
+# IDE
+.vscode/
+.idea/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# OS
+Thumbs.db
+.DS_Store

@@ -1,0 +1,360 @@
+@use "../../../styles/abstracts/variables" as *;
+@use "../../../styles/abstracts/mixins" as *;
+
+// ============================================================================
+// Dashboard - patrón OpenPaw (greeting, stats, lista, acciones) en dark fintech
+// ============================================================================
+
+.dashboard-page {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+// ---------------------------------------------------------------- Greeting
+.dashboard-greeting {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+  margin-bottom: $spacing-6;
+
+  h1 {
+    font-family: $font-display;
+    font-size: $font-size-3xl;
+    font-weight: 500;
+    color: $app-text;
+    margin: 0;
+  }
+}
+
+.dashboard-role-badge {
+  padding: $spacing-1 14px;
+  border-radius: $radius-full;
+  font-family: $font-body;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  background: rgba($app-accent, 0.12);
+  color: $app-accent-soft;
+  border: 1px solid rgba($app-accent, 0.3);
+}
+
+// ---------------------------------------------------------------- Error / empty
+.dashboard-error {
+  padding: $spacing-4;
+  border-radius: $radius-md;
+  background: rgba($app-danger, 0.1);
+  border: 1px solid rgba($app-danger, 0.3);
+  color: $app-danger;
+  font-family: $font-body;
+  font-size: 14px;
+  margin-bottom: $spacing-4;
+}
+
+.dashboard-empty {
+  color: $app-text-muted;
+  font-family: $font-body;
+  font-style: italic;
+}
+
+.dashboard-empty-state {
+  text-align: center;
+  padding: $spacing-10 $spacing-4;
+  border: 1px dashed $app-border-strong;
+  border-radius: $radius-lg;
+  background: rgba($app-surface, 0.4);
+  margin-bottom: $spacing-8;
+
+  .inline-flex {
+    color: $app-accent;
+    margin: 0 auto $spacing-4;
+    cursor: default;
+  }
+
+  h3 {
+    font-family: $font-display;
+    font-size: $font-size-xl;
+    font-weight: 500;
+    color: $app-text;
+    margin: 0 0 $spacing-2;
+  }
+
+  p {
+    font-family: $font-body;
+    color: $app-text-muted;
+    margin: 0 auto $spacing-6;
+    max-width: 340px;
+  }
+}
+
+// ---------------------------------------------------------------- Secciones
+.dashboard-section-title {
+  margin: $spacing-6 0 $spacing-4;
+  font-family: $font-display;
+  font-size: $font-size-xl;
+  font-weight: 500;
+  color: $app-text;
+}
+
+// ---------------------------------------------------------------- Lista de tarjetas
+.dashboard-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+  margin-bottom: $spacing-6;
+}
+
+.dashboard-card {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+  padding: $spacing-4 $spacing-5;
+  background: rgba($app-surface, 0.55);
+  border: 1px solid $app-border;
+  border-radius: $radius-lg;
+  transition: border-color 0.2s, transform 0.2s;
+
+  &:hover {
+    border-color: $app-border-strong;
+    transform: translateY(-2px);
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: $radius-md;
+    background: rgba($app-accent, 0.12);
+    color: $app-accent;
+    flex-shrink: 0;
+
+    .inline-flex {
+      cursor: default;
+    }
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+
+    h3 {
+      font-family: $font-body;
+      font-size: 16px;
+      font-weight: $font-weight-bold;
+      color: $app-text;
+      margin: 0 0 2px;
+    }
+
+    p {
+      font-family: $font-body;
+      font-size: 13px;
+      color: $app-text-muted;
+      margin: 0;
+    }
+  }
+
+  &__dates {
+    display: flex;
+    gap: $spacing-5;
+
+    div {
+      text-align: center;
+
+      small {
+        display: block;
+        font-family: $font-body;
+        font-size: 9.5px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: $app-text-faint;
+        margin-bottom: 2px;
+      }
+
+      strong {
+        font-family: $font-display;
+        font-size: 15px;
+        font-weight: 500;
+        color: $app-accent-soft;
+      }
+    }
+  }
+
+  &__tipo {
+    font-family: $font-body;
+    font-size: 11px;
+    font-weight: $font-weight-semibold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: $spacing-1 $spacing-3;
+    border-radius: $radius-full;
+    background: rgba($app-accent, 0.1);
+    color: $app-accent-soft;
+    flex-shrink: 0;
+  }
+}
+
+// ---------------------------------------------------------------- Acciones rápidas
+.dashboard-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-4;
+}
+
+.action-card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  background: $app-surface;
+  border: none;
+  border-radius: $radius-lg;
+  padding: 28px $spacing-6;
+  box-shadow: $shadow-sm;
+  transition: transform 0.25s, box-shadow 0.25s;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-lg;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $app-accent;
+    outline-offset: 2px;
+  }
+}
+
+.action-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: $radius-lg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: $spacing-4;
+
+  .inline-flex {
+    cursor: default;
+  }
+
+  &--blue {
+    background: rgba($color-info, 0.15);
+    color: $color-info;
+  }
+
+  &--orange {
+    background: rgba($color-warning, 0.15);
+    color: $color-warning;
+  }
+
+  &--green {
+    background: rgba($app-accent, 0.15);
+    color: $app-accent-soft;
+  }
+
+  &--purple {
+    background: rgba($color-purple, 0.15);
+    color: $color-purple;
+  }
+
+  &--gray {
+    background: rgba($app-text-muted, 0.12);
+    color: $app-text-muted;
+  }
+}
+
+.action-title {
+  font-family: $font-body;
+  font-size: 16px;
+  font-weight: $font-weight-bold;
+  color: $app-text;
+  margin-bottom: $spacing-2;
+}
+
+.action-desc {
+  font-family: $font-body;
+  font-size: 13px;
+  line-height: 1.5;
+  color: $app-text-muted;
+}
+
+// ---------------------------------------------------------------- Responsive
+// Patrón OpenPaw: compactar progresivamente en tablet y móvil
+@include respond(tablet) {
+  .dashboard-greeting {
+    h1 {
+      font-size: $font-size-2xl;
+    }
+  }
+
+  .dashboard-section-title {
+    font-size: $font-size-lg;
+    margin-bottom: $spacing-4;
+  }
+
+  .dashboard-actions {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-3;
+  }
+
+  .action-card {
+    padding: $spacing-4;
+  }
+
+  .action-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: $spacing-3;
+  }
+
+  .action-title {
+    font-size: 15px;
+  }
+
+  .action-desc {
+    font-size: 12px;
+  }
+}
+
+@include respond(mobile) {
+  .dashboard-greeting {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-2;
+    margin-bottom: $spacing-5;
+
+    h1 {
+      font-size: $font-size-xl;
+    }
+  }
+
+  .dashboard-card {
+    flex-wrap: wrap;
+    gap: $spacing-3;
+
+    &__dates {
+      order: 3;
+      width: 100%;
+      padding-top: $spacing-3;
+      border-top: 1px solid $app-border;
+    }
+  }
+}
+
+@include respond(compact) {
+  .dashboard-actions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .action-card {
+    padding: $spacing-4;
+  }
+
+  .action-icon {
+    width: 44px;
+    height: 44px;
+  }
+}

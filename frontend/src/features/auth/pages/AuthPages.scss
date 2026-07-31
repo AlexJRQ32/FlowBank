@@ -1,0 +1,231 @@
+@use "../../../styles/abstracts/variables" as *;
+@use "../../../styles/abstracts/mixins" as *;
+
+// ============================================================================
+// Páginas de autenticación (login / registro) - dark fintech
+// Congruente con la landing y el dashboard.
+// ============================================================================
+
+.auth-page {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-6 $spacing-4;
+  background: $app-bg;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+
+  &--a {
+    width: 480px;
+    height: 480px;
+    background: rgba($landing-accent, 0.14);
+    top: -160px;
+    right: -100px;
+  }
+
+  &--b {
+    width: 420px;
+    height: 420px;
+    background: rgba($color-secondary, 0.1);
+    bottom: -180px;
+    left: -140px;
+  }
+}
+
+.auth-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 440px;
+  padding: $spacing-8 $spacing-6;
+  background: $app-surface-raised;
+  border: 1px solid $app-border;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-modal;
+  animation: authIn 0.4s ease;
+
+  &__logo {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto $spacing-4;
+  }
+
+  h1 {
+    font-family: $font-display;
+    font-size: $font-size-2xl;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: $spacing-2;
+    color: $app-text;
+  }
+
+  &__subtitle {
+    font-family: $font-body;
+    text-align: center;
+    font-size: $font-size-sm;
+    color: $app-text-muted;
+    margin-bottom: $spacing-6;
+  }
+
+  &__divider {
+    display: flex;
+    align-items: center;
+    gap: $spacing-4;
+    margin: $spacing-6 0;
+
+    &::before,
+    &::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: $app-border;
+    }
+
+    span {
+      font-family: $font-body;
+      font-size: $font-size-xs;
+      color: $app-text-faint;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-2;
+
+    label {
+      font-family: $font-body;
+      font-size: $font-size-xs;
+      font-weight: $font-weight-semibold;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: $app-text-muted;
+      margin-top: $spacing-2;
+    }
+
+    input {
+      width: 100%;
+      min-height: 46px;
+      padding: 0 $spacing-4;
+      border: 1px solid $app-input-border;
+      border-radius: $radius-md;
+      font-family: $font-body;
+      font-size: 15px;
+      color: $app-text;
+      background: $app-input-bg;
+      transition: border-color 0.2s, box-shadow 0.2s;
+
+      &:focus {
+        outline: none;
+        border-color: $app-accent;
+        box-shadow: 0 0 0 3px rgba($app-accent, 0.15);
+      }
+
+      &::placeholder {
+        color: $app-text-faint;
+      }
+    }
+  }
+
+  &__submit {
+    width: 100%;
+    min-height: 48px;
+    margin-top: $spacing-5;
+    background: $landing-gradient;
+    color: $landing-on-accent;
+    border-radius: $radius-full;
+    font-family: $font-body;
+    font-size: 15px;
+    font-weight: $font-weight-bold;
+    transition: background 0.2s, transform 0.2s;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  &__switch {
+    font-family: $font-body;
+    text-align: center;
+    font-size: $font-size-sm;
+    color: $app-text-muted;
+    margin-top: $spacing-6;
+
+    a {
+      color: $app-accent-soft;
+      font-weight: $font-weight-semibold;
+
+      &:hover {
+        color: $app-accent;
+      }
+    }
+  }
+
+  &__social {
+    display: grid;
+    gap: $spacing-3;
+  }
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-3;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 22px;
+  border-radius: $radius-md;
+  font-family: $font-body;
+  font-size: 15px;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+
+  &:focus-visible {
+    outline: 3px solid rgba($app-accent, 0.4);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+
+  &--google {
+    background: $google-bg;
+    color: $google-text;
+    border: 1px solid $google-border;
+
+    &:hover {
+      background: $google-hover;
+    }
+  }
+}
+
+@keyframes authIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@include respond(compact) {
+  .auth-card {
+    padding: $spacing-6 $spacing-5;
+  }
+}

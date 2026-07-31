@@ -1,0 +1,104 @@
+@use "../../../styles/abstracts/variables" as *;
+@use "../../../styles/abstracts/mixins" as *;
+
+// ============================================================================
+// Modal reutilizable - dark fintech
+// ============================================================================
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-4;
+  background: $overlay-dark;
+  backdrop-filter: blur(6px);
+  animation: modalFade 0.2s ease;
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  max-height: calc(100svh - 48px);
+  overflow-y: auto;
+  background: $app-surface-raised;
+  border: 1px solid $app-border;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-modal;
+  animation: modalPop 0.25s ease;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-4;
+    padding: $spacing-5 $spacing-6;
+    border-bottom: 1px solid $app-border;
+  }
+
+  &__title {
+    font-family: $font-display;
+    font-size: $font-size-xl;
+    font-weight: 500;
+    color: $app-text;
+    margin: 0;
+  }
+
+  &__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: $radius-full;
+    color: $app-text-muted;
+    background: rgba($app-accent, 0.06);
+    transition: background 0.2s, color 0.2s;
+
+    &:hover {
+      background: rgba($app-accent, 0.14);
+      color: $app-text;
+    }
+  }
+
+  &__body {
+    padding: $spacing-6;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-3;
+    padding: $spacing-4 $spacing-6;
+    border-top: 1px solid $app-border;
+  }
+}
+
+@keyframes modalFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalPop {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@include respond(compact) {
+  .modal {
+    max-height: calc(100svh - 24px);
+  }
+
+  .modal__body {
+    padding: $spacing-5;
+  }
+}

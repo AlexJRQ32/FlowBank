@@ -1,0 +1,167 @@
+// ============================================================================
+// FlowBank - Tokens de diseño
+// Centraliza colores, tipografías, espaciados, radios, sombras y breakpoints.
+// NUNCA hardcodear estos valores en los estilos de features o componentes.
+// ============================================================================
+
+// ---------------------------------------------------------------- Colores
+// Brand
+$color-primary: #0e9f6e;
+$color-primary-dark: #0b7a54;
+$color-primary-light: #d1fae5;
+$color-secondary: #1a56db;
+$color-secondary-light: #e1effe;
+
+// Neutros
+$color-white: #ffffff;
+$color-background: #f7f9f8;
+$color-surface: #ffffff;
+$color-border: #e5e7eb;
+$color-text: #111827;
+$color-text-muted: #6b7280;
+$color-text-inverse: #ffffff;
+
+// Feedback
+$color-success: #059669;
+$color-warning: #d97706;
+$color-danger: #dc2626;
+$color-info: #2563eb;
+
+// ---------------------------------------------------------------- Tipografía
+$font-family-base: system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$font-display: $font-family-base;
+$font-body: $font-family-base;
+$font-size-xs: 0.75rem;
+$font-size-sm: 0.875rem;
+$font-size-base: 1rem;
+$font-size-lg: 1.125rem;
+$font-size-xl: 1.25rem;
+$font-size-2xl: 1.5rem;
+$font-size-3xl: 1.875rem;
+$font-size-4xl: 2.25rem;
+
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+$line-height-tight: 1.25;
+$line-height-normal: 1.5;
+$line-height-relaxed: 1.75;
+
+// ---------------------------------------------------------------- Espaciado
+$spacing-1: 0.25rem;
+$spacing-2: 0.5rem;
+$spacing-3: 0.75rem;
+$spacing-4: 1rem;
+$spacing-5: 1.5rem;
+$spacing-6: 2rem;
+$spacing-8: 3rem;
+$spacing-10: 4rem;
+$spacing-12: 6rem;
+
+// ---------------------------------------------------------------- Radios
+$radius-sm: 0.25rem;
+$radius-md: 0.5rem;
+$radius-lg: 0.75rem;
+$radius-xl: 1rem;
+$radius-full: 9999px;
+
+// ---------------------------------------------------------------- Sombras
+$shadow-sm: 0 1px 2px rgba(17, 24, 39, 0.06);
+$shadow-md: 0 4px 6px -1px rgba(17, 24, 39, 0.1);
+$shadow-lg: 0 10px 15px -3px rgba(17, 24, 39, 0.1);
+$shadow-primary: 0 4px 12px rgba(14, 159, 110, 0.3);
+
+// Sombras de elevación (dropdowns, modales, toasts, cards flotantes)
+$shadow-floating: 0 10px 30px rgba(0, 0, 0, 0.12);
+$shadow-modal: 0 20px 50px rgba(0, 0, 0, 0.18);
+$shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+$shadow-navbar: 0 4px 20px rgba(0, 0, 0, 0.1);
+
+// Overlays y fondos translúcidos
+$overlay-dark: rgba(0, 0, 0, 0.7);
+$overlay-navbar: rgba(255, 255, 255, 0.85);
+$overlay-card-float: rgba(255, 255, 255, 0.9);
+
+// ---------------------------------------------------------------- Breakpoints
+// Convención DESKTOP-FIRST (estándar del proyecto OpenPaw en Azure DevOps):
+// se escribe el layout desktop por defecto y se sobreescribe hacia abajo con
+// @media (max-width: Xpx). Solo 3 breakpoints oficiales para evitar inconsistencias.
+$breakpoint-tablet: 768px; // Corte principal: sidebars, grillas, tablas, bottom-nav
+$breakpoint-mobile: 640px; // Móvil medio: navbars, heroes, steppers, headers
+$breakpoint-compact: 600px; // Móvil compacto: tipografía global, modales
+$breakpoint-tiny: 400px; // Móvil muy pequeño: ajustes puntuales
+
+// ---------------------------------------------------------------- Layout
+$container-max-width: 960px;
+$header-height: 64px;
+
+// ---------------------------------------------------------------- Landing light theme
+// Paleta clara de FlowBank (identidad fintech premium sobre fondo blanco).
+$landing-bg: #ffffff;
+$landing-bg-elevated: #f4f7f5;
+$landing-surface: #ffffff;
+$landing-border: rgba(16, 32, 26, 0.12);
+$landing-text: #101a14;
+$landing-text-muted: #5a6b61;
+$landing-accent: #0e9f6e;
+$landing-accent-soft: #34d399;
+$landing-accent-deep: #0b7a54;
+$landing-glow: rgba(14, 159, 110, 0.18);
+$landing-gradient: linear-gradient(135deg, #34d399 0%, #0e9f6e 100%);
+$landing-on-accent: #ffffff;
+$landing-font-display: $font-display;
+
+// ---------------------------------------------------------------- App light theme
+// Tema claro de la aplicación autenticada (dashboard, modales, formularios).
+$app-bg: #f7f9f8;
+$app-bg-elevated: #ffffff;
+$app-surface: #ffffff;
+$app-surface-raised: #ffffff;
+$app-border: rgba(16, 32, 26, 0.12);
+$app-border-strong: rgba(16, 32, 26, 0.25);
+$app-text: #101a14;
+$app-text-muted: #5a6b61;
+$app-text-faint: #8a9a90;
+$app-accent: #0e9f6e;
+$app-accent-soft: #0b7a54;
+$app-accent-deep: #0e9f6e;
+$app-danger: #dc2626;
+$app-input-bg: #ffffff;
+$app-input-border: rgba(16, 32, 26, 0.18);
+
+// ---------------------------------------------------------------- Extras
+// Negro puro (mascaras, fondos de preview de imagen)
+$color-black: #000000;
+
+// Morado (iconos de stats/acciones, variante accent)
+$color-purple: #a78bfa;
+
+// ---------------------------------------------------------------- Tarjeta de crédito (componente visual)
+// Gradiente de la tarjeta visual (tema claro)
+$cc-gradient: linear-gradient(135deg, #e8f5ee 0%, #d1f5e3 55%, #b7ecce 100%);
+// Chip dorado de la tarjeta
+$cc-chip: #d4af37;
+$cc-chip-light: #f3e5ab;
+$cc-chip-gradient: linear-gradient(135deg, #d4af37, #f3e5ab, #d4af37);
+// Brillo superior de la tarjeta
+$cc-shine-bright: rgba(255, 255, 255, 0.6);
+$cc-shine-soft: rgba(255, 255, 255, 0.3);
+// Sombra y borde interior de la tarjeta
+$cc-shadow: 0 12px 30px rgba(16, 32, 26, 0.1);
+$cc-shadow-landing: 0 16px 36px rgba(16, 32, 26, 0.12);
+$cc-inset-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+// Texto dentro de la tarjeta (tema claro)
+$cc-text: #123a2a;
+$cc-text-muted: rgba(18, 58, 42, 0.7);
+$cc-text-faint: rgba(18, 58, 42, 0.5);
+// Detalles del chip
+$cc-chip-border: rgba(0, 0, 0, 0.35);
+$cc-chip-lines: rgba(0, 0, 0, 0.15);
+
+// ---------------------------------------------------------------- Botón Google (estilo OpenPaw)
+$google-bg: #ffffff;
+$google-text: #333333;
+$google-border: #dadce0;
+$google-hover: #f8f9fa;

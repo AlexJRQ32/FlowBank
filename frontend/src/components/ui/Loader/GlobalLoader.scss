@@ -1,0 +1,91 @@
+@use "../../../styles/abstracts/variables" as *;
+
+// ============================================================================
+// Loader global full-screen - dark fintech (patrón OpenPaw)
+// ============================================================================
+
+.global-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-5;
+  background: rgba($app-bg, 0.88);
+  backdrop-filter: blur(8px);
+  animation: globalLoaderFade 0.2s ease;
+
+  &__spinner {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 4px solid rgba($app-accent, 0.15);
+    border-top-color: $app-accent;
+    animation: globalSpin 0.8s linear infinite;
+  }
+
+  &__text {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-family: $font-body;
+    font-size: 15px;
+    font-weight: $font-weight-medium;
+    color: $app-text;
+    animation: globalTextPulse 1.6s ease-in-out infinite;
+  }
+
+  &__dots {
+    display: inline-flex;
+    gap: 0;
+
+    span {
+      animation: globalDotJump 1.4s ease-in-out infinite;
+
+      &:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      &:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+    }
+  }
+}
+
+@keyframes globalSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes globalLoaderFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes globalTextPulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes globalDotJump {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}

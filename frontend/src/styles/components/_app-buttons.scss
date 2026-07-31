@@ -1,0 +1,43 @@
+@use "../abstracts/variables" as *;
+
+// ============================================================================
+// Botones de app - compartidos en dashboard y páginas (dark fintech)
+// ============================================================================
+
+.app-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-2;
+  min-height: 44px;
+  padding: 0 $spacing-5;
+  border-radius: $radius-full;
+  font-family: $font-body;
+  font-size: 14px;
+  font-weight: $font-weight-bold;
+  transition: background 0.2s, transform 0.2s, border-color 0.2s;
+
+  .inline-flex {
+    cursor: default;
+  }
+
+  &--primary {
+    background: $landing-gradient;
+    color: $landing-on-accent;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: $app-text-muted;
+    border: 1px solid $app-border;
+
+    &:hover {
+      border-color: $app-border-strong;
+      color: $app-text;
+    }
+  }
+}

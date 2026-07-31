@@ -1,0 +1,88 @@
+@use "../../../styles/abstracts/variables" as *;
+@use "../../../styles/abstracts/mixins" as *;
+
+// ============================================================================
+// Formulario de tarjeta - dark fintech
+// ============================================================================
+
+.tf-form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+
+  &__row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-4;
+
+    &:has(.tf-form__field:nth-child(3)) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-1;
+
+    label {
+      font-family: $font-body;
+      font-size: $font-size-xs;
+      font-weight: $font-weight-semibold;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: $app-text-muted;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 44px;
+      padding: 0 $spacing-3;
+      background: $app-input-bg;
+      border: 1px solid $app-input-border;
+      border-radius: $radius-md;
+      font-family: $font-body;
+      font-size: 14px;
+      color: $app-text;
+      transition: border-color 0.2s, box-shadow 0.2s;
+
+      &:focus {
+        outline: none;
+        border-color: $app-accent;
+        box-shadow: 0 0 0 3px rgba($app-accent, 0.15);
+      }
+
+      &::placeholder {
+        color: $app-text-faint;
+      }
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236ee7b7' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right $spacing-3 center;
+      padding-right: $spacing-8;
+      cursor: pointer;
+
+      option {
+        background: $app-surface-raised;
+        color: $app-text;
+      }
+    }
+  }
+
+  &__error {
+    font-family: $font-body;
+    font-size: 13px;
+    color: $app-danger;
+    margin: 0;
+  }
+}
+
+@include respond(compact) {
+  .tf-form__row {
+    grid-template-columns: 1fr !important;
+  }
+}
