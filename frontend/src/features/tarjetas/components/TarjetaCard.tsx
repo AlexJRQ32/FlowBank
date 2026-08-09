@@ -45,6 +45,14 @@ export function TarjetaCard({ tarjeta, bancoNombre, onDelete }: TarjetaCardProps
             <img src="/logo.svg" alt="" />
             <span>{bancoNombre || "Banco"}</span>
           </div>
+          <button
+            type="button"
+            className="tarjeta-card__delete"
+            aria-label={`Eliminar ${tarjeta.nombre}`}
+            onClick={() => onDelete(tarjeta.id, tarjeta.nombre)}
+          >
+            <TrashIcon size={16} />
+          </button>
         </div>
 
         <motion.div
@@ -56,7 +64,7 @@ export function TarjetaCard({ tarjeta, bancoNombre, onDelete }: TarjetaCardProps
         </motion.div>
         <div className="tarjeta-card__alias">{tarjeta.nombre}</div>
 
-        <div className="tarjeta-card__bottom">
+        <div className="tarjeta-card__mid">
           <div className="tarjeta-card__dates">
             <div className="tarjeta-card__field">
               <span>Corte</span>
@@ -70,40 +78,31 @@ export function TarjetaCard({ tarjeta, bancoNombre, onDelete }: TarjetaCardProps
           <span className="tarjeta-card__tipo">{tarjeta.tipo}</span>
         </div>
 
+        <div className="tarjeta-card__info">
+          <div className="tarjeta-card__fila">
+            <small>Limite disponible</small>
+            <div className="tarjeta-card__valores">
+              <strong>₡{formatoColones(tarjeta.limiteDisponibleColones)}</strong>
+              <span>|</span>
+              <strong>${formatoDolares(tarjeta.limiteDisponibleUsd)}</strong>
+            </div>
+          </div>
+          <div className="tarjeta-card__fila tarjeta-card__fila--deuda">
+            <small>Debes</small>
+            <div className="tarjeta-card__valores">
+              <strong>₡{formatoColones(tarjeta.totalAdeudadoColones)}</strong>
+              <span>|</span>
+              <strong>${formatoDolares(tarjeta.totalAdeudadoUsd)}</strong>
+            </div>
+          </div>
+        </div>
+
         <motion.div
           className="tarjeta-card__wave"
           animate={{ opacity: [0.55, 1, 0.55], y: [0, 4, 0] }}
           transition={{ duration: 3.8, repeat: Infinity, ease: "easeInOut" }}
         />
       </motion.div>
-
-      <div className="tarjeta-card__info">
-        <div className="tarjeta-card__fila">
-          <small>Limite disponible</small>
-          <div className="tarjeta-card__valores">
-            <strong>₡{formatoColones(tarjeta.limiteDisponibleColones)}</strong>
-            <span>|</span>
-            <strong>${formatoDolares(tarjeta.limiteDisponibleUsd)}</strong>
-          </div>
-        </div>
-        <div className="tarjeta-card__fila tarjeta-card__fila--deuda">
-          <small>Debes</small>
-          <div className="tarjeta-card__valores">
-            <strong>₡{formatoColones(tarjeta.totalAdeudadoColones)}</strong>
-            <span>|</span>
-            <strong>${formatoDolares(tarjeta.totalAdeudadoUsd)}</strong>
-          </div>
-        </div>
-        <button
-          type="button"
-          className="tarjeta-card__delete"
-          aria-label={`Eliminar ${tarjeta.nombre}`}
-          onClick={() => onDelete(tarjeta.id, tarjeta.nombre)}
-        >
-          <TrashIcon size={16} />
-          Eliminar
-        </button>
-      </div>
     </li>
   );
 }
