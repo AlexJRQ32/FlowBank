@@ -1,0 +1,242 @@
+@use "../../../styles/abstracts/variables" as *;
+
+// ============================================================================
+// Tarjeta real - vista de la lista de tarjetas
+// ============================================================================
+
+.tarjeta-card {
+  position: relative;
+
+  &__plastico {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 1.586;
+    border-radius: 18px;
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 90% at 15% 0%, $cc-shine-bright 0%, transparent 50%),
+      $cc-gradient;
+    border: 1px solid rgba($app-accent-soft, 0.25);
+    box-shadow:
+      $cc-shadow,
+      $cc-inset-highlight;
+    cursor: default;
+  }
+
+  &__shine {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40%;
+    background: linear-gradient(
+      100deg,
+      transparent 0%,
+      $cc-shine-soft 45%,
+      $cc-shine-bright 50%,
+      $cc-shine-soft 55%,
+      transparent 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  &__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
+  }
+
+  &__chip {
+    width: 38px;
+    height: 28px;
+    border-radius: 5px;
+    background: $cc-chip-gradient;
+    position: relative;
+    z-index: 2;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border-radius: 3px;
+      border: 1px solid $cc-chip-border;
+      background: repeating-linear-gradient(90deg, transparent 0 4px, $cc-chip-lines 4px 5px);
+    }
+  }
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    img {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+    }
+
+    span {
+      font-family: $font-body;
+      font-size: 13px;
+      font-weight: $font-weight-bold;
+      color: $cc-text;
+    }
+  }
+
+  &__number {
+    font-family: $font-body;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    color: $cc-text;
+    position: relative;
+    z-index: 2;
+  }
+
+  &__alias {
+    font-family: $font-display;
+    font-size: 12px;
+    font-style: normal;
+    color: $cc-text-faint;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    position: relative;
+    z-index: 2;
+  }
+
+  &__bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: $spacing-4;
+    position: relative;
+    z-index: 2;
+  }
+
+  &__dates {
+    display: flex;
+    gap: $spacing-5;
+  }
+
+  &__field {
+    span {
+      display: block;
+      font-family: $font-body;
+      font-size: 8.5px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: $cc-text-muted;
+      margin-bottom: 3px;
+    }
+
+    strong {
+      font-family: $font-body;
+      font-size: 13px;
+      font-weight: $font-weight-semibold;
+      color: $cc-text;
+    }
+  }
+
+  &__tipo {
+    font-family: $font-body;
+    font-size: 10px;
+    font-weight: $font-weight-semibold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: $spacing-1 $spacing-3;
+    border-radius: $radius-full;
+    background: rgba($cc-text, 0.1);
+    color: $cc-text;
+    flex-shrink: 0;
+  }
+
+  &__wave {
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 42%;
+    background: radial-gradient(60% 120% at 20% 100%, rgba($app-accent, 0.16), transparent 70%);
+    border-radius: 0 0 18px 18px;
+    pointer-events: none;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-3;
+    margin-top: $spacing-4;
+    padding: $spacing-4 $spacing-5;
+    background: rgba($app-surface, 0.55);
+    border: 1px solid $app-border;
+    border-radius: $radius-lg;
+  }
+
+  &__fila {
+    small {
+      display: block;
+      font-family: $font-body;
+      font-size: 9.5px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: $app-text-faint;
+      margin-bottom: 2px;
+    }
+  }
+
+  &__valores {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+    font-family: $font-display;
+    font-size: 15px;
+    font-weight: 500;
+    white-space: nowrap;
+
+    span {
+      color: $app-text-faint;
+    }
+  }
+
+  &__fila--deuda {
+    .tarjeta-card__valores {
+      strong:first-child {
+        color: $app-danger;
+      }
+
+      strong:last-child {
+        color: $app-accent-soft;
+      }
+    }
+  }
+
+  &__delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-2;
+    align-self: flex-end;
+    padding: $spacing-2 $spacing-4;
+    border-radius: $radius-full;
+    font-family: $font-body;
+    font-size: 12.5px;
+    font-weight: $font-weight-semibold;
+    color: $app-text-faint;
+    transition: color 0.2s, background 0.2s;
+
+    .inline-flex {
+      cursor: default;
+    }
+
+    &:hover {
+      color: $app-danger;
+      background: rgba($app-danger, 0.12);
+    }
+  }
+}

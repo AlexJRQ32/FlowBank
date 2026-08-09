@@ -88,171 +88,13 @@
     }
   }
 
-  &__list {
+  &__grid {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-3;
-  }
-
-  &__card {
-    display: flex;
-    align-items: center;
-    gap: $spacing-4;
-    padding: $spacing-4 $spacing-5;
-    background: rgba($app-surface, 0.55);
-    border: 1px solid $app-border;
-    border-radius: $radius-lg;
-    transition: border-color 0.2s, transform 0.2s;
-
-    &:hover {
-      border-color: $app-border-strong;
-      transform: translateY(-2px);
-    }
-  }
-
-  &__icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 46px;
-    height: 46px;
-    border-radius: $radius-md;
-    background: rgba($app-accent, 0.12);
-    color: $app-accent;
-    flex-shrink: 0;
-
-    .inline-flex {
-      cursor: default;
-    }
-  }
-
-  &__info {
-    flex: 1;
-    min-width: 0;
-
-    h3 {
-      font-family: $font-body;
-      font-size: 16px;
-      font-weight: $font-weight-bold;
-      color: $app-text;
-      margin: 0 0 2px;
-    }
-
-    p {
-      font-family: $font-body;
-      font-size: 13px;
-      color: $app-text-muted;
-      margin: 0;
-    }
-  }
-
-  &__dates {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: $spacing-5;
-
-    div {
-      text-align: center;
-
-      small {
-        display: block;
-        font-family: $font-body;
-        font-size: 9.5px;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        color: $app-text-faint;
-        margin-bottom: 2px;
-      }
-
-      strong {
-        font-family: $font-display;
-        font-size: 15px;
-        font-weight: 500;
-        color: $app-accent-soft;
-      }
-    }
-  }
-
-  &__montos {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-2;
-    padding: $spacing-1 $spacing-4;
-    border-left: 1px solid $app-border;
-    min-width: 200px;
-  }
-
-  &__monto {
-    small {
-      display: block;
-      font-family: $font-body;
-      font-size: 9.5px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: $app-text-faint;
-      margin-bottom: 2px;
-    }
-  }
-
-  &__monto-valores {
-    display: flex;
-    align-items: center;
-    gap: $spacing-2;
-    font-family: $font-display;
-    font-size: 14px;
-    font-weight: 500;
-    white-space: nowrap;
-
-    span {
-      color: $app-text-faint;
-    }
-  }
-
-  &__monto--deuda {
-    .tarjetas-page__monto-valores {
-      strong:first-child {
-        color: $app-danger;
-      }
-
-      strong:last-child {
-        color: $app-accent-soft;
-      }
-    }
-  }
-
-  &__tipo {
-    font-family: $font-body;
-    font-size: 11px;
-    font-weight: $font-weight-semibold;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    padding: $spacing-1 $spacing-3;
-    border-radius: $radius-full;
-    background: rgba($app-accent, 0.1);
-    color: $app-accent-soft;
-    flex-shrink: 0;
-  }
-
-  &__delete {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: $radius-full;
-    color: $app-text-faint;
-    transition: color 0.2s, background 0.2s;
-
-    .inline-flex {
-      cursor: default;
-    }
-
-    &:hover {
-      color: $app-danger;
-      background: rgba($app-danger, 0.12);
-    }
   }
 }
 
@@ -272,22 +114,8 @@
       }
     }
 
-    &__card {
-      flex-wrap: wrap;
-      gap: $spacing-3;
-
-      &__dates {
-        order: 3;
-        width: 100%;
-        padding-top: $spacing-3;
-        border-top: 1px solid $app-border;
-      }
-    }
-
-    &__montos {
-      border-left: none;
-      min-width: 0;
-      padding: 0;
+    &__grid {
+      grid-template-columns: 1fr;
     }
   }
 }
