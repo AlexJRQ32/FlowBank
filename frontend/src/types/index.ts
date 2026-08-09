@@ -14,6 +14,8 @@ export interface Usuario {
   email: string;
 }
 
+export type Moneda = "CRC" | "USD";
+
 export interface Tarjeta {
   id: number;
   usuarioId: number | null;
@@ -24,8 +26,13 @@ export interface Tarjeta {
   diaCorte: number;
   diaPago: number;
   limiteCredito: number;
+  limiteCreditoColones?: number | null;
+  limiteDisponibleUsd?: number | null;
+  limiteDisponibleColones?: number | null;
   saldoActual: number;
   totalAdeudado?: number;
+  totalAdeudadoUsd?: number | null;
+  totalAdeudadoColones?: number | null;
   nota: string | null;
   esActiva: boolean;
 }
@@ -35,6 +42,7 @@ export interface Factura {
   tarjetaId: number | null;
   usuarioId: number | null;
   montoTotal: number;
+  moneda: Moneda;
   fechaCompra: string;
   comercio: string;
   imagenUrl: string | null;
@@ -63,6 +71,13 @@ export interface FacturaInput {
   montoTotal: number;
   fechaCompra: string | null;
   comercio: string | null;
+  moneda: Moneda;
+}
+
+export interface TipoCambio {
+  compra: number | null;
+  venta: number | null;
+  fecha: string | null;
 }
 
 export type AccionColor = "blue" | "orange" | "green" | "purple" | "gray";

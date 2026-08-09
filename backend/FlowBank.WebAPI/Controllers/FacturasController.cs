@@ -86,7 +86,8 @@ public class FacturasController : ControllerBase
         int? TarjetaId,
         decimal MontoTotal,
         DateTime? FechaCompra,
-        string Comercio);
+        string Comercio,
+        string? Moneda);
 
     [HttpPost]
     public async Task<IActionResult> Guardar([FromBody] GuardarFacturaRequest request)
@@ -103,11 +104,16 @@ public class FacturasController : ControllerBase
         if (request.MontoTotal <= 0)
             return BadRequest(new { message = "El monto debe ser mayor a cero." });
 
+        var moneda = string.IsNullOrWhiteSpace(request.Moneda) ? "CRC" : request.Moneda.Trim().ToUpperInvariant();
+        if (moneda is not ("CRC" or "USD"))
+            return BadRequest(new { message = "La moneda debe ser CRC o USD." });
+
         var factura = new Factura
         {
             TarjetaId = request.TarjetaId,
             UsuarioId = userId,
             MontoTotal = request.MontoTotal,
+            Moneda = moneda,
             FechaCompra = request.FechaCompra ?? DateTime.UtcNow,
             Comercio = request.Comercio ?? string.Empty,
             FechaRegistro = DateTime.UtcNow,

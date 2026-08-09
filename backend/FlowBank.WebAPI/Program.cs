@@ -3,6 +3,7 @@ using FlowBank.Core.Services;
 using FlowBank.Data;
 using FlowBank.WebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +32,12 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddDataLayer(builder.Configuration);
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton(sp =>
+{
+    var http = new HttpClient();
+    return new TipoCambioService(http, sp.GetRequiredService<IMemoryCache>());
+});
 builder.Services.AddSingleton<OcrService>();
 
 // Configuracion JWT

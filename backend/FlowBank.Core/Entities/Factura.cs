@@ -6,6 +6,7 @@ public class Factura
     public int? TarjetaId { get; set; }
     public int? UsuarioId { get; set; }
     public decimal MontoTotal { get; set; }
+    public string Moneda { get; set; } = "CRC";
     public DateTime FechaCompra { get; set; }
     public string Comercio { get; set; } = string.Empty;
     public string? ImagenUrl { get; set; }

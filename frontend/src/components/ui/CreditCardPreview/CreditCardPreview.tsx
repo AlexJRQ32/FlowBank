@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { formatoColones, formatoDolares } from "../../../lib/currency";
 import "./CreditCardPreview.scss";
 
 interface CreditCardPreviewProps {
@@ -8,6 +9,8 @@ interface CreditCardPreviewProps {
   titular: string;
   diaCorte?: number;
   diaPago?: number;
+  limiteUsd?: number;
+  limiteColones?: number | null;
 }
 
 function formatNumber(digitos: string): string {
@@ -22,6 +25,8 @@ export function CreditCardPreview({
   titular,
   diaCorte,
   diaPago,
+  limiteUsd,
+  limiteColones,
 }: CreditCardPreviewProps) {
   return (
     <div className="cc-preview" aria-hidden="true">
@@ -86,6 +91,18 @@ export function CreditCardPreview({
             </div>
           </div>
         </div>
+
+        {limiteUsd !== undefined && limiteUsd > 0 ? (
+          <div className="cc-preview__limite">
+            <span>Limite</span>
+            <strong>
+              ${formatoDolares(limiteUsd)}
+              {limiteColones ? (
+                <em>≈ ₡{formatoColones(limiteColones)}</em>
+              ) : null}
+            </strong>
+          </div>
+        ) : null}
 
         <motion.div
           className="cc-preview__wave"

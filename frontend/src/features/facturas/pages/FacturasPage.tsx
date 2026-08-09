@@ -5,7 +5,8 @@ import { useToast } from "../../../components/ui/Toast/useToast";
 import { ScanBarcodeIcon, CreditCardIcon, TrashIcon } from "../../../components/icons";
 import { useFacturas } from "../hooks/useFacturas";
 import { useTarjetasData } from "../../tarjetas/hooks/useTarjetasData";
-import type { FacturaExtraccion } from "../../../types";
+import { formatoColones, formatoDolares, simboloMoneda } from "../../../lib/currency";
+import type { FacturaExtraccion, Moneda } from "../../../types";
 import "./FacturasPage.scss";
 
 export function FacturasPage() {
@@ -17,6 +18,7 @@ export function FacturasPage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [extraccion, setExtraccion] = useState<FacturaExtraccion | null>(null);
   const [monto, setMonto] = useState("");
+  const [moneda, setMoneda] = useState<Moneda>("CRC");
   const [fecha, setFecha] = useState("");
   const [comercio, setComercio] = useState("");
   const [tarjetaId, setTarjetaId] = useState<string>("");
@@ -24,6 +26,7 @@ export function FacturasPage() {
   const handleFile = async (file: File) => {
     setExtraccion(null);
     setPreviewUrl(URL.createObjectURL(file));
+    setMoneda("CRC");
 
     try {
       const resultado = await extraer(file);
@@ -52,14 +55,19 @@ export function FacturasPage() {
         montoTotal: montoNum,
         fechaCompra: fecha || null,
         comercio: comercio || null,
+        moneda,
       });
+      const simbolo = simboloMoneda(moneda);
+      const montoFormateado =
+        moneda === "USD" ? formatoDolares(montoNum) : formatoColones(montoNum);
       toast.success(
         "Factura guardada",
-        `₡${montoNum.toLocaleString("es-CR", { minimumFractionDigits: 2 })} en ${comercio || "comercio"}.`,
+        `${simbolo}${montoFormateado} en ${comercio || "comercio"}.`,
       );
       setPreviewUrl(null);
       setExtraccion(null);
       setMonto("");
+      setMoneda("CRC");
       setFecha("");
       setComercio("");
       setTarjetaId("");
@@ -142,7 +150,7 @@ export function FacturasPage() {
               <h3>Revisa los datos extraidos</h3>
               <div className="facturas-page__fields">
                 <div className="facturas-page__field">
-                  <label htmlFor="f-monto">Monto total (₡)</label>
+                  <label htmlFor="f-monto">Monto total ({moneda === "USD" ? "$" : "₡"})</label>
                   <input
                     id="f-monto"
                     type="number"
@@ -151,6 +159,17 @@ export function FacturasPage() {
                     onChange={(e) => setMonto(e.target.value)}
                     placeholder="0.00"
                   />
+                </div>
+                <div className="facturas-page__field">
+                  <label htmlFor="f-moneda">Moneda</label>
+                  <select
+                    id="f-moneda"
+                    value={moneda}
+                    onChange={(e) => setMoneda(e.target.value as Moneda)}
+                  >
+                    <option value="CRC">Colones (₡)</option>
+                    <option value="USD">Dolares ($)</option>
+                  </select>
                 </div>
                 <div className="facturas-page__field">
                   <label htmlFor="f-fecha">Fecha de compra</label>
@@ -196,6 +215,7 @@ export function FacturasPage() {
                     setPreviewUrl(null);
                     setExtraccion(null);
                     setMonto("");
+                    setMoneda("CRC");
                     setFecha("");
                     setComercio("");
                     setTarjetaId("");
@@ -240,7 +260,10 @@ export function FacturasPage() {
                   </p>
                 </div>
                 <strong className="facturas-page__item-monto">
-                  ₡{f.montoTotal.toLocaleString("es-CR", { minimumFractionDigits: 2 })}
+                  {simboloMoneda(f.moneda)}
+                  {f.moneda === "USD"
+                    ? formatoDolares(f.montoTotal)
+                    : formatoColones(f.montoTotal)}
                 </strong>
                 <button
                   type="button"

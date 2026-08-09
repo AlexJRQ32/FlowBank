@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState, type FormEvent } from "react";
 import Modal from "../../../components/ui/Modal/Modal";
 import CreditCardPreview from "../../../components/ui/CreditCardPreview/CreditCardPreview";
 import { useToast } from "../../../components/ui/Toast/useToast";
+import { useTipoCambio } from "../../../hooks/useTipoCambio";
+import { formatoColones, formatoDolares } from "../../../lib/currency";
 import type { Banco, TarjetaInput } from "../../../types";
 import "./TarjetaFormModal.scss";
 
@@ -16,6 +18,7 @@ const TIPOS = ["Credito", "Debito"];
 
 export function TarjetaFormModal({ open, onClose, bancos, onSave }: TarjetaFormModalProps) {
   const toast = useToast();
+  const { tipoCambio } = useTipoCambio();
   const [nombre, setNombre] = useState("");
   const [bancoId, setBancoId] = useState(bancos[0]?.id ?? 0);
   const [ultimosCuatroDigitos, setUltimosCuatroDigitos] = useState("");
@@ -27,6 +30,10 @@ export function TarjetaFormModal({ open, onClose, bancos, onSave }: TarjetaFormM
   const [saving, setSaving] = useState(false);
 
   const bancoSeleccionado = bancos.find((b) => b.id === bancoId);
+
+  const limiteUsd = Number(limiteCredito) || 0;
+  const limiteColones =
+    tipoCambio.venta && limiteUsd > 0 ? Math.round(limiteUsd * tipoCambio.venta) : null;
 
   const resetForm = useCallback(() => {
     setNombre("");
@@ -106,6 +113,8 @@ export function TarjetaFormModal({ open, onClose, bancos, onSave }: TarjetaFormM
         titular={titular}
         diaCorte={diaCorte}
         diaPago={diaPago}
+        limiteUsd={limiteUsd}
+        limiteColones={limiteColones}
       />
 
       <form id="tarjeta-form" className="tf-form" onSubmit={handleSubmit} noValidate>
@@ -197,15 +206,21 @@ export function TarjetaFormModal({ open, onClose, bancos, onSave }: TarjetaFormM
             />
           </div>
           <div className="tf-form__field">
-            <label htmlFor="tf-limite">Limite de credito</label>
+            <label htmlFor="tf-limite">Limite de credito (USD)</label>
             <input
               id="tf-limite"
               type="number"
               min={0}
+              step="0.01"
               value={limiteCredito}
               onChange={(e) => setLimiteCredito(e.target.value)}
               placeholder="0.00"
             />
+            {limiteColones !== null ? (
+              <small className="tf-form__hint">
+                ≈ ₡{formatoColones(limiteColones)} (USD {formatoDolares(limiteUsd)})
+              </small>
+            ) : null}
           </div>
         </div>
 

@@ -6,6 +6,7 @@ import TarjetaFormModal from "../components/TarjetaFormModal";
 import BancoFormModal from "../../bancos/components/BancoFormModal";
 import { CreditCardIcon, WalletIcon, TrashIcon } from "../../../components/icons";
 import { useTarjetasData } from "../hooks/useTarjetasData";
+import { formatoColones, formatoDolares } from "../../../lib/currency";
 import "./TarjetasPage.scss";
 
 export function TarjetasPage() {
@@ -101,14 +102,25 @@ export function TarjetasPage() {
                       <strong>Dia {tarjeta.diaPago}</strong>
                     </div>
                   </div>
-                  <div className="tarjetas-page__deuda">
-                    <small>Debes</small>
-                    <strong>
-                      ₡
-                      {(tarjeta.totalAdeudado ?? 0).toLocaleString("es-CR", {
-                        minimumFractionDigits: 2,
-                      })}
-                    </strong>
+                  <div className="tarjetas-page__montos">
+                    {tarjeta.limiteCredito > 0 ? (
+                      <div className="tarjetas-page__monto">
+                        <small>Limite disponible</small>
+                        <div className="tarjetas-page__monto-valores">
+                          <strong>₡{formatoColones(tarjeta.limiteDisponibleColones)}</strong>
+                          <span>|</span>
+                          <strong>${formatoDolares(tarjeta.limiteDisponibleUsd)}</strong>
+                        </div>
+                      </div>
+                    ) : null}
+                    <div className="tarjetas-page__monto tarjetas-page__monto--deuda">
+                      <small>Debes</small>
+                      <div className="tarjetas-page__monto-valores">
+                        <strong>₡{formatoColones(tarjeta.totalAdeudadoColones)}</strong>
+                        <span>|</span>
+                        <strong>${formatoDolares(tarjeta.totalAdeudadoUsd)}</strong>
+                      </div>
+                    </div>
                   </div>
                   <span className="tarjetas-page__tipo">{tarjeta.tipo}</span>
                   <button

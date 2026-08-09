@@ -73,6 +73,7 @@ public class FlowBankDbContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.MontoTotal).HasPrecision(18, 2);
+            entity.Property(e => e.Moneda).HasMaxLength(3).IsRequired();
             entity.Property(e => e.Comercio).HasMaxLength(200);
             entity.Property(e => e.ImagenUrl).HasMaxLength(500);
 

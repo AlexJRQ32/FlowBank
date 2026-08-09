@@ -79,6 +79,12 @@
     color: $app-danger;
     margin: 0;
   }
+
+  &__hint {
+    font-family: $font-body;
+    font-size: 12px;
+    color: $app-accent-soft;
+  }
 }
 
 @include respond(compact) {
