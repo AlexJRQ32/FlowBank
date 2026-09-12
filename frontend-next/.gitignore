@@ -42,3 +42,6 @@ next-env.d.ts
 
 # tesseract.js traineddata cache (written to cwd at runtime)
 *.traineddata
+
+# Track the example env file
+!.env.example
