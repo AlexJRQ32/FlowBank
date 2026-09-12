@@ -8,24 +8,24 @@ export const revalidate = 0;
 /**
  * OAuth callback — Supabase-hosted flow code exchange.
  * Supabase redirects here with ?code=...; we exchange it for a session,
- * cookies are set on the response, and the user lands on /dashboard.
- * Failure (invalid/expired code) → /login?error=oauth.
+ * cookies are set on the redirect response, and the user lands on the
+ * `next` path (default /dashboard). Failure (invalid/expired code) →
+ * /login?error=oauth.
+ *
+ * Note: NextResponse.next() is not allowed in Route Handlers (Next 16),
+ * so the redirect response is built FIRST and session cookies are
+ * attached to it directly.
  */
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/dashboard";
 
-  console.error("[oauth] callback hit:", {
-    origin: request.url,
-    next,
-    hasCode: Boolean(code),
-  });
+  console.info("[oauth] callback hit:", { next, hasCode: Boolean(code) });
 
   if (code) {
-    const supabaseResponse = NextResponse.next({ request });
+    const response = NextResponse.redirect(new URL(next, origin));
 
-    let cookieNames: string[] = [];
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -35,48 +35,22 @@ export async function GET(request: NextRequest) {
             return request.cookies.getAll();
           },
           setAll(cookiesToSet) {
-            try {
-              cookiesToSet.forEach(({ name, value, options }) => {
-                request.cookies.set(name, value);
-                supabaseResponse.cookies.set(name, value, options);
-              });
-              cookieNames = cookiesToSet.map(({ name }) => name);
-            } catch (err) {
-              console.error("[oauth] exception inside setAll:", err);
-              throw err;
-            }
+            cookiesToSet.forEach(({ name, value, options }) => {
+              request.cookies.set(name, value);
+              response.cookies.set(name, value, options);
+            });
           },
         },
       },
     );
 
-    console.error(
-      "[oauth] pre-exchange request cookies:",
-      request.cookies.getAll().map((c) => c.name),
-    );
-
-    let exchangeError: unknown = null;
     try {
       const { error } = await supabase.auth.exchangeCodeForSession(code);
-      exchangeError = error;
+      if (error) throw error;
+      console.info("[oauth] exchange success, redirecting");
+      return response;
     } catch (err) {
-      exchangeError = err;
-      console.error("[oauth] exchangeCodeForSession threw:", err);
-    }
-    if (exchangeError) {
-      console.error("[oauth] exchangeCodeForSession error:", exchangeError);
-    } else {
-      console.error("[oauth] exchange success, cookies set:", cookieNames);
-      // The session cookies live on supabaseResponse — reuse it as the
-      // redirect response so they actually reach the browser.
-      supabaseResponse.headers.set(
-        "Location",
-        new URL(next, origin).toString(),
-      );
-      return new NextResponse(supabaseResponse.body, {
-        status: 302,
-        headers: supabaseResponse.headers,
-      });
+      console.error("[oauth] exchangeCodeForSession error:", err);
     }
   }
 
