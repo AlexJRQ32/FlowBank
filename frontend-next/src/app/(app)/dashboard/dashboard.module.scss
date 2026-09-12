@@ -1,0 +1,361 @@
+// ============================================================================
+// Dashboard - lenguaje visual OpenPaw/Trustride en tokens FlowBank
+// Ported from legacy DashboardPage.scss + StatCards.scss (merged: the stat
+// cards only render here in the rewrite).
+// página sobre fondo suave, cards blancas sólidas con borde capilar y
+// sombra difusa, section headers con tile tintado + divisor, ritmo 24px.
+// ============================================================================
+
+@use "tokens" as *;
+@use "mixins" as *;
+
+.dashboard-page {
+  max-width: $container-max-width;
+  margin: 0 auto;
+}
+
+// ---------------------------------------------------------------- Header banner
+// Patrón OpenPaw: fila meta (badge de rol) sobre el título, nombre en accent.
+.dashboard-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: $spacing-4;
+  margin-bottom: $spacing-8;
+}
+
+.dashboard-header__info {
+  min-width: 0;
+}
+
+.dashboard-header__meta {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  margin-bottom: $spacing-2;
+}
+
+.dashboard-header__title {
+  margin: 0;
+  font-family: $font-display;
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  letter-spacing: -0.02em;
+  color: $app-text;
+}
+
+.dashboard-header__name {
+  color: $app-accent;
+}
+
+.dashboard-role-badge {
+  padding: $spacing-1 14px;
+  border-radius: $radius-full;
+  font-family: $font-body;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: rgba($app-accent, 0.1);
+  color: $app-accent-soft;
+  border: 1px solid rgba($app-accent, 0.25);
+}
+
+// ---------------------------------------------------------------- StatCards
+// Lenguaje visual OpenPaw/Trustride: card blanca sólida, borde capilar,
+// sombra difusa en capas, hover sobrio (lift de 1px + sombra arriba).
+// Grid adaptativo: una fila en desktop, envuelve a 2+ filas en pantallas
+// angostas sin media queries.
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
+  gap: $spacing-4;
+  margin-bottom: $spacing-8;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+  padding: $spacing-5 $spacing-6;
+  background: $app-surface;
+  border: 1px solid $app-border-soft;
+  border-radius: $radius-lg;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.15s ease, transform 0.15s ease,
+    border-color 0.15s ease;
+
+  &:hover {
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.08),
+      0 2px 4px rgba(0, 0, 0, 0.04);
+    transform: translateY(-1px);
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    flex-shrink: 0;
+
+    &--blue {
+      background: rgba($color-info, 0.1);
+      color: $color-info;
+    }
+
+    &--green {
+      background: rgba($app-accent, 0.1);
+      color: $app-accent-soft;
+    }
+
+    &--orange {
+      background: rgba($color-warning, 0.1);
+      color: $color-warning;
+    }
+
+    &--purple {
+      background: rgba($color-purple, 0.1);
+      color: $color-purple;
+    }
+  }
+
+  &__number {
+    font-family: $font-display;
+    font-size: $font-size-3xl;
+    font-weight: $font-weight-bold;
+    letter-spacing: -0.02em;
+    color: $app-text;
+    line-height: 1;
+  }
+
+  &__label {
+    margin-top: $spacing-1;
+    font-family: $font-body;
+    font-size: 13px;
+    color: $app-text-muted;
+  }
+}
+
+// ---------------------------------------------------------------- Secciones
+// Patrón Trustride: header de sección con icono en tile tintado, título +
+// subtítulo, y divisor capilar debajo.
+.dashboard-section-header {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  margin: $spacing-6 0 $spacing-4;
+  padding-bottom: $spacing-3;
+  border-bottom: 1px solid $app-border-soft;
+}
+
+.dashboard-section-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: $radius-md;
+  background: rgba($app-accent, 0.1);
+  color: $app-accent;
+  flex-shrink: 0;
+}
+
+.dashboard-section-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.dashboard-section-title {
+  margin: 0;
+  font-family: $font-display;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: $app-text;
+}
+
+.dashboard-section-subtitle {
+  margin-top: 2px;
+  font-family: $font-body;
+  font-size: $font-size-xs;
+  color: $app-text-muted;
+}
+
+// ---------------------------------------------------------------- Acciones rápidas
+// Patrón OpenPaw: grid adaptativo auto-fit, reparte las cards según cuántas
+// haya (~240px por card); envuelve a filas iguales en pantallas angostas.
+.dashboard-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  gap: $spacing-4;
+}
+
+.action-card {
+  display: block;
+  text-decoration: none;
+  background: $app-surface;
+  border: 1px solid $app-border-soft;
+  border-radius: $radius-lg;
+  padding: 28px $spacing-6;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.15s ease, transform 0.15s ease,
+    border-color 0.15s ease;
+
+  &:hover {
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.08),
+      0 2px 4px rgba(0, 0, 0, 0.04);
+    transform: translateY(-1px);
+    border-color: $app-border;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $app-accent;
+    outline-offset: 2px;
+  }
+}
+
+.action-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: $spacing-4;
+
+  &--blue {
+    background: rgba($color-info, 0.1);
+    color: $color-info;
+  }
+
+  &--orange {
+    background: rgba($color-warning, 0.1);
+    color: $color-warning;
+  }
+
+  &--green {
+    background: rgba($app-accent, 0.1);
+    color: $app-accent-soft;
+  }
+
+  &--purple {
+    background: rgba($color-purple, 0.1);
+    color: $color-purple;
+  }
+}
+
+.action-title {
+  font-family: $font-body;
+  font-size: 15px;
+  font-weight: $font-weight-semibold;
+  color: $app-text;
+  margin-bottom: $spacing-1;
+}
+
+.action-desc {
+  font-family: $font-body;
+  font-size: 13px;
+  line-height: 1.5;
+  color: $app-text-muted;
+}
+
+// ---------------------------------------------------------------- Responsive
+// Los grids de stats y acciones usan auto-fit: se envuelven solos.
+@include respond(tablet) {
+  .dashboard-header__title {
+    font-size: $font-size-2xl;
+  }
+
+  .dashboard-section-header {
+    margin: $spacing-5 0 $spacing-4;
+  }
+
+  .stat-cards {
+    gap: $spacing-3;
+  }
+
+  .stat-card {
+    padding: $spacing-4;
+
+    &__icon {
+      width: 40px;
+      height: 40px;
+    }
+
+    &__number {
+      font-size: $font-size-xl;
+    }
+
+    &__label {
+      font-size: 11px;
+    }
+  }
+
+  .action-card {
+    padding: $spacing-4;
+  }
+
+  .action-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: $spacing-3;
+  }
+
+  .action-title {
+    font-size: 15px;
+  }
+
+  .action-desc {
+    font-size: 12px;
+  }
+}
+
+@include respond(mobile) {
+  // El banner apila en móvil
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-2;
+    margin-bottom: $spacing-5;
+  }
+
+  .dashboard-header__title {
+    font-size: $font-size-xl;
+  }
+}
+
+@include respond(compact) {
+  .stat-card {
+    padding: $spacing-3;
+    gap: $spacing-3;
+
+    &__icon {
+      width: 34px;
+      height: 34px;
+    }
+
+    &__number {
+      font-size: $font-size-lg;
+    }
+
+    &__label {
+      font-size: 10px;
+    }
+  }
+
+  .action-card {
+    padding: $spacing-4;
+  }
+
+  .action-icon {
+    width: 44px;
+    height: 44px;
+  }
+}
