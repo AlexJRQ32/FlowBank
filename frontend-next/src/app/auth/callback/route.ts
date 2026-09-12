@@ -16,9 +16,16 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/dashboard";
 
+  console.error("[oauth] callback hit:", {
+    origin: request.url,
+    next,
+    hasCode: Boolean(code),
+  });
+
   if (code) {
     const supabaseResponse = NextResponse.next({ request });
 
+    let cookieNames: string[] = [];
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -28,17 +35,38 @@ export async function GET(request: NextRequest) {
             return request.cookies.getAll();
           },
           setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              request.cookies.set(name, value);
-              supabaseResponse.cookies.set(name, value, options);
-            });
+            try {
+              cookiesToSet.forEach(({ name, value, options }) => {
+                request.cookies.set(name, value);
+                supabaseResponse.cookies.set(name, value, options);
+              });
+              cookieNames = cookiesToSet.map(({ name }) => name);
+            } catch (err) {
+              console.error("[oauth] exception inside setAll:", err);
+              throw err;
+            }
           },
         },
       },
     );
 
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
+    console.error(
+      "[oauth] pre-exchange request cookies:",
+      request.cookies.getAll().map((c) => c.name),
+    );
+
+    let exchangeError: unknown = null;
+    try {
+      const { error } = await supabase.auth.exchangeCodeForSession(code);
+      exchangeError = error;
+    } catch (err) {
+      exchangeError = err;
+      console.error("[oauth] exchangeCodeForSession threw:", err);
+    }
+    if (exchangeError) {
+      console.error("[oauth] exchangeCodeForSession error:", exchangeError);
+    } else {
+      console.error("[oauth] exchange success, cookies set:", cookieNames);
       // The session cookies live on supabaseResponse — reuse it as the
       // redirect response so they actually reach the browser.
       supabaseResponse.headers.set(
