@@ -1,19 +1,15 @@
 import Link from "next/link";
 import { CreditCardIcon } from "@/components/icons";
-import { createClient } from "@/lib/supabase/server";
+import { getTarjetasConDeuda } from "@/lib/queries/tarjetas";
 import TarjetaCard from "./_components/tarjeta-card";
 import styles from "./tarjetas.module.scss";
 
-// Auth-scoped Supabase reads (RLS); must never be cached (Gothic #11).
+// Auth-scoped Supabase reads (RLS) + live tipo de cambio; must never be cached
+// (Gothic #11).
 export const dynamic = "force-dynamic";
 
 export default async function TarjetasPage() {
-  const supabase = await createClient();
-
-  const { data: tarjetas } = await supabase
-    .from("tarjetas")
-    .select("*, bancos(nombre)")
-    .order("created_at", { ascending: false });
+  const { tarjetas } = await getTarjetasConDeuda();
 
   return (
     <div className={styles["tarjetas-page"]}>

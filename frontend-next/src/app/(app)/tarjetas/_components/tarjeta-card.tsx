@@ -1,20 +1,7 @@
 import Link from "next/link";
 import { formatoColones, formatoDolares } from "@/lib/currency";
+import type { TarjetaConDeuda } from "@/lib/queries/tarjetas";
 import styles from "../tarjetas.module.scss";
-
-export interface TarjetaConBanco {
-  id: string;
-  nombre: string;
-  banco_id: string;
-  ultimos_cuatro_digitos: string;
-  tipo: string;
-  dia_corte: number | null;
-  dia_pago: number | null;
-  limite_credito: number | null;
-  saldo_actual: number | null;
-  es_activa: boolean;
-  bancos: { nombre: string } | null;
-}
 
 function formatoDigitos(digitos: string): string {
   const clean = digitos.replace(/\D/g, "").padStart(4, "•");
@@ -22,8 +9,10 @@ function formatoDigitos(digitos: string): string {
 }
 
 // Static port of legacy TarjetaCard (CSS-only; motion animations dropped per
-// the minimal port — gradient/chip/visual language preserved).
-export default function TarjetaCard({ tarjeta }: { tarjeta: TarjetaConBanco }) {
+// the minimal port — gradient/chip/visual language preserved). Info rows match
+// legacy: "Limite disponible" (₡ | $) and "Debes" (₡ | $), computed server-side
+// with the day's tipo de cambio.
+export default function TarjetaCard({ tarjeta }: { tarjeta: TarjetaConDeuda }) {
   return (
     <li className={styles["tarjeta-slot"]}>
       <Link
@@ -64,15 +53,19 @@ export default function TarjetaCard({ tarjeta }: { tarjeta: TarjetaConBanco }) {
 
         <div className={styles["tarjeta-card__info"]}>
           <div className={styles["tarjeta-card__fila"]}>
-            <small>Limite de credito</small>
+            <small>Limite disponible</small>
             <div className={styles["tarjeta-card__valores"]}>
-              <strong>${formatoDolares(tarjeta.limite_credito)}</strong>
+              <strong>₡{formatoColones(tarjeta.limite_disponible_colones)}</strong>
+              <span>|</span>
+              <strong>${formatoDolares(tarjeta.limite_disponible_usd)}</strong>
             </div>
           </div>
           <div className={styles["tarjeta-card__fila"]}>
-            <small>Saldo actual</small>
+            <small>Debes</small>
             <div className={styles["tarjeta-card__valores"]}>
-              <strong>₡{formatoColones(tarjeta.saldo_actual)}</strong>
+              <strong>₡{formatoColones(tarjeta.total_adeudado_colones)}</strong>
+              <span>|</span>
+              <strong>${formatoDolares(tarjeta.total_adeudado_usd)}</strong>
             </div>
           </div>
         </div>
