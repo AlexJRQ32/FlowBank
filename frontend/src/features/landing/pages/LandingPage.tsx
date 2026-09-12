@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import {
   CreditCardIcon,
@@ -44,7 +44,24 @@ const STEPS = [
 export function LandingPage() {
   const { user, isAuthenticated } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const closeMenu = () => setMenuOpen(false);
+
+  // Solid navbar once the hero image starts scrolling under it
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Block page scroll while the mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
 
   return (
     <div className="landing-page">
@@ -52,7 +69,10 @@ export function LandingPage() {
       <section className="hero" style={{ backgroundImage: `url(${heroArches})` }}>
         <div className="hero__scrim" aria-hidden="true" />
 
-        <nav className="hero-nav" aria-label="Main navigation">
+        <nav
+          className={`hero-nav${scrolled ? " hero-nav--solid" : ""}`}
+          aria-label="Main navigation"
+        >
           <Link to="/" className="hero-nav__brand">
             <img src={logoCard} alt="FlowBank logo" />
             <span>FlowBank</span>
@@ -78,7 +98,7 @@ export function LandingPage() {
             type="button"
             className="hero-nav__burger"
             onClick={() => setMenuOpen((v) => !v)}
-            aria-label="Open menu"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
           >
             <span />
