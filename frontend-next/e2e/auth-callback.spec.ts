@@ -2,32 +2,21 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Auth callback (/auth/callback)", () => {
   /**
-   * APP BUG: /auth/callback returns 500 Internal Server Error.
-   * The route handler crashes instead of redirecting to /login?error=oauth.
-   * Expected: 302 redirect to /login?error=oauth (when no code present).
-   * Actual: 500 server error.
-   * 
-   * Testing with request API to check HTTP status directly.
+   * The route handler must never 500: without a valid code it redirects to
+   * /login?error=oauth (Next.js redirects use HTTP 307).
+   *
+   * Testing with request API to check HTTP status directly (maxRedirects: 0
+   * so we inspect the redirect itself instead of the /login response).
    */
-  test("GET without code returns error (APP BUG: 500 instead of redirect)", async ({ request }) => {
+  test("GET without code redirects to /login?error=oauth", async ({ request }) => {
     const res = await request.get("/auth/callback", { maxRedirects: 0 });
-    // Document the actual behavior: 500 error instead of expected 302 redirect
-    const status = res.status();
-    test.info().annotations.push({
-      type: "bug",
-      description: `Auth callback returns ${status} instead of 302 redirect to /login?error=oauth`,
-    });
-    // Accept either the expected redirect (302) or the actual bug (500)
-    expect([302, 500]).toContain(status);
+    expect(res.status()).toBe(307);
+    expect(res.headers().location).toContain("/login?error=oauth");
   });
 
-  test("GET with invalid code returns error (APP BUG: 500 instead of redirect)", async ({ request }) => {
+  test("GET with invalid code redirects to /login?error=oauth", async ({ request }) => {
     const res = await request.get("/auth/callback?code=invalid-test-code", { maxRedirects: 0 });
-    const status = res.status();
-    test.info().annotations.push({
-      type: "bug",
-      description: `Auth callback with invalid code returns ${status} instead of 302 redirect`,
-    });
-    expect([302, 500]).toContain(status);
+    expect(res.status()).toBe(307);
+    expect(res.headers().location).toContain("/login?error=oauth");
   });
 });
