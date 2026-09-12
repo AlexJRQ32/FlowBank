@@ -1,0 +1,185 @@
+@use "tokens" as *;
+
+// Shared authenticated-form styles (tarjetas nueva/editar, facturas subir).
+
+.form-page {
+  max-width: 640px;
+  margin: 0 auto;
+
+  &__header {
+    margin-bottom: $spacing-6;
+
+    h1 {
+      font-size: $font-size-3xl;
+      font-weight: $font-weight-medium;
+      color: $color-text;
+      margin: 0 0 $spacing-1;
+    }
+
+    p {
+      color: $color-text-muted;
+      margin: 0;
+      font-size: $font-size-base;
+    }
+  }
+}
+
+.form-card {
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  padding: $spacing-6;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+}
+
+.form-error {
+  padding: $spacing-4;
+  border-radius: $radius-md;
+  background: rgba($color-danger, 0.1);
+  border: 1px solid rgba($color-danger, 0.3);
+  color: $color-danger;
+  font-size: $font-size-sm;
+  margin: 0;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+
+  label {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $color-text;
+  }
+
+  input,
+  select,
+  textarea {
+    min-height: 42px;
+    padding: 0 $spacing-3;
+    border-radius: $radius-md;
+    border: 1px solid $color-border;
+    background: $color-surface;
+    color: $color-text;
+    font-family: inherit;
+    font-size: $font-size-base;
+    width: 100%;
+
+    &:focus-visible {
+      outline: 2px solid $color-primary;
+      outline-offset: 1px;
+      border-color: $color-primary;
+    }
+  }
+
+  textarea {
+    min-height: 80px;
+    padding: $spacing-3;
+  }
+
+  small {
+    color: $color-text-muted;
+    font-size: $font-size-xs;
+  }
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-4;
+}
+
+.form-check {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+
+  input {
+    width: 1.1rem;
+    height: 1.1rem;
+    min-height: 0;
+    accent-color: $color-primary;
+  }
+
+  label {
+    font-size: $font-size-sm;
+    color: $color-text;
+  }
+}
+
+.form-actions {
+  display: flex;
+  gap: $spacing-3;
+  margin-top: $spacing-2;
+}
+
+.form-actions a,
+.form-actions .form-btn--ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-2;
+  min-height: 42px;
+  padding: 0 $spacing-5;
+  border-radius: $radius-full;
+  border: 1px solid $color-border;
+  background: transparent;
+  color: $color-text;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    background: $color-background;
+  }
+}
+
+.form-btn--danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-2;
+  min-height: 42px;
+  padding: 0 $spacing-5;
+  border-radius: $radius-full;
+  background: $color-danger;
+  color: $color-white;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    background: #b91c1c;
+  }
+}
+
+.form-btn--primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-2;
+  min-height: 42px;
+  padding: 0 $spacing-5;
+  border-radius: $radius-full;
+  background: $color-primary;
+  color: $color-white;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    background: $color-primary-dark;
+  }
+}
+
+@media (max-width: 520px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
