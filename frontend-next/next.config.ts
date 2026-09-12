@@ -17,6 +17,13 @@ const nextConfig: NextConfig = {
     loadPaths: ["src/styles"],
     includePaths: ["src/styles"],
   },
+  // Factura images go through a Server Action (Storage upload) — legacy cap
+  // was 10 MB; keep headroom above the 1 MB default.
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "12mb",
+    },
+  },
 };
 
 export default nextConfig;

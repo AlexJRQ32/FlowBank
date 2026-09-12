@@ -1,0 +1,99 @@
+"use server";
+
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import { createClient } from "@/lib/supabase/server";
+
+export type FacturaState = { error?: string };
+
+const MONEDAS = ["CRC", "USD"] as const;
+
+export async function createFacturaAction(
+  _prev: FacturaState,
+  formData: FormData,
+): Promise<FacturaState> {
+  const tarjetaId = String(formData.get("tarjeta_id") ?? "").trim();
+  const monto = Number(formData.get("monto_total"));
+  const moneda = String(formData.get("moneda") ?? "");
+  const fecha = String(formData.get("fecha_compra") ?? "").trim();
+  const comercio = String(formData.get("comercio") ?? "").trim();
+  const imagen = formData.get("imagen") as File | null;
+
+  if (!monto || monto <= 0) return { error: "Ingresa un monto valido." };
+  if (!MONEDAS.includes(moneda as (typeof MONEDAS)[number])) {
+    return { error: "Selecciona una moneda valida." };
+  }
+  if (!imagen || imagen.size === 0) {
+    return { error: "Selecciona la foto de tu factura." };
+  }
+  if (imagen.size > 10 * 1024 * 1024) {
+    return { error: "La imagen supera el maximo de 10 MB." };
+  }
+  if (imagen.type && !imagen.type.startsWith("image/")) {
+    return { error: "El archivo debe ser una imagen (JPG, PNG, WEBP)." };
+  }
+  // tarjeta_id nullable: "" = "Sin asociar" is allowed (matches legacy).
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Tu sesion expiro. Inicia sesion de nuevo." };
+
+  // TODO(OCR): real data extraction is gated behind the Phase 0 Vercel spike
+  // (src/app/api/ocr-spike — tesseract.js cold-start/memory/accuracy). Port the
+  // regexes from backend OcrService.cs (monto/fecha/comercio) into
+  // src/app/api/ocr/route.ts ONLY after the spike passes; until then the user
+  // enters the data manually here. Do not half-implement the extraction.
+  // See PLAN.md Phase 5.
+
+  const ext = (imagen.name.split(".").pop() ?? "jpg").toLowerCase().replace(/\W/g, "");
+  const path = `${user.id}/${crypto.randomUUID()}.${ext || "jpg"}`;
+
+  // Bucket 'facturas' must be created AND made public in the Supabase
+  // dashboard (SQL: INSERT INTO storage.buckets (id, name, public)
+  // VALUES ('facturas', 'facturas', true)) plus an authenticated
+  // INSERT/SELECT policy on storage.objects for this bucket — an anon client
+  // cannot create buckets. Until then upload fails with a storage error.
+  const { error: uploadError } = await supabase.storage
+    .from("facturas")
+    .upload(path, imagen, {
+      contentType: imagen.type || undefined,
+      upsert: false,
+    });
+
+  if (uploadError) {
+    return { error: "No se pudo subir la imagen de la factura. Intenta de nuevo." };
+  }
+
+  const { data: urlData } = supabase.storage.from("facturas").getPublicUrl(path);
+
+  const { error: insertError } = await supabase.from("facturas").insert({
+    tarjeta_id: tarjetaId || null,
+    monto_total: monto,
+    moneda,
+    fecha_compra: fecha || null,
+    comercio: comercio || null,
+    imagen_url: urlData.publicUrl,
+  });
+
+  if (insertError) {
+    return { error: "No se pudo guardar la factura. Intenta de nuevo." };
+  }
+
+  revalidatePath("/facturas");
+  revalidatePath("/dashboard");
+  redirect("/facturas");
+}
+
+export async function deleteFacturaAction(formData: FormData): Promise<void> {
+  const id = String(formData.get("id") ?? "").trim();
+  if (!id) return;
+
+  const supabase = await createClient();
+  // RLS: scoped via tarjeta ownership (tarjeta_id IN tarjetas OF auth.uid()).
+  await supabase.from("facturas").delete().eq("id", id);
+
+  revalidatePath("/facturas");
+  revalidatePath("/dashboard");
+}

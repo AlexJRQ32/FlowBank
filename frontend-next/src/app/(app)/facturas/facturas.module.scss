@@ -1,0 +1,176 @@
+@use "tokens" as *;
+
+// Ported from legacy frontend/src/features/facturas/pages/FacturasPage.scss
+// (light theme via migrated _tokens.scss).
+
+.facturas-page {
+  max-width: 960px;
+  margin: 0 auto;
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: $spacing-5;
+    margin-bottom: $spacing-6;
+
+    h1 {
+      font-size: $font-size-3xl;
+      font-weight: $font-weight-medium;
+      color: $color-text;
+      margin: 0 0 $spacing-1;
+    }
+
+    p {
+      color: $color-text-muted;
+      margin: 0;
+      font-size: $font-size-base;
+      max-width: 560px;
+    }
+  }
+
+  &__subir {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-2;
+    min-height: 42px;
+    padding: 0 $spacing-5;
+    border-radius: $radius-full;
+    background: $color-primary;
+    color: $color-white;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: background 0.2s;
+
+    &:hover {
+      background: $color-primary-dark;
+    }
+  }
+
+  &__section-title {
+    font-size: $font-size-xl;
+    font-weight: $font-weight-medium;
+    color: $color-text;
+    margin: 0 0 $spacing-4;
+  }
+
+  &__empty-state {
+    text-align: center;
+    padding: $spacing-10 $spacing-4;
+    border: 1px dashed $color-border;
+    border-radius: $radius-lg;
+    background: $color-surface;
+
+    svg {
+      color: $color-primary;
+      margin-bottom: $spacing-3;
+    }
+
+    p {
+      color: $color-text-muted;
+      margin: 0;
+    }
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-3;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-4;
+    padding: $spacing-4;
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+  }
+
+  &__item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: $radius-full;
+    background: rgba($color-primary, 0.1);
+    color: $color-primary;
+    flex-shrink: 0;
+  }
+
+  &__item-info {
+    flex: 1;
+    min-width: 0;
+
+    h3 {
+      font-size: $font-size-base;
+      font-weight: $font-weight-semibold;
+      color: $color-text;
+      margin: 0;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    p {
+      font-size: $font-size-xs;
+      color: $color-text-muted;
+      margin: 0;
+    }
+  }
+
+  &__item-monto {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $color-text;
+    white-space: nowrap;
+  }
+
+  &__ver {
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semibold;
+    color: $color-info;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__delete {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: $radius-full;
+    color: $color-danger;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semibold;
+    padding: $spacing-2 $spacing-3;
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+
+    &:hover {
+      color: $color-white;
+      background: $color-danger;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .facturas-page {
+    &__header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &__item {
+      flex-wrap: wrap;
+    }
+  }
+}
