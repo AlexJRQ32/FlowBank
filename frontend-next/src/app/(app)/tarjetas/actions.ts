@@ -11,7 +11,7 @@ const TIPOS = ["Credito", "Debito"] as const;
 /** Shared parsers/validators; form actions call this and map to Spanish copy. */
 function parseTarjeta(formData: FormData) {
   const nombre = String(formData.get("nombre") ?? "").trim() || "Tarjeta";
-  const bancoId = String(formData.get("bancoId") ?? "").trim();
+  const bancoId = String(formData.get("banco_id") ?? "").trim();
   const digitos = String(formData.get("ultimos_cuatro_digitos") ?? "").replace(/\D/g, "");
   const tipo = String(formData.get("tipo") ?? "").trim();
   const diaCorte = Number(formData.get("dia_corte"));
