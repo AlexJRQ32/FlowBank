@@ -1,0 +1,644 @@
+// ============================================================================
+// LandingPage - editorial premium redesign
+// Ported 1:1 from legacy features/landing/pages/LandingPage.scss.
+// Typographic hero over the arches artwork, serif display type, generous
+// negative space. Palette: emerald #0e9f6e / blue #1a56db / light #f7f9f8.
+// ============================================================================
+
+@use "tokens" as *;
+@use "mixins" as *;
+
+// Google Font @import stays first in the emitted CSS (@use emits no CSS here).
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap");
+
+$font-editorial: "Playfair Display", Georgia, "Times New Roman", serif;
+
+.landing-page {
+  background: $color-background;
+  color: $color-text;
+  font-family: $font-body;
+}
+
+// ---------------------------------------------------------------- Reveal
+// Minimal replacement for the legacy framer-motion Reveal: one subtle
+// fade-up keyframe, staggered via inline animation-delay.
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero__title,
+.hero__sub,
+.hero__actions,
+.kicker,
+.section-title,
+.feature-card,
+.step {
+  animation: reveal 0.6s ease both;
+}
+
+// ---------------------------------------------------------------- Buttons
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-2;
+  padding: $spacing-3 $spacing-5;
+  border-radius: $radius-full;
+  font-family: $font-body;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &--primary {
+    background: $color-primary;
+    color: $color-white;
+    box-shadow: $shadow-primary;
+
+    &:hover {
+      background: $color-primary-dark;
+    }
+  }
+
+  &--ghost {
+    background: rgba($color-white, 0.14);
+    border: 1px solid rgba($color-white, 0.55);
+    color: $color-white;
+    backdrop-filter: blur(8px);
+
+    &:hover {
+      background: rgba($color-white, 0.24);
+    }
+  }
+}
+
+// ---------------------------------------------------------------- Hero
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #cfe3f2; // sky fallback while the image loads
+}
+
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(16, 32, 26, 0.28) 0%,
+    rgba(16, 32, 26, 0) 30%,
+    rgba(16, 32, 26, 0) 52%,
+    rgba(16, 32, 26, 0.55) 100%
+  );
+  pointer-events: none;
+}
+
+// Top navbar over the image: fixed, transparent over the hero; on scroll it
+// turns solid light with a shadow and switches to dark text (app-navbar feel).
+.hero-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-4 $spacing-8;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background 0.25s ease, box-shadow 0.25s ease,
+    border-color 0.25s ease, padding 0.25s ease;
+}
+
+.hero-nav--solid {
+  padding: $spacing-3 $spacing-8;
+  background: rgba($landing-surface, 0.92);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border-bottom-color: $landing-border;
+  box-shadow: $shadow-sm;
+}
+
+.hero-nav__brand {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  text-decoration: none;
+
+  img {
+    width: 34px;
+    height: 34px;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
+  }
+
+  span {
+    font-family: $font-body;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+    letter-spacing: -0.02em;
+    color: $color-white;
+    text-shadow: 0 1px 8px rgba(16, 32, 26, 0.4);
+  }
+}
+
+// Solid state: dark text, no text-shadow
+.hero-nav--solid .hero-nav__brand span {
+  color: $landing-text;
+  text-shadow: none;
+}
+
+.hero-nav__links {
+  display: flex;
+  align-items: center;
+  gap: $spacing-5;
+
+  > a {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $color-white;
+    text-decoration: none;
+    text-shadow: 0 1px 6px rgba(16, 32, 26, 0.4);
+    transition: opacity 0.2s ease, color 0.2s ease;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+
+.hero-nav--solid .hero-nav__links > a {
+  color: $landing-text-muted;
+  text-shadow: none;
+
+  &:hover {
+    color: $landing-accent-deep;
+    opacity: 1;
+  }
+}
+
+.hero-nav--solid .hero-nav__login {
+  color: $landing-text;
+}
+
+.hero-nav__login {
+  padding: $spacing-2 $spacing-4;
+}
+
+.hero-nav__cta {
+  padding: $spacing-2 $spacing-4;
+  border: 1px solid rgba($color-white, 0.55);
+  border-radius: $radius-full;
+  background: rgba($color-white, 0.14);
+  backdrop-filter: blur(8px);
+
+  &:hover {
+    background: rgba($color-white, 0.24);
+    opacity: 1 !important;
+  }
+}
+
+// Solid state: solid emerald pill, white text
+.hero-nav--solid .hero-nav__cta {
+  border-color: transparent;
+  background: $landing-accent;
+  color: $landing-on-accent;
+  backdrop-filter: none;
+
+  &:hover {
+    background: $landing-accent-deep;
+  }
+}
+
+.hero-nav__pill {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-1 $spacing-3 $spacing-1 $spacing-1;
+  border-radius: $radius-full;
+  background: rgba($color-white, 0.16);
+  backdrop-filter: blur(8px);
+}
+
+// Solid state: light pill with border
+.hero-nav--solid .hero-nav__pill {
+  background: rgba($color-black, 0.04);
+  backdrop-filter: none;
+}
+
+.hero-nav__avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: $landing-gradient;
+  color: $landing-on-accent;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+}
+
+.hero-nav__burger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: $spacing-2;
+  background: rgba($color-white, 0.16);
+  border: 1px solid rgba($color-white, 0.4);
+  border-radius: $radius-md;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+
+  span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: $color-white;
+    border-radius: $radius-full;
+    transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+  }
+}
+
+// Solid state: dark burger lines on light background
+.hero-nav--solid .hero-nav__burger {
+  background: transparent;
+  border-color: $landing-border;
+
+  span {
+    background: $landing-text;
+  }
+}
+
+// Burger animates to an X when the menu is open
+.hero-nav__burger--open {
+  span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  span:nth-child(2) {
+    opacity: 0;
+  }
+
+  span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+}
+
+// Mobile dropdown menu
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  background: rgba(16, 32, 26, 0.45);
+  backdrop-filter: blur(6px);
+  animation: menuBackdropIn 0.2s ease;
+
+  nav {
+    position: absolute;
+    top: 76px;
+    right: $spacing-4;
+    display: flex;
+    flex-direction: column;
+    min-width: 220px;
+    padding: $spacing-3;
+    background: $color-surface;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-floating;
+    animation: menuPanelIn 0.2s ease;
+
+    a {
+      padding: $spacing-3 $spacing-4;
+      border-radius: $radius-md;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+      color: $color-text;
+      text-decoration: none;
+
+      &:hover {
+        background: rgba($color-primary, 0.08);
+        color: $color-primary;
+      }
+    }
+  }
+}
+
+@keyframes menuBackdropIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes menuPanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Editorial headline anchored to the image's natural bottom space.
+// Fixed navbar floats above; top padding reserves its row.
+.hero__content {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  text-align: center;
+  padding: calc(#{$header-height} + #{$spacing-4}) $spacing-6 $spacing-12;
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.hero__title {
+  margin: 0 0 $spacing-4;
+  font-family: $font-editorial;
+  font-size: clamp(2.75rem, 6.5vw, 4.75rem);
+  font-weight: 600;
+  line-height: $line-height-tight;
+  letter-spacing: -0.02em;
+  color: $color-white;
+  text-shadow: 0 2px 24px rgba(16, 32, 26, 0.45);
+
+  em {
+    font-style: italic;
+    font-weight: 500;
+  }
+}
+
+.hero__sub {
+  margin: 0 0 $spacing-6;
+  max-width: 560px;
+  font-size: $font-size-lg;
+  line-height: $line-height-normal;
+  color: rgba($color-white, 0.92);
+  text-shadow: 0 1px 12px rgba(16, 32, 26, 0.45);
+}
+
+.hero__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-3;
+  flex-wrap: wrap;
+}
+
+// ---------------------------------------------------------------- Sections
+.kicker {
+  margin: 0 0 $spacing-3;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: $color-primary;
+}
+
+.section-title {
+  margin: 0 0 $spacing-8;
+  font-family: $font-editorial;
+  font-size: clamp(1.875rem, 4vw, 2.75rem);
+  font-weight: 600;
+  line-height: $line-height-tight;
+  letter-spacing: -0.02em;
+  color: $color-text;
+
+  em {
+    font-style: italic;
+    font-weight: 500;
+    color: $color-primary;
+  }
+}
+
+// ---------------------------------------------------------------- Features
+.features {
+  padding: $spacing-12 $spacing-6;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.features__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-4;
+}
+
+.feature-card {
+  height: 100%;
+  padding: $spacing-6 $spacing-5;
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+
+  &:hover {
+    box-shadow: $shadow-card-hover;
+    transform: translateY(-3px);
+  }
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin-bottom: $spacing-4;
+    border-radius: $radius-md;
+    background: rgba($color-primary, 0.1);
+    color: $color-primary;
+  }
+
+  h3 {
+    margin: 0 0 $spacing-2;
+    font-family: $font-editorial;
+    font-size: $font-size-lg;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: $color-text;
+  }
+
+  p {
+    margin: 0;
+    font-size: $font-size-sm;
+    line-height: $line-height-normal;
+    color: $color-text-muted;
+  }
+}
+
+// ---------------------------------------------------------------- How it works
+.how {
+  padding: $spacing-12 $spacing-6;
+  background: $color-surface;
+  border-top: 1px solid $color-border;
+  border-bottom: 1px solid $color-border;
+}
+
+.how__strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-8;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  text-align: center;
+
+  &__num {
+    display: block;
+    margin-bottom: $spacing-3;
+    font-family: $font-editorial;
+    font-size: $font-size-3xl;
+    font-style: italic;
+    font-weight: 500;
+    color: $color-primary;
+  }
+
+  h3 {
+    margin: 0 0 $spacing-2;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $color-text;
+  }
+
+  p {
+    margin: 0;
+    font-size: $font-size-sm;
+    line-height: $line-height-normal;
+    color: $color-text-muted;
+  }
+}
+
+.how__cta {
+  display: flex;
+  justify-content: center;
+  margin-top: $spacing-8;
+}
+
+// ---------------------------------------------------------------- Footer
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-4;
+  padding: $spacing-8 $spacing-6;
+  text-align: center;
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: $spacing-2;
+
+    img {
+      width: 26px;
+      height: 26px;
+    }
+
+    span {
+      font-size: $font-size-base;
+      font-weight: $font-weight-bold;
+      letter-spacing: -0.02em;
+    }
+  }
+
+  &__links {
+    display: flex;
+    align-items: center;
+    gap: $spacing-5;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    a {
+      font-size: $font-size-sm;
+      color: $color-text-muted;
+      text-decoration: none;
+
+      &:hover {
+        color: $color-primary;
+      }
+    }
+  }
+
+  p {
+    margin: 0;
+    font-size: $font-size-xs;
+    color: $color-text-muted;
+  }
+}
+
+// Note: a global reduced-motion block is not possible inside a CSS module
+// (pure-selector rule); animations are 0.2-0.6s and non-essential.
+@include respond(tablet) {
+  .features__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .how__strip {
+    grid-template-columns: 1fr;
+    gap: $spacing-6;
+    max-width: 420px;
+  }
+
+  .hero-nav {
+    padding: $spacing-3 $spacing-5;
+  }
+
+  .hero-nav--solid {
+    padding: $spacing-2 $spacing-5;
+  }
+
+  .hero-nav__links {
+    display: none;
+  }
+
+  .hero-nav__burger {
+    display: flex;
+  }
+
+  .hero__content {
+    padding: calc(#{$header-height} + #{$spacing-2}) $spacing-5 $spacing-10;
+  }
+}
+
+@include respond(mobile) {
+  .features {
+    padding: $spacing-10 $spacing-4;
+  }
+
+  .features__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .how {
+    padding: $spacing-10 $spacing-4;
+  }
+}
