@@ -10,20 +10,38 @@
   margin: 0 auto;
 }
 
-// ---------------------------------------------------------------- Greeting
-.dashboard-greeting {
+// ---------------------------------------------------------------- Header banner
+// Patrón OpenPaw: fila meta (badge de rol) sobre el título, nombre en color
+// accent. Banner flex listo para acciones a la derecha si se agregan luego.
+.dashboard-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: $spacing-4;
+  margin-bottom: $spacing-8;
+}
+
+.dashboard-header__info {
+  min-width: 0;
+}
+
+.dashboard-header__meta {
   display: flex;
   align-items: center;
-  gap: $spacing-4;
-  margin-bottom: $spacing-6;
+  gap: $spacing-3;
+  margin-bottom: $spacing-2;
+}
 
-  h1 {
-    font-family: $font-display;
-    font-size: $font-size-3xl;
-    font-weight: 500;
-    color: $app-text;
-    margin: 0;
-  }
+.dashboard-header__title {
+  margin: 0;
+  font-family: $font-display;
+  font-size: $font-size-3xl;
+  font-weight: 500;
+  color: $app-text;
+}
+
+.dashboard-header__name {
+  color: $app-accent;
 }
 
 .dashboard-role-badge {
@@ -197,9 +215,11 @@
 }
 
 // ---------------------------------------------------------------- Acciones rápidas
+// Patrón OpenPaw: grid adaptativo auto-fit, reparte las cards según cuántas
+// haya (~240px por card); envuelve a filas iguales en pantallas angostas.
 .dashboard-actions {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
   gap: $spacing-4;
 }
 
@@ -282,22 +302,16 @@
 }
 
 // ---------------------------------------------------------------- Responsive
-// Patrón OpenPaw: compactar progresivamente en tablet y móvil
+// Patrón OpenPaw: compactar progresivamente en tablet y móvil.
+// Los grids de stats y acciones usan auto-fit: se envuelven solos.
 @include respond(tablet) {
-  .dashboard-greeting {
-    h1 {
-      font-size: $font-size-2xl;
-    }
+  .dashboard-header__title {
+    font-size: $font-size-2xl;
   }
 
   .dashboard-section-title {
     font-size: $font-size-lg;
     margin-bottom: $spacing-4;
-  }
-
-  .dashboard-actions {
-    grid-template-columns: repeat(2, 1fr);
-    gap: $spacing-3;
   }
 
   .action-card {
@@ -320,15 +334,16 @@
 }
 
 @include respond(mobile) {
-  .dashboard-greeting {
+  // Patrón OpenPaw: el banner apila en móvil
+  .dashboard-header {
     flex-direction: column;
     align-items: flex-start;
     gap: $spacing-2;
     margin-bottom: $spacing-5;
+  }
 
-    h1 {
-      font-size: $font-size-xl;
-    }
+  .dashboard-header__title {
+    font-size: $font-size-xl;
   }
 
   .dashboard-card {
@@ -345,10 +360,6 @@
 }
 
 @include respond(compact) {
-  .dashboard-actions {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .action-card {
     padding: $spacing-4;
   }

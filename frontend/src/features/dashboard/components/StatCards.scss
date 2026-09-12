@@ -2,12 +2,14 @@
 @use "../../../styles/abstracts/mixins" as *;
 
 // ============================================================================
-// StatCards - tarjetas de resumen (patrón OpenPaw) en dark fintech
+// StatCards - tarjetas de resumen
+// Grid adaptativo (OpenPaw/Trustride): una fila en desktop, envuelve a 2+ filas
+// en pantallas angostas sin media queries.
 // ============================================================================
 
 .stat-cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
   gap: $spacing-4;
   margin-bottom: $spacing-8;
 }
@@ -84,7 +86,6 @@
 
 @include respond(tablet) {
   .stat-cards {
-    grid-template-columns: repeat(2, 1fr);
     gap: $spacing-3;
   }
 
@@ -107,11 +108,6 @@
 }
 
 @include respond(compact) {
-  .stat-cards {
-    grid-template-columns: repeat(2, 1fr);
-    gap: $spacing-2;
-  }
-
   .stat-card {
     padding: $spacing-3;
     gap: $spacing-3;

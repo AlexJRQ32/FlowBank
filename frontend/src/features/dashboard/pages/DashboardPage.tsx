@@ -85,10 +85,17 @@ export default function DashboardPage() {
   return (
     <AppShell>
       <div className="dashboard-page">
-        <div className="dashboard-greeting">
-          <h1>Bienvenido, {nombreUsuario}</h1>
-          <span className="dashboard-role-badge">Usuario</span>
-        </div>
+        {/* OpenPaw header banner: meta row (role badge) above the title */}
+        <section className="dashboard-header">
+          <div className="dashboard-header__info">
+            <div className="dashboard-header__meta">
+              <span className="dashboard-role-badge">Usuario</span>
+            </div>
+            <h1 className="dashboard-header__title">
+              Bienvenido, <span className="dashboard-header__name">{nombreUsuario}</span>
+            </h1>
+          </div>
+        </section>
 
         {loading ? (
           <Loader label="Cargando tus datos..." />
