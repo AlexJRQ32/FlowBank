@@ -193,12 +193,54 @@
   padding: $spacing-5 $spacing-4;
   border-right: 1px solid $app-border;
   background: $app-bg-elevated;
+  // Collapse: width transition (Trustride pattern, via OpenPaw)
+  transition: width 0.25s ease-out;
+}
+
+.sidebar-top {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: $spacing-4;
+}
+
+.sidebar-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid $app-border;
+  border-radius: $radius-md;
+  background: transparent;
+  color: $app-text-muted;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+
+  &:hover {
+    background: rgba($app-accent, 0.08);
+    color: $app-text;
+    border-color: $app-border-strong;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $app-accent;
+    outline-offset: -2px;
+  }
 }
 
 .sidebar-nav {
   display: flex;
   flex-direction: column;
   gap: $spacing-1;
+}
+
+.sidebar-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sidebar-link {
@@ -263,6 +305,51 @@
 
 .sidebar-spacer {
   flex: 1;
+}
+
+// Collapsed rail (icon-only): centered pills, labels hidden, native title tooltips.
+// Compact width keeps the pill aligned inside the 68px rail without overflow.
+.app-shell--sidebar-collapsed {
+  .app-sidebar {
+    width: 68px;
+    padding: $spacing-5 $spacing-2;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .sidebar-top {
+    justify-content: center;
+    margin-bottom: $spacing-3;
+  }
+
+  .sidebar-toggle {
+    width: 40px;
+    height: 40px;
+  }
+
+  .sidebar-label,
+  .sidebar-divider {
+    display: none;
+  }
+
+  .sidebar-nav {
+    align-items: center;
+  }
+
+  .sidebar-link {
+    justify-content: center;
+    align-self: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    gap: 0;
+    overflow: visible;
+  }
 }
 
 .app-content {
