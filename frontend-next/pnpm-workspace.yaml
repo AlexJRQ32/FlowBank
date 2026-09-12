@@ -1,0 +1,5 @@
+allowBuilds:
+  '@parcel/watcher': false
+  sharp: false
+  tesseract.js: true
+  unrs-resolver: false
