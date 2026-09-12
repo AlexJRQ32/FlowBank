@@ -1,12 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { loginQA } from "./helpers";
 
-/**
- * APP BUG: /facturas list page crashes with server error (Next.js 16.3.4 RSC bundler bug).
- * Same root cause as /tarjetas: Turbopack fails to include next/link in RSC client manifest.
- * 
- * /facturas/subir works because it doesn't trigger the same RSC bundler path.
- */
+/** /facturas list page and upload flow. */
 
 test.describe("Facturas (/facturas)", () => {
   test.beforeEach(async ({ page }) => {
@@ -17,12 +12,12 @@ test.describe("Facturas (/facturas)", () => {
   /**
    * APP BUG: /facturas crashes with server error.
    */
-  test.skip("renders page header (SKIPPED: page crashes with server error)", async ({ page }) => {
+  test("renders page header", async ({ page }) => {
     await page.goto("/facturas");
     await expect(page.getByRole("heading", { name: "Mis facturas" })).toBeVisible();
   });
 
-  test.skip("shows historial section (SKIPPED: page crashes with server error)", async ({ page }) => {
+  test("shows historial section", async ({ page }) => {
     await page.goto("/facturas");
     await expect(page.getByText("Historial", { exact: true })).toBeVisible();
   });

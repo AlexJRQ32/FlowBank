@@ -1,13 +1,10 @@
-import { test, expect } from "@playwright/test";
-import { loginQA } from "./helpers";
+import { test, expect, type Page } from "@playwright/test";
+import { loginQA, suffix } from "./helpers";
 
 /**
- * APP BUG: /tarjetas page crashes with server error (Next.js 16.3.4 RSC bundler bug).
- * Error: "This page couldn't load. A server error occurred."
- * Root cause: Turbopack fails to include next/link in the RSC client manifest.
- * 
- * Tests that require the page to render are skipped.
- * Tests for /tarjetas/nueva (form page) work because it doesn't use <Link> in the same way.
+ * /tarjetas list, new-card form, and edit page flows.
+ * Card creation goes through the same form the users use, so the tests stay
+ * self-sufficient (no direct DB writes).
  */
 
 test.describe("Tarjetas (/tarjetas)", () => {
@@ -16,13 +13,32 @@ test.describe("Tarjetas (/tarjetas)", () => {
     await loginQA(page);
   });
 
-  /**
-   * APP BUG: /tarjetas crashes with server error.
-   * Skipping tests that require the list page to render.
-   */
-  test.skip("renders page header and existing card (SKIPPED: page crashes with server error)", async ({ page }) => {
+  /** Create a card through /tarjetas/nueva and wait for the list page. */
+  async function createCard(page: Page, nombre: string): Promise<void> {
+    await page.goto("/tarjetas/nueva");
+    await page.getByLabel("Nombre de la tarjeta").fill(nombre);
+    const bancoSelect = page.getByLabel("Banco");
+    const bancoOptions = await bancoSelect.locator("option").count();
+    expect(bancoOptions).toBeGreaterThan(0);
+    if (bancoOptions > 1) await bancoSelect.selectOption({ index: 1 });
+    await page.getByLabel("Ultimos 4 digitos").fill("1234");
+    await page.getByLabel("Dia de corte").fill("10");
+    await page.getByLabel("Dia de pago").fill("20");
+    await page.getByRole("button", { name: "Guardar tarjeta" }).click();
+    await expect(page).not.toHaveURL(/\/nueva$/, { timeout: 15_000 });
+  }
+
+  function cardLink(page: Page, nombre: string) {
+    return page.locator(`a[aria-label="Editar ${nombre}"]`);
+  }
+
+  test("renders page header, card or empty state", async ({ page }) => {
     await page.goto("/tarjetas");
     await expect(page.getByRole("heading", { name: "Mis tarjetas" })).toBeVisible();
+    // Either an existing card link or the empty state must render.
+    await expect(
+      page.locator('a[aria-label^="Editar "]').first().or(page.getByText("Sin tarjetas todavia"))
+    ).toBeVisible();
   });
 
   test("nueva tarjeta form renders all fields", async ({ page }) => {
@@ -37,53 +53,53 @@ test.describe("Tarjetas (/tarjetas)", () => {
     await expect(page.getByRole("button", { name: "Guardar tarjeta" })).toBeVisible();
   });
 
-  /**
-   * APP BUG: tarjeta form sends name="banco_id" but action reads formData.get("bancoId").
-   * Validation ALWAYS fails at "Selecciona un banco." before reaching other checks.
-   * This test documents the actual behavior.
-   */
-  test("nueva tarjeta validation always fails at banco check (APP BUG: banco_id mismatch)", async ({ page }) => {
+  test("nueva tarjeta validation reports digitos error when digitos missing", async ({ page }) => {
     await page.goto("/tarjetas/nueva");
-    // Fill some fields but not all
     await page.getByLabel("Nombre de la tarjeta").fill("Test Card");
     await page.getByLabel("Dia de corte").fill("15");
     await page.getByLabel("Dia de pago").fill("2");
     await page.getByRole("button", { name: "Guardar tarjeta" }).click();
-    // Due to the bug, this always shows banco error first
-    await expect(page.getByRole("alert").first()).toContainText(/banco/i, { timeout: 10_000 });
+    // The select defaults to the first banco, so validation proceeds past the
+    // banco check and reports the next missing field: the 4-digit number.
+    await expect(page.getByRole("alert").first()).toContainText(/4 digitos/i, { timeout: 10_000 });
   });
 
-  /**
-   * APP BUG: Creating a card ALWAYS fails with "Selecciona un banco." 
-   * because form sends name="banco_id" but action reads formData.get("bancoId").
-   */
-  test("nueva tarjeta create fails due to banco_id mismatch (APP BUG)", async ({ page }) => {
-    await page.goto("/tarjetas/nueva");
-    await page.getByLabel("Nombre de la tarjeta").fill("Bug Test Card");
-    // Select first available bank
-    const bancoSelect = page.getByLabel("Banco");
-    const options = await bancoSelect.locator("option").all();
-    if (options.length > 1) {
-      await bancoSelect.selectOption({ index: 1 });
-    }
-    await page.getByLabel("Ultimos 4 digitos").fill("1234");
-    await page.getByLabel("Dia de corte").fill("10");
-    await page.getByLabel("Dia de pago").fill("20");
-    await page.getByRole("button", { name: "Guardar tarjeta" }).click();
-    // Due to the bug, this always shows the banco error
-    await expect(page.getByRole("alert").first()).toContainText(/banco/i, { timeout: 10_000 });
+  test("nueva tarjeta create succeeds with valid data", async ({ page }) => {
+    const nombre = `QA Card ${suffix()}`;
+    await createCard(page, nombre);
+    await expect(page).toHaveURL(/\/tarjetas$/, { timeout: 15_000 });
+    await expect(cardLink(page, nombre)).toBeVisible();
   });
 
-  /**
-   * APP BUG: /tarjetas list page crashes, so we can't navigate to edit from there.
-   * But /tarjetas/[id]/editar works if we know the ID.
-   * Skipping since we can't get the card ID from the crashed list page.
-   */
-  test.skip("edit page renders with card data and delete zone (SKIPPED: list page crashes)", async ({ page }) => {
-    // Would need card ID to navigate directly
+  test("edit page renders with card data and delete zone", async ({ page }) => {
+    const nombre = `QA Card ${suffix()}`;
+    await createCard(page, nombre);
+    await page.goto("/tarjetas");
+    await cardLink(page, nombre).click();
+    await expect(page).toHaveURL(/\/tarjetas\/.+\/editar$/, { timeout: 15_000 });
+    await expect(page.getByRole("heading", { name: "Editar tarjeta" })).toBeVisible();
+    await expect(page.getByLabel("Nombre de la tarjeta")).toHaveValue(nombre);
+    await expect(page.getByText("Zona de riesgo: eliminar tarjeta")).toBeVisible();
   });
 
-  test.skip("delete requires confirmation checkbox (SKIPPED: list page crashes)", async ({ page }) => {
-    // Would need card ID to navigate directly
+  test("delete requires confirmation checkbox", async ({ page }) => {
+    const nombre = `QA Card ${suffix()}`;
+    await createCard(page, nombre);
+    await page.goto("/tarjetas");
+    await cardLink(page, nombre).click();
+    await expect(page).toHaveURL(/\/editar$/, { timeout: 15_000 });
+
+    // Expand the risk zone and try to delete without confirming.
+    await page.getByText("Zona de riesgo: eliminar tarjeta").click();
+    await page.getByRole("button", { name: "Eliminar tarjeta" }).click();
+    // The required checkbox blocks submission: we stay on the edit page.
+    await expect(page).toHaveURL(/\/editar$/);
+    await expect(page.getByLabel("Nombre de la tarjeta")).toHaveValue(nombre);
+
+    // Confirm and delete: back at the list, card gone.
+    await page.getByLabel("Confirmo eliminar esta tarjeta").check();
+    await page.getByRole("button", { name: "Eliminar tarjeta" }).click();
+    await expect(page).toHaveURL(/\/tarjetas$/, { timeout: 15_000 });
+    await expect(cardLink(page, nombre)).toHaveCount(0);
   });
 });
