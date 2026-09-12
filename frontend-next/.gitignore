@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# tesseract.js traineddata cache (written to cwd at runtime)
+*.traineddata
