@@ -135,6 +135,55 @@
     }
   }
 
+  &__oauth {
+    margin-top: $spacing-5;
+  }
+
+  &__divider {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+    font-family: $font-body;
+    font-size: $font-size-xs;
+    color: $app-text-faint;
+    margin-bottom: $spacing-4;
+
+    &::before,
+    &::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: $app-border;
+    }
+  }
+
+  &__google {
+    width: 100%;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-3;
+    background: #ffffff;
+    color: #1f2937;
+    border: 1px solid $app-input-border;
+    border-radius: $radius-full;
+    font-family: $font-body;
+    font-size: 15px;
+    font-weight: $font-weight-semibold;
+    transition: background 0.2s, transform 0.2s;
+
+    &:hover {
+      background: rgba(#ffffff, 0.92);
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: progress;
+    }
+  }
+
   &__alert {
     font-family: $font-body;
     font-size: $font-size-sm;

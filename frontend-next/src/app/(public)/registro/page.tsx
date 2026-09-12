@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useActionState } from "react";
 import { signUpAction, type AuthState } from "@/lib/actions/auth";
+import { GoogleAuthButton } from "@/components/features/auth/google-auth-button";
 import styles from "../auth.module.scss";
 
 const initialState: AuthState = {};
@@ -77,6 +78,8 @@ export function RegisterPage() {
             </p>
           )}
         </form>
+
+        <GoogleAuthButton />
 
         <p className={styles["auth-card__switch"]}>
           ¿Ya tienes cuenta? <Link href="/login">Inicia sesion</Link>
