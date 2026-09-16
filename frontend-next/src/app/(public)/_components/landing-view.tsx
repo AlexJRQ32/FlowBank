@@ -1,43 +1,63 @@
 "use client";
 
+// Landing redesign (anti-slop): copy in Spanish that names the real problem,
+// alternating feature rows instead of the 4-equal-cards grid, Playfair
+// Display headings via next/font, and only token gradients on CTAs.
+// Visual truth: commit 8a192b9 palette + _tokens.scss landing section.
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Playfair_Display } from "next/font/google";
 import {
   BellIcon,
   CreditCardIcon,
-  LockIcon,
   ScanBarcodeIcon,
+  TrendingDownIcon,
+  WalletIcon,
 } from "@/components/icons";
 import styles from "../landing.module.scss";
+
+// Editorial display for headings (anti-slop: not Inter, not system).
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "600"],
+  style: ["normal", "italic"],
+  variable: "--font-landing-display",
+  display: "swap",
+});
 
 const FEATURES = [
   {
     icon: CreditCardIcon,
-    title: "Every card, one place",
-    text: "Register each credit card with its closing and payment dates. Only the last 4 digits — never the full number.",
+    title: "Multi-banco, todas tus tarjetas",
+    text: "Registrá cada tarjeta con su banco, día de corte y día de pago. Solo los últimos 4 dígitos — nunca el número completo.",
   },
   {
-    icon: BellIcon,
-    title: "Reminders that arrive early",
-    text: "Get notified before each cutoff and payment date. No more surprise statements at the end of the month.",
+    icon: TrendingDownIcon,
+    title: "Deuda en colones y en dólares",
+    text: "Cada monto en su moneda original, sin mezclarlas. Sumamos colones con colones y dólares con dólares, y reportamos las dos cuentas claras.",
+  },
+  {
+    icon: WalletIcon,
+    title: "Límite disponible en vivo",
+    text: "Tu límite menos lo que debes, convertido con el tipo de cambio de referencia del BCCR actualizado. Sin calculadoras ni apps de banco.",
   },
   {
     icon: ScanBarcodeIcon,
-    title: "Statements, read for you",
-    text: "Snap a photo of your bill and FlowBank extracts the amount, date and merchant. You review and confirm.",
+    title: "Facturas por foto",
+    text: "Tomale foto a tu factura y FlowBank extrae el monto, la fecha y el comercio con OCR. Vos revisás los datos antes de guardar.",
   },
   {
-    icon: LockIcon,
-    title: "Private by design",
-    text: "Sign in with Google and JWT. Everyone sees only their own cards and bills. Your data stays yours.",
+    icon: BellIcon,
+    title: "Alertas de corte y pago",
+    text: "El panel te avisa cuántos días faltan para cada corte y cada pago. Ninguna factura sorpresa a fin de mes.",
   },
 ];
 
 const STEPS = [
-  { num: "01", title: "Create your account", text: "With Google or your email, in under a minute." },
-  { num: "02", title: "Add your cards", text: "Set the cutoff and payment dates for each one." },
-  { num: "03", title: "See your dates", text: "One calendar with every due date, always up to date." },
+  { num: "01", title: "Crea tu cuenta", text: "Con Google o tu correo, en menos de un minuto." },
+  { num: "02", title: "Registra tus tarjetas", text: "El banco, el día de corte y el de pago de cada una." },
+  { num: "03", title: "Deja de adivinar", text: "Dashboard con deuda, límite y próximas fechas, siempre al día." },
 ];
 
 interface LandingViewProps {
@@ -67,32 +87,32 @@ export default function LandingView({ isAuthed, nombre }: LandingViewProps) {
   }, [menuOpen]);
 
   return (
-    <div className={styles["landing-page"]}>
+    <div className={`${playfair.variable} ${styles["landing-page"]}`}>
       {/* ------------------------------------------------------------- HERO */}
       <section className={styles.hero} style={{ backgroundImage: "url(/images/landing/hero-arches.png)" }}>
         <div className={styles["hero__scrim"]} aria-hidden="true" />
 
         <nav
           className={`${styles["hero-nav"]}${scrolled ? ` ${styles["hero-nav--solid"]}` : ""}`}
-          aria-label="Main navigation"
+          aria-label="Navegación principal"
         >
           <Link href="/" className={styles["hero-nav__brand"]}>
-            <Image src="/images/landing/logo-card.png" alt="FlowBank logo" width={34} height={34} />
+            <Image src="/images/landing/logo-card.png" alt="FlowBank" width={34} height={34} />
             <span>FlowBank</span>
           </Link>
 
           <div className={styles["hero-nav__links"]}>
-            <a href="#features">Features</a>
-            <a href="#how">How it works</a>
+            <a href="#features">Funcionalidades</a>
+            <a href="#how">Cómo funciona</a>
             {isAuthed ? (
-              <Link href="/dashboard" className={styles["hero-nav__pill"]} title="Go to dashboard">
+              <Link href="/dashboard" className={styles["hero-nav__pill"]} title="Ir al dashboard">
                 <span className={styles["hero-nav__avatar"]}>{nombre?.[0]?.toUpperCase() ?? "U"}</span>
-                <span>{nombre ?? "User"}</span>
+                <span>{nombre ?? "Usuario"}</span>
               </Link>
             ) : (
               <>
-                <Link href="/login" className={styles["hero-nav__login"]}>Log in</Link>
-                <Link href="/registro" className={styles["hero-nav__cta"]}>Get started</Link>
+                <Link href="/login" className={styles["hero-nav__login"]}>Iniciar sesión</Link>
+                <Link href="/registro" className={styles["hero-nav__cta"]}>Crear cuenta</Link>
               </>
             )}
           </div>
@@ -101,7 +121,7 @@ export default function LandingView({ isAuthed, nombre }: LandingViewProps) {
             type="button"
             className={styles["hero-nav__burger"]}
             onClick={() => setMenuOpen((v) => !v)}
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={menuOpen}
           >
             <span />
@@ -112,15 +132,15 @@ export default function LandingView({ isAuthed, nombre }: LandingViewProps) {
 
         {menuOpen && (
           <div className={styles["mobile-menu"]} onClick={closeMenu}>
-            <nav aria-label="Mobile menu">
-              <a href="#features" onClick={closeMenu}>Features</a>
-              <a href="#how" onClick={closeMenu}>How it works</a>
+            <nav aria-label="Menú móvil">
+              <a href="#features" onClick={closeMenu}>Funcionalidades</a>
+              <a href="#how" onClick={closeMenu}>Cómo funciona</a>
               {isAuthed ? (
-                <Link href="/dashboard" onClick={closeMenu}>Go to dashboard</Link>
+                <Link href="/dashboard" onClick={closeMenu}>Ir al dashboard</Link>
               ) : (
                 <>
-                  <Link href="/login" onClick={closeMenu}>Log in</Link>
-                  <Link href="/registro" onClick={closeMenu}>Get started</Link>
+                  <Link href="/login" onClick={closeMenu}>Iniciar sesión</Link>
+                  <Link href="/registro" onClick={closeMenu}>Crear cuenta</Link>
                 </>
               )}
             </nav>
@@ -129,26 +149,29 @@ export default function LandingView({ isAuthed, nombre }: LandingViewProps) {
 
         <div className={styles["hero__content"]}>
           <h1 className={styles["hero__title"]}>
-            Every due date,
+            Una deuda en colones,
             <br />
-            <em>one quiet place.</em>
+            <em>otra en dólares,</em>
+            <br />
+            todos los bancos.
           </h1>
           <p className={styles["hero__sub"]}>
-            FlowBank tracks the statement closing and payment dates of every
-            credit card you own — so you can stop hopping between bank apps.
+            Estás saltando entre apps de banco para no perder una fecha de pago.
+            FlowBank junta el corte, el pago, el límite disponible y las facturas
+            de todas tus tarjetas en un solo panel.
           </p>
           <div className={styles["hero__actions"]}>
             {isAuthed ? (
               <Link href="/dashboard" className={styles["btn"] + " " + styles["btn--primary"]}>
-                Go to dashboard
+                Ir al dashboard
               </Link>
             ) : (
               <>
                 <Link href="/registro" className={styles["btn"] + " " + styles["btn--primary"]}>
-                  Create free account
+                  Crear cuenta gratis
                 </Link>
                 <Link href="/login" className={styles["btn"] + " " + styles["btn--ghost"]}>
-                  I already have one
+                  Ya tengo una
                 </Link>
               </>
             )}
@@ -156,22 +179,30 @@ export default function LandingView({ isAuthed, nombre }: LandingViewProps) {
         </div>
       </section>
 
-      {/* --------------------------------------------------------- FEATURES */}
+      {/* --------------------------------------------------------- FEATURES: alternating rows */}
       <section className={styles.features} id="features">
-        <p className={styles.kicker}>Features</p>
+        <p className={styles.kicker}>Funcionalidades</p>
         <h2 className={styles["section-title"]}>
-          Simple to use,
+          Lo que hace por ti
           <br />
-          <em>serious underneath.</em>
+          <em>antes de fin de mes.</em>
         </h2>
-        <div className={styles["features__grid"]}>
+        <div className={styles["features__rows"]}>
           {FEATURES.map((f, i) => (
-            <article key={f.title} className={styles["feature-card"]} style={{ animationDelay: `${i * 80}ms` }}>
-              <span className={styles["feature-card__icon"]}>
-                <f.icon size={24} />
+            <article
+              key={f.title}
+              className={
+                styles["feature-row"] +
+                (i % 2 === 1 ? ` ${styles["feature-row--flip"]}` : "")
+              }
+            >
+              <span className={styles["feature-row__icon"]}>
+                <f.icon size={26} />
               </span>
-              <h3>{f.title}</h3>
-              <p>{f.text}</p>
+              <div className={styles["feature-row__body"]}>
+                <h3>{f.title}</h3>
+                <p>{f.text}</p>
+              </div>
             </article>
           ))}
         </div>
@@ -179,11 +210,11 @@ export default function LandingView({ isAuthed, nombre }: LandingViewProps) {
 
       {/* -------------------------------------------------------------- HOW */}
       <section className={styles.how} id="how">
-        <p className={styles.kicker}>How it works</p>
+        <p className={styles.kicker}>Cómo funciona</p>
         <h2 className={styles["section-title"]}>
-          Three steps,
+          Tres pasos
           <br />
-          <em>and you&apos;re in.</em>
+          <em>y listo.</em>
         </h2>
         <ol className={styles["how__strip"]}>
           {STEPS.map((s, i) => (
@@ -196,26 +227,26 @@ export default function LandingView({ isAuthed, nombre }: LandingViewProps) {
         </ol>
         <div className={styles["how__cta"]}>
           {isAuthed ? (
-            <Link href="/dashboard" className={styles["btn"] + " " + styles["btn--primary"]}>Go to dashboard</Link>
+            <Link href="/dashboard" className={styles["btn"] + " " + styles["btn--primary"]}>Ir al dashboard</Link>
           ) : (
-            <Link href="/registro" className={styles["btn"] + " " + styles["btn--primary"]}>Start tracking your dates</Link>
+            <Link href="/registro" className={styles["btn"] + " " + styles["btn--primary"]}>Dejar de adivinar fechas</Link>
           )}
         </div>
       </section>
 
-      {/* ----------------------------------------------------------- FOOTER */}
+      {/* ----------------------------------------------------------- FOOTER minimal */}
       <footer className={styles.footer}>
         <div className={styles["footer__brand"]}>
           <Image src="/images/landing/logo-card.png" alt="FlowBank" width={26} height={26} />
           <span>FlowBank</span>
         </div>
-        <nav className={styles["footer__links"]} aria-label="Footer navigation">
-          <a href="#features">Features</a>
-          <a href="#how">How it works</a>
-          <Link href="/login">Log in</Link>
-          <Link href="/registro">Sign up</Link>
+        <nav className={styles["footer__links"]} aria-label="Footer">
+          <a href="#features">Funcionalidades</a>
+          <a href="#how">Cómo funciona</a>
+          <Link href="/login">Iniciar sesión</Link>
+          <Link href="/registro">Crear cuenta</Link>
         </nav>
-        <p>&copy; 2026 FlowBank. All rights reserved.</p>
+        <p>&copy; 2026 FlowBank.</p>
       </footer>
     </div>
   );

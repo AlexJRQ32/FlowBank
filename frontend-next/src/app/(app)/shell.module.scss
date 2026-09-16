@@ -186,7 +186,14 @@
 }
 
 // Trustride Sidebar: fondo gris claro, divisor sutil, nav compacta con pills.
+// Sticky flotante bajo el topbar (64px): no scrollea con la página; scroll
+// propio si el contenido de nav excede la altura disponible.
 .app-sidebar {
+  position: sticky;
+  top: #{$header-height};
+  height: calc(100svh - #{$header-height});
+  overflow-y: auto;
+  overflow-x: hidden;
   width: 240px;
   flex-shrink: 0;
   display: flex;
@@ -196,6 +203,7 @@
   background: $app-bg;
   // Collapse: width transition (Trustride pattern, via OpenPaw)
   transition: width 0.25s ease-out;
+  scrollbar-width: thin;
 }
 
 .sidebar-top {
