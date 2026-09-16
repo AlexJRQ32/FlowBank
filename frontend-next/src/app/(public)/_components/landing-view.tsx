@@ -89,7 +89,16 @@ export default function LandingView({ isAuthed, nombre }: LandingViewProps) {
   return (
     <div className={`${playfair.variable} ${styles["landing-page"]}`}>
       {/* ------------------------------------------------------------- HERO */}
-      <section className={styles.hero} style={{ backgroundImage: "url(/images/landing/hero-arches.png)" }}>
+      <section className={styles.hero}>
+        <Image
+          src="/hero-fintech.png"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className={styles["hero__img"]}
+        />
+        {/* Scrim for headline legibility over the photo (AA contrast). */}
         <div className={styles["hero__scrim"]} aria-hidden="true" />
 
         <nav
