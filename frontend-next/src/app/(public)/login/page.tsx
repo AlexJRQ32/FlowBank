@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { signInAction, type AuthState } from "@/lib/actions/auth";
 import { GoogleAuthButton } from "@/components/features/auth/google-auth-button";
+import FlashToasts from "@/app/(app)/_components/flash-toasts";
 import styles from "../auth.module.scss";
 
 const initialState: AuthState = {};
@@ -16,6 +17,7 @@ export function LoginPage() {
 
   return (
     <main className={styles["auth-page"]}>
+      <FlashToasts />
       <div className={`${styles["auth-glow"]} ${styles["auth-glow--a"]}`} aria-hidden="true" />
       <div className={`${styles["auth-glow"]} ${styles["auth-glow--b"]}`} aria-hidden="true" />
 

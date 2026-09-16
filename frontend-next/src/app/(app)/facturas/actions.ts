@@ -73,7 +73,8 @@ export async function createFacturaAction(
 
   revalidatePath("/facturas");
   revalidatePath("/dashboard");
-  redirect("/facturas");
+  // Flag triggers the "Factura guardada" toast on /facturas (FlashToasts).
+  redirect("/facturas?ok=factura");
 }
 
 export async function deleteFacturaAction(formData: FormData): Promise<void> {

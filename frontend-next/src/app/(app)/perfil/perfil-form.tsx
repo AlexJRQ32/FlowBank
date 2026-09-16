@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { updatePerfilAction, type PerfilState } from "./actions";
+import { useToast } from "@/components/ui/toast";
 import styles from "./perfil.module.scss";
 
 export function PerfilForm({
@@ -11,10 +12,23 @@ export function PerfilForm({
   nombre: string;
   apellido: string;
 }) {
+  const toast = useToast();
+  const shownOkRef = useRef(false);
   const [state, formAction, submitting] = useActionState(
     updatePerfilAction,
     {} as PerfilState,
   );
+
+  // Legacy UX: success/error feedback as toast (inline notice kept too).
+  useEffect(() => {
+    if (state.ok && !shownOkRef.current) {
+      shownOkRef.current = true;
+      toast.success("Perfil actualizado", "Tus datos se guardaron.");
+    }
+    if (state.error) {
+      toast.error("No se pudo guardar el perfil", state.error);
+    }
+  }, [state]); // eslint-disable-line react-hooks/exhaustive-deps -- toast helpers are stable
 
   return (
     <form action={formAction} noValidate className={styles["perfil-page__form"]}>

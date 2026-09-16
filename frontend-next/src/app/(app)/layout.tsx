@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { FlashToasts } from "./_components/flash-toasts";
 import { AppShell } from "./_components/app-shell";
 
 // Sessions are refreshed in src/proxy.ts; auth reads must never be cached.
@@ -28,6 +29,7 @@ export default async function AppLayout({
       nombre={profile?.nombre ?? "Usuario"}
       avatarUrl={profile?.avatar_url ?? null}
     >
+      <FlashToasts />
       {children}
     </AppShell>
   );
