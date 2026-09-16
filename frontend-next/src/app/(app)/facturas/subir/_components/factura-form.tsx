@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useRef, useState } from "react";
 import Link from "next/link";
 import type { FacturaState } from "../../actions";
 import styles from "../../../_components/forms.module.scss";
@@ -12,6 +12,12 @@ export interface TarjetaOpcion {
   banco: string;
 }
 
+interface OcrResultado {
+  monto: number;
+  fecha: string | null;
+  comercio: string;
+}
+
 export function FacturaForm({
   action,
   tarjetas,
@@ -20,13 +26,40 @@ export function FacturaForm({
   tarjetas: TarjetaOpcion[];
 }) {
   const [state, formAction, submitting] = useActionState(action, {} as FacturaState);
+  const [extracting, setExtracting] = useState(false);
+  const [extractError, setExtractError] = useState<string | null>(null);
+  const imagenRef = useRef<HTMLInputElement>(null);
+
+  // Legacy UX (frontend/src/features/facturas): on file pick, auto-extract and
+  // prefill monto/fecha/comercio; fields stay editable for user review.
+  async function handleImagenChange() {
+    const file = imagenRef.current?.files?.[0];
+    if (!file) return;
+    setExtracting(true);
+    setExtractError(null);
+
+    const montoInput = document.getElementById("monto_total") as HTMLInputElement | null;
+    const fechaInput = document.getElementById("fecha_compra") as HTMLInputElement | null;
+    const comercioInput = document.getElementById("comercio") as HTMLInputElement | null;
+
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+      const res = await fetch("/api/ocr", { method: "POST", body: formData });
+      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? "Error de OCR");
+      const resultado: OcrResultado = await res.json();
+      if (montoInput && resultado.monto > 0) montoInput.value = String(resultado.monto);
+      if (fechaInput && resultado.fecha) fechaInput.value = resultado.fecha;
+      if (comercioInput && resultado.comercio) comercioInput.value = resultado.comercio;
+    } catch {
+      setExtractError("No se pudo leer la factura. Completa los datos manualmente.");
+    } finally {
+      setExtracting(false);
+    }
+  }
 
   return (
     <form action={formAction} noValidate>
-      {/* TODO(OCR): once the Phase 0 Vercel spike passes, this form receives
-          auto-extracted monto/fecha/comercio from POST /api/ocr (port of
-          legacy OcrService.cs); fields below stay manually editable for
-          user review, matching the legacy "Revisa los datos extraidos" UX. */}
       {state.error && (
         <p className={styles["form-error"]} role="alert">
           {state.error}
@@ -84,8 +117,20 @@ export function FacturaForm({
 
       <div className={styles["form-field"]}>
         <label htmlFor="imagen">Foto de la factura</label>
-        <input id="imagen" name="imagen" type="file" accept="image/*" required />
-        <small>JPG, PNG, WEBP - maximo 10 MB</small>
+        <input
+          id="imagen"
+          name="imagen"
+          type="file"
+          accept="image/*"
+          required
+          ref={imagenRef}
+          onChange={handleImagenChange}
+        />
+        <small>
+          JPG, PNG, WEBP - maximo 10 MB
+          {extracting && " — Extrayendo datos..."}
+        </small>
+        {extractError && <small role="alert">{extractError}</small>}
       </div>
 
       <div className={styles["form-actions"]}>

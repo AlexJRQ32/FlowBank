@@ -41,6 +41,23 @@ export default async function FacturasPage() {
   // an array; at runtime PostgREST returns an object for the FK embed.
   const facturas = (facturasRaw ?? null) as FacturaItem[] | null;
 
+  // Private bucket: imagen_url stores the storage path; sign it for the "Ver"
+  // link. Legacy rows with an absolute URL are used as-is.
+  const verUrls = new Map<string, string>();
+  await Promise.all(
+    (facturas ?? []).map(async (f) => {
+      if (!f.imagen_url) return;
+      if (/^https?:\/\//.test(f.imagen_url)) {
+        verUrls.set(f.id, f.imagen_url);
+        return;
+      }
+      const { data: signed } = await supabase.storage
+        .from("facturas")
+        .createSignedUrl(f.imagen_url, 60 * 60);
+      if (signed?.signedUrl) verUrls.set(f.id, signed.signedUrl);
+    }),
+  );
+
   return (
     <div className={styles["facturas-page"]}>
       <div className={styles["facturas-page__header"]}>
@@ -89,7 +106,7 @@ export default async function FacturasPage() {
                 </strong>
                 {f.imagen_url && (
                   <a
-                    href={f.imagen_url}
+                    href={verUrls.get(f.id) ?? f.imagen_url}
                     target="_blank"
                     rel="noreferrer"
                     className={styles["facturas-page__ver"]}

@@ -50,11 +50,8 @@ export async function createFacturaAction(
   const ext = (imagen.name.split(".").pop() ?? "jpg").toLowerCase().replace(/\W/g, "");
   const path = `${user.id}/${crypto.randomUUID()}.${ext || "jpg"}`;
 
-  // Bucket 'facturas' must be created AND made public in the Supabase
-  // dashboard (SQL: INSERT INTO storage.buckets (id, name, public)
-  // VALUES ('facturas', 'facturas', true)) plus an authenticated
-  // INSERT/SELECT policy on storage.objects for this bucket — an anon client
-  // cannot create buckets. Until then upload fails with a storage error.
+  // Bucket 'facturas' created by supabase/migrations/20260912000011 (private,
+  // authenticated-only policies scoped to `${auth.uid()}/...` first segment).
   const { error: uploadError } = await supabase.storage
     .from("facturas")
     .upload(path, imagen, {
@@ -66,15 +63,13 @@ export async function createFacturaAction(
     return { error: "No se pudo subir la imagen de la factura. Intenta de nuevo." };
   }
 
-  const { data: urlData } = supabase.storage.from("facturas").getPublicUrl(path);
-
   const { error: insertError } = await supabase.from("facturas").insert({
     tarjeta_id: tarjetaId || null,
     monto_total: monto,
     moneda,
     fecha_compra: fecha || null,
     comercio: comercio || null,
-    imagen_url: urlData.publicUrl,
+    imagen_url: path, // storage path; signed URL generated on render (bucket is private)
   });
 
   if (insertError) {
