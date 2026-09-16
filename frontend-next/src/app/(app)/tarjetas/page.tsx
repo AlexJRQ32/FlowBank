@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { CreditCardIcon, TrendingDownIcon, TrendingUpIcon, WalletIcon, ClockIcon, BanknoteIcon } from "@/components/icons";
 import { getTarjetasConDeuda } from "@/lib/queries/tarjetas";
+import { createClient } from "@/lib/supabase/server";
 import { formatoColones, formatoDolares } from "@/lib/currency";
+import NuevaTarjetaButton from "./_components/nueva-tarjeta-button";
 import TarjetaCard from "./_components/tarjeta-card";
 import styles from "./tarjetas.module.scss";
 
@@ -15,7 +17,11 @@ function calcularDiasHasta(diaObjetivo: number): number {
 }
 
 export default async function TarjetasPage() {
-  const { tarjetas, tipoCambio } = await getTarjetasConDeuda();
+  const supabase = await createClient();
+  const [{ tarjetas, tipoCambio }, { data: bancos }] = await Promise.all([
+    getTarjetasConDeuda(),
+    supabase.from("bancos").select("id, nombre").order("nombre"),
+  ]);
 
   // === Métricas únicas de tarjetas (NO repetir dashboard) ===
   const activas = tarjetas.filter((t) => t.es_activa).length;
@@ -49,10 +55,12 @@ export default async function TarjetasPage() {
           <h1>Mis tarjetas</h1>
           <p>Administra todas tus tarjetas de crédito y sus fechas.</p>
         </div>
-        <Link href="/tarjetas/nueva" className={styles["tarjetas-page__nueva"]}>
-          <CreditCardIcon size={16} />
-          Nueva tarjeta
-        </Link>
+        <NuevaTarjetaButton
+          bancos={(bancos ?? []) as { id: string; nombre: string }[]}
+          tipoCambioVenta={tipoCambio.venta ?? undefined}
+          className={styles["tarjetas-page__nueva"]}
+          icon={<CreditCardIcon size={16} />}
+        />
       </div>
 
       {tarjetas.length > 0 && (
@@ -161,9 +169,12 @@ export default async function TarjetasPage() {
                 Registra tu primera tarjeta para empezar a controlar tus fechas de corte
                 y pago, y ver el resumen de tu deuda.
               </p>
-              <Link href="/tarjetas/nueva" className={styles["tarjetas-page__nueva"]}>
-                Registrar tarjeta
-              </Link>
+              <NuevaTarjetaButton
+                bancos={(bancos ?? []) as { id: string; nombre: string }[]}
+                tipoCambioVenta={tipoCambio.venta ?? undefined}
+                className={styles["tarjetas-page__nueva"]}
+                label="Registrar tarjeta"
+              />
             </div>
             <div className={styles["tarjetas-page__empty-preview"]}>
               <div className={styles["tarjetas-page__empty-preview-item"]}>

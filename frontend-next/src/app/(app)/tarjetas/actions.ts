@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
-export type TarjetaState = { error?: string };
+export type TarjetaState = { error?: string; ok?: string };
 
 const TIPOS = ["Credito", "Debito"] as const;
 
@@ -50,13 +50,7 @@ function parseTarjeta(formData: FormData) {
   } as const;
 }
 
-export async function createTarjetaAction(
-  _prev: TarjetaState,
-  formData: FormData,
-): Promise<TarjetaState> {
-  const parsed = parseTarjeta(formData);
-  if ("error" in parsed) return { error: parsed.error };
-
+async function insertarTarjeta(fields: NonNullable<ReturnType<typeof parseTarjeta>["fields"]>) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -65,15 +59,40 @@ export async function createTarjetaAction(
 
   const { error } = await supabase
     .from("tarjetas")
-    .insert({ ...parsed.fields, user_id: user.id });
+    .insert({ ...fields, user_id: user.id });
 
-  if (error) {
-    return { error: "No se pudo guardar la tarjeta. Intenta de nuevo." };
-  }
-
+  if (error) return { error: "No se pudo guardar la tarjeta. Intenta de nuevo." };
   revalidatePath("/tarjetas");
   revalidatePath("/dashboard");
+  return { error: null as string | null };
+}
+
+export async function createTarjetaAction(
+  _prev: TarjetaState,
+  formData: FormData,
+): Promise<TarjetaState> {
+  const parsed = parseTarjeta(formData);
+  if ("error" in parsed) return { error: parsed.error };
+
+  const result = await insertarTarjeta(parsed.fields);
+  if (result.error) return { error: result.error };
+
   redirect("/tarjetas");
+}
+
+// Modal flow (legacy TarjetaFormModal): success closes the modal + toast,
+// no navigation. Same validation and insert as createTarjetaAction.
+export async function createTarjetaModalAction(
+  _prev: TarjetaState,
+  formData: FormData,
+): Promise<TarjetaState> {
+  const parsed = parseTarjeta(formData);
+  if ("error" in parsed) return { error: parsed.error };
+
+  const result = await insertarTarjeta(parsed.fields);
+  if (result.error) return { error: result.error };
+
+  return { ok: "Tarjeta registrada" };
 }
 
 export async function updateTarjetaAction(

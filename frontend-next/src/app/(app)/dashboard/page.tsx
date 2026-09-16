@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getTarjetasConDeuda } from "@/lib/queries/tarjetas";
+import NuevaTarjetaButton from "../tarjetas/_components/nueva-tarjeta-button";
 import { formatoColones, formatoDolares, simboloMoneda } from "@/lib/currency";
 import {
   CreditCardIcon,
@@ -72,7 +73,7 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [profile, { tarjetas, tipoCambio }, facturasResult, facturasRecientes, alertasData] =
+  const [profile, { tarjetas, tipoCambio }, facturasResult, facturasRecientes, alertasData, bancosData] =
     await Promise.all([
       user
         ? supabase.from("profiles").select("nombre").eq("id", user.id).single()
@@ -89,6 +90,7 @@ export default async function DashboardPage() {
         .from("tarjetas")
         .select("id, nombre, dia_corte, dia_pago, bancos(nombre)")
         .order("created_at", { ascending: false }),
+      supabase.from("bancos").select("id, nombre").order("nombre"),
     ]);
 
   const nombreUsuario = profile.data?.nombre ?? "Usuario";
@@ -404,9 +406,12 @@ export default async function DashboardPage() {
                 Registra tu primera tarjeta para ver el resumen de tus finanzas: deuda
                 total, limite disponible, facturas y fechas de pago.
               </p>
-              <Link href="/tarjetas/nueva" className={styles["dashboard-empty__cta"]}>
-                Registrar tarjeta
-              </Link>
+              <NuevaTarjetaButton
+                bancos={(bancosData.data ?? []) as { id: string; nombre: string }[]}
+                tipoCambioVenta={tipoCambio.venta ?? undefined}
+                className={styles["dashboard-empty__cta"]}
+                label="Registrar tarjeta"
+              />
             </div>
             <div className={styles["dashboard-empty__preview"]}>
               <div className={styles["dashboard-empty__preview-item"]}>
