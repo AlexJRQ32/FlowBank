@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BanknoteIcon, FileTextIcon, ScanBarcodeIcon } from "@/components/icons";
+import { BanknoteIcon, FileTextIcon, ScanBarcodeIcon, TrendingDownIcon } from "@/components/icons";
 import { createClient } from "@/lib/supabase/server";
 import { formatoColones, formatoDolares, simboloMoneda } from "@/lib/currency";
 import { deleteFacturaAction } from "./actions";
@@ -27,6 +27,12 @@ function formatoMoneda(moneda: string, valor: number | null): string {
   return `${simboloMoneda(moneda)}${base}`;
 }
 
+function inicioMes(diasAtras: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() - diasAtras);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 export default async function FacturasPage() {
   const supabase = await createClient();
 
@@ -39,15 +45,38 @@ export default async function FacturasPage() {
 
   const facturas = (facturasRaw ?? null) as FacturaItem[] | null;
 
-  // Métricas reales
+  // === Métricas únicas de facturas (NO repetir dashboard) ===
   const totalFacturas = facturas?.length ?? 0;
-  const totalUsd = (facturas ?? [])
-    .filter((f) => f.moneda === "USD")
-    .reduce((s, f) => s + (f.monto_total ?? 0), 0);
-  const totalColones = (facturas ?? [])
-    .filter((f) => f.moneda !== "USD")
-    .reduce((s, f) => s + (f.monto_total ?? 0), 0);
   const facturasConImagen = (facturas ?? []).filter((f) => f.imagen_url).length;
+
+  // Gasto este mes vs mes anterior
+  const hoy = new Date();
+  const inicioMesActual = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-01`;
+  const inicioMesAnterior = new Date(hoy.getFullYear(), hoy.getMonth() - 1, 1);
+  const finMesAnterior = new Date(hoy.getFullYear(), hoy.getMonth(), 0);
+  const fmtDate = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
+  const facturasMesActual = (facturas ?? []).filter(
+    (f) => f.fecha_compra && f.fecha_compra >= inicioMesActual,
+  );
+  const facturasMesAnterior = (facturas ?? []).filter(
+    (f) => f.fecha_compra && f.fecha_compra >= fmtDate(inicioMesAnterior) && f.fecha_compra <= fmtDate(finMesAnterior),
+  );
+
+  const gastoMesActual = facturasMesActual.reduce((s, f) => s + (f.monto_total ?? 0), 0);
+  const gastoMesAnterior = facturasMesAnterior.reduce((s, f) => s + (f.monto_total ?? 0), 0);
+  const promedioFactura = totalFacturas > 0
+    ? (facturas ?? []).reduce((s, f) => s + (f.monto_total ?? 0), 0) / totalFacturas
+    : 0;
+
+  // Top comercio (más frecuente)
+  const comercioCount = new Map<string, number>();
+  for (const f of facturas ?? []) {
+    if (f.comercio) {
+      comercioCount.set(f.comercio, (comercioCount.get(f.comercio) ?? 0) + 1);
+    }
+  }
+  const topComercio = [...comercioCount.entries()].sort((a, b) => b[1] - a[1])[0] ?? null;
 
   // Private bucket: imagen_url stores the storage path; sign it for the "Ver"
   // link. Legacy rows with an absolute URL are used as-is.
@@ -84,42 +113,53 @@ export default async function FacturasPage() {
 
       {totalFacturas > 0 && (
         <div className={styles["facturas-bento-metrics"]}>
+          {/* Hero: Gasto este mes */}
           <div className={styles["facturas-bento-metric--hero"]}>
             <div className={styles["facturas-bento-metric__header"]}>
-              <FileTextIcon size={16} />
-              <span className={styles["facturas-bento-metric__label"]}>Total facturas</span>
+              <BanknoteIcon size={16} />
+              <span className={styles["facturas-bento-metric__label"]}>Gasto este mes</span>
             </div>
             <div className={styles["facturas-bento-metric__big-number"]}>
-              {totalFacturas}
+              ₡{formatoColones(gastoMesActual)}
             </div>
             <div className={styles["facturas-bento-metric__sub"]}>
-              {facturasConImagen} con imagen
+              {facturasMesActual.length} factura{facturasMesActual.length !== 1 && "s"}
+              {gastoMesAnterior > 0 && (
+                <span className={styles["facturas-bento-metric__trend"]}>
+                  {" "}· mes anterior: ₡{formatoColones(gastoMesAnterior)}
+                </span>
+              )}
             </div>
           </div>
 
           <div className={styles["facturas-bento-metric--side"]}>
-            {totalColones > 0 && (
-              <div className={styles["facturas-bento-metric__item"]}>
-                <div className={styles["facturas-bento-metric__header"]}>
-                  <BanknoteIcon size={14} />
-                  <span className={styles["facturas-bento-metric__label"]}>Total colones</span>
-                </div>
-                <div className={styles["facturas-bento-metric__value"]}>
-                  ₡{formatoColones(totalColones)}
-                </div>
+            {/* Promedio por factura */}
+            <div className={styles["facturas-bento-metric__item"]}>
+              <div className={styles["facturas-bento-metric__header"]}>
+                <TrendingDownIcon size={14} />
+                <span className={styles["facturas-bento-metric__label"]}>Promedio</span>
               </div>
-            )}
-            {totalUsd > 0 && (
-              <div className={styles["facturas-bento-metric__item"]}>
-                <div className={styles["facturas-bento-metric__header"]}>
-                  <BanknoteIcon size={14} />
-                  <span className={styles["facturas-bento-metric__label"]}>Total dólares</span>
-                </div>
-                <div className={styles["facturas-bento-metric__value"]}>
-                  ${formatoDolares(totalUsd)}
-                </div>
+              <div className={styles["facturas-bento-metric__value"]}>
+                ₡{formatoColones(promedioFactura)}
               </div>
-            )}
+              <div className={styles["facturas-bento-metric__sub"]}>
+                Por factura
+              </div>
+            </div>
+
+            {/* Top comercio */}
+            <div className={styles["facturas-bento-metric__item"]}>
+              <div className={styles["facturas-bento-metric__header"]}>
+                <ScanBarcodeIcon size={14} />
+                <span className={styles["facturas-bento-metric__label"]}>Más frecuente</span>
+              </div>
+              <div className={styles["facturas-bento-metric__value"]}>
+                {topComercio ? topComercio[0] : "—"}
+              </div>
+              <div className={styles["facturas-bento-metric__sub"]}>
+                {topComercio ? `${topComercio[1]} compra${topComercio[1] !== 1 ? "s" : ""}` : "Sin datos"}
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -137,20 +177,20 @@ export default async function FacturasPage() {
             </div>
             <div className={styles["facturas-page__empty-preview"]}>
               <div className={styles["facturas-page__empty-preview-item"]}>
-                <FileTextIcon size={16} />
-                <span>Total facturas</span>
+                <BanknoteIcon size={16} />
+                <span>Gasto este mes</span>
               </div>
               <div className={styles["facturas-page__empty-preview-item"]}>
-                <BanknoteIcon size={16} />
-                <span>Total colones</span>
-              </div>
-              <div className={styles["facturas-page__empty-preview-item"]}>
-                <BanknoteIcon size={16} />
-                <span>Total dólares</span>
+                <TrendingDownIcon size={16} />
+                <span>Promedio</span>
               </div>
               <div className={styles["facturas-page__empty-preview-item"]}>
                 <ScanBarcodeIcon size={16} />
-                <span>Con imagen</span>
+                <span>Más frecuente</span>
+              </div>
+              <div className={styles["facturas-page__empty-preview-item"]}>
+                <FileTextIcon size={16} />
+                <span>Historial</span>
               </div>
             </div>
           </div>

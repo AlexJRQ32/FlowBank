@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BellIcon, CreditCardIcon, ClockIcon, BanknoteIcon } from "@/components/icons";
+import { BellIcon, CreditCardIcon, ClockIcon, BanknoteIcon, TrendingUpIcon } from "@/components/icons";
 import { createClient } from "@/lib/supabase/server";
 import styles from "./alertas.module.scss";
 
@@ -41,6 +41,11 @@ function calcularProximas(
   return result.sort((a, b) => dist(a.dia) - dist(b.dia));
 }
 
+function calcularDiasHasta(diaObjetivo: number): number {
+  const hoy = new Date().getDate();
+  return diaObjetivo >= hoy ? diaObjetivo - hoy : diaObjetivo + 31 - hoy;
+}
+
 export default async function AlertasPage() {
   const supabase = await createClient();
   const { data: tarjetas } = await supabase
@@ -49,9 +54,28 @@ export default async function AlertasPage() {
     .order("created_at", { ascending: false });
 
   const proximas = calcularProximas(tarjetas ?? []);
-  const totalCortes = proximas.filter((f) => f.tipo === "corte").length;
-  const totalPagos = proximas.filter((f) => f.tipo === "pago").length;
-  const totalTarjetas = (tarjetas ?? []).length;
+  const hoy = new Date().getDate();
+  const diaSemana = new Date().getDay(); // 0=dom, 1=lun...
+  const diasRestantesSemana = diaSemana === 0 ? 0 : 7 - diaSemana;
+
+  // === Métricas únicas de alertas (NO repetir dashboard) ===
+  // Cortes esta semana (próximos N días)
+  const cortesSemana = proximas.filter(
+    (f) => f.tipo === "corte" && calcularDiasHasta(f.dia) <= diasRestantesSemana,
+  ).length;
+
+  // Pagos que vencen en 7 días
+  const pagosProx7 = proximas.filter(
+    (f) => f.tipo === "pago" && calcularDiasHasta(f.dia) <= 7,
+  ).length;
+
+  // Próxima fecha más cercana
+  const primeraFecha = proximas[0] ?? null;
+
+  // Tarjetas con fechas configuradas
+  const tarjetasConFechas = (tarjetas ?? []).filter(
+    (t) => t.dia_corte || t.dia_pago,
+  ).length;
 
   return (
     <div className={styles["alertas-page"]}>
@@ -68,39 +92,49 @@ export default async function AlertasPage() {
 
       {proximas.length > 0 && (
         <div className={styles["alertas-bento-metrics"]}>
+          {/* Hero: Próxima fecha */}
           <div className={styles["alertas-bento-metric--hero"]}>
             <div className={styles["alertas-bento-metric__header"]}>
               <BellIcon size={16} />
-              <span className={styles["alertas-bento-metric__label"]}>Total alertas</span>
+              <span className={styles["alertas-bento-metric__label"]}>Próxima fecha</span>
             </div>
             <div className={styles["alertas-bento-metric__big-number"]}>
-              {proximas.length}
+              {primeraFecha
+                ? `${primeraFecha.tipo === "corte" ? "Corte" : "Pago"} — Día ${primeraFecha.dia}`
+                : "—"
+              }
             </div>
             <div className={styles["alertas-bento-metric__sub"]}>
-              Próximas fechas configuradas
+              {primeraFecha
+                ? `${primeraFecha.nombre} · ${calcularDiasHasta(primeraFecha.dia) === 0 ? "Hoy" : `En ${calcularDiasHasta(primeraFecha.dia)} día${calcularDiasHasta(primeraFecha.dia) !== 1 ? "s" : ""}`}`
+                : "Sin fechas"
+              }
             </div>
           </div>
 
           <div className={styles["alertas-bento-metric--side"]}>
+            {/* Cortes esta semana */}
             <div className={styles["alertas-bento-metric__item"]}>
               <div className={styles["alertas-bento-metric__header"]}>
                 <ClockIcon size={14} />
-                <span className={styles["alertas-bento-metric__label"]}>Cortes</span>
+                <span className={styles["alertas-bento-metric__label"]}>Cortes esta semana</span>
               </div>
               <div className={styles["alertas-bento-metric__value"]}>
-                {totalCortes}
+                {cortesSemana}
               </div>
               <div className={styles["alertas-bento-metric__sub"]}>
-                Fechas de corte
+                Próximos {diasRestantesSemana} días
               </div>
             </div>
+
+            {/* Pagos en 7 días */}
             <div className={styles["alertas-bento-metric__item"]}>
               <div className={styles["alertas-bento-metric__header"]}>
                 <BanknoteIcon size={14} />
-                <span className={styles["alertas-bento-metric__label"]}>Pagos</span>
+                <span className={styles["alertas-bento-metric__label"]}>Pagos en 7 días</span>
               </div>
               <div className={styles["alertas-bento-metric__value"]}>
-                {totalPagos}
+                {pagosProx7}
               </div>
               <div className={styles["alertas-bento-metric__sub"]}>
                 Fechas de pago
@@ -111,10 +145,13 @@ export default async function AlertasPage() {
           <div className={styles["alertas-bento-metric--count"]}>
             <div className={styles["alertas-bento-metric__header"]}>
               <CreditCardIcon size={14} />
-              <span className={styles["alertas-bento-metric__label"]}>Tarjetas</span>
+              <span className={styles["alertas-bento-metric__label"]}>Con fechas</span>
             </div>
             <div className={styles["alertas-bento-metric__big-number--sm"]}>
-              {totalTarjetas}
+              {tarjetasConFechas}
+            </div>
+            <div className={styles["alertas-bento-metric__sub"]}>
+              Tarjeta{(tarjetas ?? []).length !== 1 && "s"}
             </div>
           </div>
         </div>
@@ -136,20 +173,20 @@ export default async function AlertasPage() {
             </div>
             <div className={styles["alertas-page__empty-preview"]}>
               <div className={styles["alertas-page__empty-preview-item"]}>
+                <BellIcon size={16} />
+                <span>Próxima fecha</span>
+              </div>
+              <div className={styles["alertas-page__empty-preview-item"]}>
                 <ClockIcon size={16} />
-                <span>Fechas de corte</span>
+                <span>Cortes semana</span>
               </div>
               <div className={styles["alertas-page__empty-preview-item"]}>
                 <BanknoteIcon size={16} />
-                <span>Fechas de pago</span>
+                <span>Pagos 7 días</span>
               </div>
               <div className={styles["alertas-page__empty-preview-item"]}>
                 <CreditCardIcon size={16} />
-                <span>Tarjetas</span>
-              </div>
-              <div className={styles["alertas-page__empty-preview-item"]}>
-                <BellIcon size={16} />
-                <span>Notificaciones</span>
+                <span>Con fechas</span>
               </div>
             </div>
           </div>

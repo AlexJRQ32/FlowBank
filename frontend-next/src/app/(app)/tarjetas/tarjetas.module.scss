@@ -253,6 +253,48 @@ $cc-text-faint: rgba(18, 58, 42, 0.5);
   color: $app-text-muted;
 }
 
+// --- Usage bar ---
+.tarjetas-bento-metric__bar {
+  margin-top: $spacing-3;
+  height: 6px;
+  background: $app-border-soft;
+  border-radius: $radius-full;
+  overflow: hidden;
+}
+
+.tarjetas-bento-metric__bar-fill {
+  height: 100%;
+  background: $app-accent;
+  border-radius: $radius-full;
+  transition: width 0.3s ease;
+}
+
+// --- Split (deuda por moneda) ---
+.tarjetas-bento-metric__split {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2;
+}
+
+.tarjetas-bento-metric__split-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tarjetas-bento-metric__split-label {
+  font-family: $font-body;
+  font-size: $font-size-xs;
+  color: $app-text-muted;
+}
+
+.tarjetas-bento-metric__split-value {
+  font-family: $font-display;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $app-text;
+}
+
 .tarjetas-tipo-cambio {
   margin-bottom: $spacing-5;
   font-family: $font-body;
