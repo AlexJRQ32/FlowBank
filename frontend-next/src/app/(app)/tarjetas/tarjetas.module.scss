@@ -39,6 +39,12 @@ $cc-text-faint: rgba(18, 58, 42, 0.5);
     }
   }
 
+  &__header-actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-3;
+  }
+
   &__nueva {
     display: inline-flex;
     align-items: center;
@@ -52,6 +58,8 @@ $cc-text-faint: rgba(18, 58, 42, 0.5);
     font-weight: $font-weight-semibold;
     align-self: flex-start;
     text-decoration: none;
+    border: none;
+    cursor: pointer;
     transition: filter 0.2s;
 
     &:hover {

@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { formatoColones, formatoDolares } from "@/lib/currency";
 import NuevaTarjetaButton from "./_components/nueva-tarjeta-button";
 import TarjetaCard from "./_components/tarjeta-card";
+import NuevoBancoButton from "../_components/nuevo-banco-button";
 import styles from "./tarjetas.module.scss";
 
 // Auth-scoped Supabase reads (RLS) + live tipo de cambio; must never be cached
@@ -55,12 +56,18 @@ export default async function TarjetasPage() {
           <h1>Mis tarjetas</h1>
           <p>Administra todas tus tarjetas de crédito y sus fechas.</p>
         </div>
-        <NuevaTarjetaButton
-          bancos={(bancos ?? []) as { id: string; nombre: string }[]}
-          tipoCambioVenta={tipoCambio.venta ?? undefined}
-          className={styles["tarjetas-page__nueva"]}
-          icon={<CreditCardIcon size={16} />}
-        />
+        <div className={styles["tarjetas-page__header-actions"]}>
+          <NuevoBancoButton
+            className={styles["tarjetas-page__nueva"]}
+            icon={<BanknoteIcon size={16} />}
+          />
+          <NuevaTarjetaButton
+            bancos={(bancos ?? []) as { id: string; nombre: string }[]}
+            tipoCambioVenta={tipoCambio.venta ?? undefined}
+            className={styles["tarjetas-page__nueva"]}
+            icon={<CreditCardIcon size={16} />}
+          />
+        </div>
       </div>
 
       {tarjetas.length > 0 && (

@@ -1,0 +1,110 @@
+@use "@/styles/tokens" as *;
+@use "@/styles/mixins" as *;
+
+// Catalog listing for /bancos (replaces the legacy placeholder slug page).
+
+.bancos-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: $spacing-6 $spacing-4;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-6;
+}
+
+.bancos-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-4;
+
+  h1 {
+    font-family: $font-display;
+    font-size: $font-size-2xl;
+    color: $app-text;
+    margin: 0 0 2px;
+  }
+
+  p {
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    color: $app-text-muted;
+    margin: 0;
+  }
+}
+
+.bancos-page__nuevo {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-2;
+  min-height: 42px;
+  padding: 0 $spacing-5;
+  border-radius: $radius-full;
+  background: $app-accent-soft;
+  color: $color-white;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(0.94);
+  }
+}
+
+.bancos-page__empty {
+  padding: $spacing-6;
+  border: 1px dashed $app-border-strong;
+  border-radius: $radius-lg;
+  color: $app-text-muted;
+  font-size: $font-size-sm;
+  text-align: center;
+}
+
+.bancos-page__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+}
+
+.bancos-page__item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  padding: $spacing-4;
+  background: $app-surface;
+  border: 1px solid $app-border-soft;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+}
+
+.bancos-page__logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba($app-accent, 0.08);
+  color: $app-accent;
+  flex-shrink: 0;
+}
+
+.bancos-page__nombre {
+  flex: 1;
+  font-family: $font-body;
+  font-weight: $font-weight-semibold;
+  color: $app-text;
+}
+
+.bancos-page__count {
+  font-family: $font-body;
+  font-size: $font-size-xs;
+  color: $app-text-muted;
+
+  &:empty::after {
+    content: "";
+  }
+}
