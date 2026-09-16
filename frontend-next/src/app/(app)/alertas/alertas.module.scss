@@ -66,30 +66,24 @@
     background: $color-surface;
     border: 1px solid $color-border;
     border-radius: $radius-lg;
-    transition: border-color 0.2s, transform 0.2s;
-
-    &:hover {
-      border-color: rgba(16, 32, 26, 0.25);
-      transform: translateY(-2px);
-    }
   }
 
   &__badge {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 46px;
-    height: 46px;
+    width: 42px;
+    height: 42px;
     border-radius: $radius-md;
     flex-shrink: 0;
 
     &--corte {
-      background: rgba($color-warning, 0.15);
+      background: rgba($color-warning, 0.1);
       color: $color-warning;
     }
 
     &--pago {
-      background: rgba($app-accent, 0.15);
+      background: rgba($app-accent, 0.1);
       color: $app-accent-soft;
     }
   }

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CreditCardIcon, ScanBarcodeIcon } from "@/components/icons";
+import { BanknoteIcon, FileTextIcon, ScanBarcodeIcon } from "@/components/icons";
 import { createClient } from "@/lib/supabase/server";
 import { formatoColones, formatoDolares, simboloMoneda } from "@/lib/currency";
 import { deleteFacturaAction } from "./actions";
@@ -41,6 +41,15 @@ export default async function FacturasPage() {
   // an array; at runtime PostgREST returns an object for the FK embed.
   const facturas = (facturasRaw ?? null) as FacturaItem[] | null;
 
+  // Métricas reales
+  const totalFacturas = facturas?.length ?? 0;
+  const totalUsd = (facturas ?? [])
+    .filter((f) => f.moneda === "USD")
+    .reduce((s, f) => s + (f.monto_total ?? 0), 0);
+  const totalColones = (facturas ?? [])
+    .filter((f) => f.moneda !== "USD")
+    .reduce((s, f) => s + (f.monto_total ?? 0), 0);
+
   // Private bucket: imagen_url stores the storage path; sign it for the "Ver"
   // link. Legacy rows with an absolute URL are used as-is.
   const verUrls = new Map<string, string>();
@@ -65,7 +74,7 @@ export default async function FacturasPage() {
           <h1>Mis facturas</h1>
           <p>
             Sube una foto de tu factura y FlowBank extrae monto, fecha y comercio
-            automaticamente.
+            automáticamente.
           </p>
         </div>
         <Link href="/facturas/subir" className={styles["facturas-page__subir"]}>
@@ -74,11 +83,50 @@ export default async function FacturasPage() {
         </Link>
       </div>
 
+      {totalFacturas > 0 && (
+        <div className={styles["facturas-metrics"]}>
+          <div className={styles["facturas-metric"]}>
+            <FileTextIcon size={14} />
+            <div className={styles["facturas-metric__data"]}>
+              <span className={styles["facturas-metric__label"]}>Total facturas</span>
+              <span className={styles["facturas-metric__value"]}>
+                {totalFacturas}
+              </span>
+            </div>
+          </div>
+          {totalColones > 0 && (
+            <div className={styles["facturas-metric"]}>
+              <BanknoteIcon size={14} />
+              <div className={styles["facturas-metric__data"]}>
+                <span className={styles["facturas-metric__label"]}>Total colones</span>
+                <span className={styles["facturas-metric__value"]}>
+                  ₡{formatoColones(totalColones)}
+                </span>
+              </div>
+            </div>
+          )}
+          {totalUsd > 0 && (
+            <div className={styles["facturas-metric"]}>
+              <BanknoteIcon size={14} />
+              <div className={styles["facturas-metric__data"]}>
+                <span className={styles["facturas-metric__label"]}>Total dólares</span>
+                <span className={styles["facturas-metric__value"]}>
+                  ${formatoDolares(totalUsd)}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       <h2 className={styles["facturas-page__section-title"]}>Historial</h2>
       {!facturas?.length ? (
         <div className={styles["facturas-page__empty-state"]}>
-          <CreditCardIcon size={32} />
-          <p>Aun no has registrado facturas.</p>
+          <FileTextIcon size={32} />
+          <p>Aún no has registrado facturas.</p>
+          <Link href="/facturas/subir" className={styles["facturas-page__subir"]}>
+            Subir primera factura
+          </Link>
         </div>
       ) : (
         <ul className={styles["facturas-page__list"]}>
@@ -95,9 +143,9 @@ export default async function FacturasPage() {
                     {f.fecha_compra
                       ? new Date(`${f.fecha_compra}T00:00:00`).toLocaleDateString("es-CR")
                       : "Fecha sin registrar"}
-                    {" • "}
+                    {" · "}
                     {tarjeta
-                      ? `Asociada a ${tarjeta.nombre || "tarjeta"} •••• ${tarjeta.ultimos_cuatro_digitos}`
+                      ? `${tarjeta.nombre || "Tarjeta"} ·••• ${tarjeta.ultimos_cuatro_digitos}`
                       : "Sin asociar"}
                   </p>
                 </div>
@@ -116,7 +164,11 @@ export default async function FacturasPage() {
                 )}
                 <form action={deleteFacturaAction}>
                   <input type="hidden" name="id" value={f.id} />
-                  <button type="submit" className={styles["facturas-page__delete"]} aria-label={`Eliminar factura de ${f.comercio ?? "comercio"}`}>
+                  <button
+                    type="submit"
+                    className={styles["facturas-page__delete"]}
+                    aria-label={`Eliminar factura de ${f.comercio ?? "comercio"}`}
+                  >
                     Eliminar
                   </button>
                 </form>

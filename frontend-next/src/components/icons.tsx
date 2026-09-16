@@ -109,3 +109,53 @@ export function ClockIcon(props: IconProps) {
     </Svg>
   );
 }
+
+export function TrendingDownIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+      <polyline points="16 7 22 7 22 13" />
+    </Svg>
+  );
+}
+
+export function TrendingUpIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <polyline points="22 17 13.5 8.5 8.5 13.5 2 7" />
+      <polyline points="16 17 22 17 22 11" />
+    </Svg>
+  );
+}
+
+export function FileTextIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M14 2H6a2 2 0 0 0 -2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+      <line x1="16" y1="13" x2="8" y2="13" />
+      <line x1="16" y1="17" x2="8" y2="17" />
+      <polyline points="10 9 9 9 8 9" />
+    </Svg>
+  );
+}
+
+export function BanknoteIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      {/* Lucide "banknote" */}
+      <rect width="20" height="12" x="2" y="6" rx="2" />
+      <circle cx="12" cy="12" r="2" />
+      <path d="M6 12h.01M18 12h.01" />
+    </Svg>
+  );
+}
+
+export function ArrowRightIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M5 12h14" />
+      <path d="M12 5l7 7-7 7" />
+    </Svg>
+  );
+}

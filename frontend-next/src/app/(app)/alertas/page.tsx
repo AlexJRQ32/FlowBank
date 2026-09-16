@@ -54,14 +54,17 @@ export default async function AlertasPage() {
     <div className={styles["alertas-page"]}>
       <div className={styles["alertas-page__header"]}>
         <h1>Mis alertas</h1>
-        <p>Las proximas fechas de corte y pago de tus tarjetas.</p>
+        <p>Las próximas fechas de corte y pago de tus tarjetas.</p>
       </div>
 
       {proximas.length === 0 ? (
         <div className={styles["alertas-page__empty-state"]}>
           <BellIcon size={40} />
           <h2>Sin alertas</h2>
-          <p>Registra tarjetas para ver tus proximas fechas de corte y pago.</p>
+          <p>
+            Registra tarjetas con fechas de corte y pago para ver tus próximas
+            alertas aquí.
+          </p>
         </div>
       ) : (
         <ul className={styles["alertas-page__list"]}>
