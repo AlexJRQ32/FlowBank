@@ -1,4 +1,8 @@
 @use "tokens";
+@use "../styles/mixins" as mixins;
+
+/* respects prefers-reduced-motion globally (landing reveal, mobile menu, steps, toasts) */
+@include mixins.reduced-motion;
 
 * {
   margin: 0;
