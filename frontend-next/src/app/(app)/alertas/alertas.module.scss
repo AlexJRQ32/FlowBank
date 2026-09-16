@@ -1,54 +1,124 @@
 @use "tokens" as *;
 
-// Port of legacy features/alertas/pages/AlertasPage.scss (visual parity), as a
-// CSS Module against the migrated _tokens.scss.
+// Alertas page — bento metrics + structured list
 
 .alertas-page {
   max-width: $container-max-width;
   margin: 0 auto;
 
   &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: $spacing-5;
     margin-bottom: $spacing-6;
 
     h1 {
       font-size: $font-size-3xl;
-      font-weight: $font-weight-medium;
-      color: $color-text;
+      font-weight: $font-weight-bold;
+      color: $app-text;
       margin: 0 0 $spacing-1;
+      letter-spacing: -0.02em;
     }
 
     p {
-      color: $color-text-muted;
+      color: $app-text-muted;
       margin: 0;
-      font-size: $font-size-base;
+      font-size: $font-size-sm;
     }
   }
 
+  &__configurar {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-2;
+    min-height: 42px;
+    padding: 0 $spacing-5;
+    border-radius: $radius-full;
+    background: $app-accent-soft;
+    color: $color-white;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: filter 0.2s;
+
+    &:hover {
+      filter: brightness(0.92);
+    }
+  }
+
+  // --- Empty state ---
   &__empty-state {
-    text-align: center;
-    padding: $spacing-10 $spacing-4;
-    border: 1px dashed $color-border;
+    border: 1px dashed $app-border;
     border-radius: $radius-lg;
-    background: $color-surface;
+    background: $app-surface;
+    overflow: hidden;
+  }
+
+  &__empty-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  &__empty-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-10 $spacing-6;
+    text-align: center;
 
     svg {
-      color: $color-primary;
+      color: $app-accent;
       margin: 0 auto $spacing-4;
     }
 
     h2 {
       font-size: $font-size-xl;
       font-weight: $font-weight-medium;
-      color: $color-text;
+      color: $app-text;
       margin: 0 0 $spacing-2;
     }
 
     p {
-      color: $color-text-muted;
-      margin: 0;
+      color: $app-text-muted;
+      margin: 0 auto $spacing-6;
+      max-width: 320px;
+      font-size: $font-size-sm;
     }
   }
 
+  &__empty-preview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-3;
+    padding: $spacing-8 $spacing-6;
+    background: $app-bg;
+  }
+
+  &__empty-preview-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-2;
+    padding: $spacing-5 $spacing-3;
+    background: $app-surface;
+    border: 1px solid $app-border-soft;
+    border-radius: $radius-lg;
+
+    svg {
+      color: $app-text-faint;
+    }
+
+    span {
+      font-family: $font-body;
+      font-size: $font-size-xs;
+      color: $app-text-muted;
+    }
+  }
+
+  // --- List ---
   &__list {
     list-style: none;
     margin: 0;
@@ -63,9 +133,14 @@
     align-items: center;
     gap: $spacing-4;
     padding: $spacing-4 $spacing-5;
-    background: $color-surface;
-    border: 1px solid $color-border;
+    background: $app-surface;
+    border: 1px solid $app-border-soft;
     border-radius: $radius-lg;
+    transition: border-color 0.15s ease;
+
+    &:hover {
+      border-color: $app-border-strong;
+    }
   }
 
   &__badge {
@@ -83,8 +158,8 @@
     }
 
     &--pago {
-      background: rgba($app-accent, 0.1);
-      color: $app-accent-soft;
+      background: rgba($app-accent, 0.08);
+      color: $app-accent;
     }
   }
 
@@ -95,13 +170,13 @@
     h3 {
       font-size: 15px;
       font-weight: $font-weight-bold;
-      color: $color-text;
+      color: $app-text;
       margin: 0 0 2px;
     }
 
     p {
       font-size: $font-size-sm;
-      color: $color-text-muted;
+      color: $app-text-muted;
       margin: 0;
     }
   }
@@ -114,7 +189,7 @@
       font-size: 9.5px;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: $color-text-muted;
+      color: $app-text-muted;
       margin-bottom: 2px;
     }
 
@@ -122,6 +197,147 @@
       font-size: 22px;
       font-weight: $font-weight-medium;
       color: $app-accent-soft;
+    }
+  }
+}
+
+// ---------------------------------------------------------------- Bento metrics
+.alertas-bento-metrics {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: $spacing-4;
+  margin-bottom: $spacing-6;
+}
+
+.alertas-bento-metric--hero {
+  padding: $spacing-5;
+  background: $app-surface;
+  border: 1px solid $app-border-soft;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+}
+
+.alertas-bento-metric--side {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+}
+
+.alertas-bento-metric__item {
+  flex: 1;
+  padding: $spacing-4;
+  background: $app-surface;
+  border: 1px solid $app-border-soft;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+}
+
+.alertas-bento-metric--count {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: $spacing-5;
+  background: $app-surface;
+  border: 1px solid $app-border-soft;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+}
+
+.alertas-bento-metric__header {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+  margin-bottom: $spacing-3;
+
+  svg {
+    color: $app-accent;
+    flex-shrink: 0;
+  }
+}
+
+.alertas-bento-metric__label {
+  font-family: $font-body;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $app-text-muted;
+}
+
+.alertas-bento-metric__big-number {
+  font-family: $font-display;
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  letter-spacing: -0.03em;
+  color: $app-text;
+  line-height: 1;
+}
+
+.alertas-bento-metric__big-number--sm {
+  font-family: $font-display;
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  letter-spacing: -0.03em;
+  color: $app-text;
+  line-height: 1;
+}
+
+.alertas-bento-metric__value {
+  font-family: $font-display;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  letter-spacing: -0.02em;
+  color: $app-text;
+  line-height: 1;
+}
+
+.alertas-bento-metric__sub {
+  margin-top: $spacing-2;
+  font-family: $font-body;
+  font-size: $font-size-xs;
+  color: $app-text-muted;
+}
+
+// ---------------------------------------------------------------- Responsive
+@media (max-width: 768px) {
+  .alertas-page {
+    &__header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &__empty-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .alertas-bento-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .alertas-bento-metric--side {
+    flex-direction: row;
+
+    & > * {
+      flex: 1;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .alertas-bento-metric--hero {
+    padding: $spacing-4;
+  }
+
+  .alertas-bento-metric__big-number {
+    font-size: $font-size-3xl;
+  }
+
+  .alertas-bento-metric--side {
+    flex-direction: column;
+  }
+
+  .alertas-page {
+    &__item {
+      padding: $spacing-3 $spacing-4;
     }
   }
 }

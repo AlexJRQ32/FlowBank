@@ -1,7 +1,7 @@
 // ============================================================================
-// Dashboard — Bento jerárquico con métricas reales
-// Reemplaza el grid de 4 cards idénticas por composición asimétrica:
-// métrica principal dominante (deuda total) + secundarias subordinadas.
+// Dashboard — Dense bento grid with real metrics
+// Replaces sparse layout with hierarchical bento: hero (2fr+1fr),
+// metrics row (4 cols), content panels (1fr 1fr), full-width card summary.
 // ============================================================================
 
 @use "tokens" as *;
@@ -38,32 +38,16 @@
   color: $app-text-muted;
 }
 
-// ---------------------------------------------------------------- Bento grid
-// Layout asimétrico: métrica principal (2 col) + secundaria (1 col) en fila 1,
-// 3 terciarias en fila 2. En mobile apila todo.
-.bento-grid {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-4;
-  margin-bottom: $spacing-8;
-}
-
-// Fila principal: deuda (2fr) + disponible (1fr)
-.bento-row-main {
+// ---------------------------------------------------------------- Hero row: deuda total (2fr) + side (1fr)
+.bento-row-hero {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: $spacing-4;
+  margin-bottom: $spacing-4;
 }
 
-// Fila terciaria: 3 columnas iguales
-.bento-row-tertiary {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: $spacing-4;
-}
-
-// --- Deuda total (principal, 2 columnas) ---
-.bento-main {
+// --- Deuda total (main card, 2 cols) ---
+.bento-hero-main {
   padding: $spacing-6;
   background: $app-surface;
   border: 1px solid $app-border-soft;
@@ -71,12 +55,11 @@
   box-shadow: $shadow-sm;
 }
 
-.bento-main__header {
+.bento-hero-main__header {
   display: flex;
   align-items: center;
   gap: $spacing-2;
   margin-bottom: $spacing-4;
-  color: $app-text-muted;
 
   svg {
     color: $app-danger;
@@ -84,21 +67,21 @@
   }
 }
 
-.bento-main__label {
+.bento-hero-main__label {
   font-family: $font-body;
   font-size: $font-size-sm;
   font-weight: $font-weight-medium;
   color: $app-text-muted;
 }
 
-.bento-main__amounts {
+.bento-hero-main__amounts {
   display: flex;
   align-items: baseline;
   gap: $spacing-4;
   flex-wrap: wrap;
 }
 
-.bento-main__primary {
+.bento-hero-main__primary {
   font-family: $font-display;
   font-size: $font-size-4xl;
   font-weight: $font-weight-bold;
@@ -107,13 +90,13 @@
   line-height: 1;
 }
 
-.bento-main__currency {
+.bento-hero-main__currency {
   font-size: $font-size-2xl;
   color: $app-text-muted;
   margin-right: 2px;
 }
 
-.bento-main__secondary {
+.bento-hero-main__secondary {
   font-family: $font-display;
   font-size: $font-size-xl;
   font-weight: $font-weight-semibold;
@@ -121,19 +104,26 @@
   letter-spacing: -0.01em;
 }
 
-.bento-main__rate {
+.bento-hero-main__rate {
   margin-top: $spacing-4;
   font-family: $font-body;
   font-size: $font-size-xs;
-  color: $app-text-muted; // was faint (2.9:1) — AA requires 4.5:1
+  color: $app-text-muted;
 }
 
-.bento-main__source {
+.bento-hero-main__source {
   text-transform: capitalize;
 }
 
-// --- Límite disponible (secundaria, 1 columna) ---
-.bento-secondary {
+// --- Side panel: disponible + limite (stacked) ---
+.bento-hero-side {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+}
+
+.bento-hero-side__item {
+  flex: 1;
   padding: $spacing-5;
   background: $app-surface;
   border: 1px solid $app-border-soft;
@@ -141,7 +131,7 @@
   box-shadow: $shadow-sm;
 }
 
-.bento-secondary__header {
+.bento-hero-side__header {
   display: flex;
   align-items: center;
   gap: $spacing-2;
@@ -153,14 +143,14 @@
   }
 }
 
-.bento-secondary__label {
+.bento-hero-side__label {
   font-family: $font-body;
   font-size: $font-size-sm;
   font-weight: $font-weight-medium;
   color: $app-text-muted;
 }
 
-.bento-secondary__amount {
+.bento-hero-side__amount {
   font-family: $font-display;
   font-size: $font-size-2xl;
   font-weight: $font-weight-bold;
@@ -169,21 +159,28 @@
   line-height: 1;
 }
 
-.bento-secondary__currency {
+.bento-hero-side__currency {
   font-size: $font-size-base;
   color: $app-text-muted;
   margin-right: 2px;
 }
 
-.bento-secondary__sub {
+.bento-hero-side__sub {
   margin-top: $spacing-2;
   font-family: $font-body;
   font-size: $font-size-sm;
-  color: $app-text-muted; // was faint (2.9:1) — AA requires 4.5:1
+  color: $app-text-muted;
 }
 
-// --- Terciarias (3 items, 1 columna cada uno) ---
-.bento-tertiary {
+// ---------------------------------------------------------------- Metrics row: 4 columns
+.bento-row-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-4;
+  margin-bottom: $spacing-4;
+}
+
+.bento-metric {
   display: flex;
   flex-direction: column;
   gap: $spacing-2;
@@ -192,61 +189,11 @@
   border: 1px solid $app-border-soft;
   border-radius: $radius-lg;
   box-shadow: $shadow-sm;
-
-  svg {
-    color: $app-text-faint;
-    flex-shrink: 0;
-  }
-}
-
-.bento-tertiary__number {
-  font-family: $font-display;
-  font-size: $font-size-2xl;
-  font-weight: $font-weight-bold;
-  letter-spacing: -0.02em;
-  color: $app-text;
-  line-height: 1;
-}
-
-.bento-tertiary__label {
-  font-family: $font-body;
-  font-size: $font-size-xs;
-  color: $app-text-muted;
-}
-
-// --- Acciones rápidas ---
-.dashboard-actions-section {
-  margin-top: $spacing-2;
-}
-
-.dashboard-actions-title {
-  margin: 0 0 $spacing-4;
-  font-family: $font-display;
-  font-size: $font-size-base;
-  font-weight: $font-weight-semibold;
-  color: $app-text;
-}
-
-.dashboard-actions {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
-  gap: $spacing-3;
-}
-
-.action-card {
-  display: flex;
-  align-items: center;
-  gap: $spacing-3;
-  padding: $spacing-4 $spacing-5;
-  background: $app-surface;
-  border: 1px solid $app-border-soft;
-  border-radius: $radius-lg;
   text-decoration: none;
-  color: $app-text;
   transition: border-color 0.15s ease;
 
   svg {
-    color: $app-accent;
+    color: $app-text-faint;
     flex-shrink: 0;
   }
 
@@ -260,38 +207,335 @@
   }
 }
 
-.action-card__text {
-  flex: 1;
-  min-width: 0;
+.bento-metric__number {
+  font-family: $font-display;
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  letter-spacing: -0.02em;
+  color: $app-text;
+  line-height: 1;
 }
 
-.action-card__title {
+.bento-metric__label {
   font-family: $font-body;
-  font-size: 14px;
+  font-size: $font-size-xs;
+  color: $app-text-muted;
+}
+
+// ---------------------------------------------------------------- Content row: facturas + alertas
+.bento-row-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-4;
+  margin-bottom: $spacing-4;
+}
+
+// ---------------------------------------------------------------- Panels
+.panel {
+  padding: $spacing-5;
+  background: $app-surface;
+  border: 1px solid $app-border-soft;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+
+  &--full {
+    margin-bottom: $spacing-4;
+  }
+}
+
+.panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-4;
+}
+
+.panel__title {
+  font-family: $font-display;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: $app-text;
+  margin: 0;
+}
+
+.panel__link {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-1;
+  font-family: $font-body;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: $app-accent;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.panel__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel__item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  padding: $spacing-3 0;
+
+  & + & {
+    border-top: 1px solid $app-border-soft;
+  }
+}
+
+.panel__item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-md;
+  background: rgba($app-accent, 0.08);
+  color: $app-accent;
+  flex-shrink: 0;
+}
+
+.panel__item-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.panel__item-title {
+  font-family: $font-body;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $app-text;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.panel__item-sub {
+  font-family: $font-body;
+  font-size: $font-size-xs;
+  color: $app-text-muted;
+}
+
+.panel__item-amount {
+  font-family: $font-display;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $app-text;
+  white-space: nowrap;
+}
+
+.panel__item-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: $radius-md;
+  flex-shrink: 0;
+
+  &--corte {
+    background: rgba($color-warning, 0.1);
+    color: $color-warning;
+  }
+
+  &--pago {
+    background: rgba($app-accent, 0.08);
+    color: $app-accent;
+  }
+}
+
+.panel__item-day {
+  font-family: $font-display;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  white-space: nowrap;
+
+  &--corte {
+    color: $color-warning;
+  }
+
+  &--pago {
+    color: $app-accent;
+  }
+}
+
+.panel__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-6 $spacing-4;
+  text-align: center;
+
+  svg {
+    color: $app-text-faint;
+    margin-bottom: $spacing-1;
+  }
+
+  p {
+    font-family: $font-body;
+    font-size: $font-size-sm;
+    color: $app-text-muted;
+    margin: 0;
+  }
+}
+
+.panel__empty-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 $spacing-4;
+  margin-top: $spacing-2;
+  border-radius: $radius-full;
+  background: $app-accent-soft;
+  color: $color-white;
+  font-family: $font-body;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  text-decoration: none;
+  transition: filter 0.2s;
+
+  &:hover {
+    filter: brightness(0.92);
+  }
+}
+
+// ---------------------------------------------------------------- Card summary grid
+.card-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: $spacing-4;
+}
+
+.card-summary {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+  padding: $spacing-4 $spacing-5;
+  background: $app-bg;
+  border: 1px solid $app-border-soft;
+  border-radius: $radius-lg;
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    border-color: $app-border-strong;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $app-accent;
+    outline-offset: 2px;
+  }
+}
+
+.card-summary__header {
+  display: flex;
+  align-items: center;
+  gap: $spacing-2;
+
+  svg {
+    color: $app-accent;
+    flex-shrink: 0;
+  }
+}
+
+.card-summary__name-group {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-summary__name {
+  font-family: $font-body;
+  font-size: $font-size-sm;
   font-weight: $font-weight-semibold;
   color: $app-text;
 }
 
-.action-card__desc {
+.card-summary__bank {
   font-family: $font-body;
-  font-size: 12px;
-  line-height: 1.4;
+  font-size: $font-size-xs;
   color: $app-text-muted;
-  margin-top: 1px;
 }
 
-.action-card__arrow {
-  color: $app-text-faint;
+.card-summary__inactive {
+  font-family: $font-body;
+  font-size: 9px;
+  font-weight: $font-weight-semibold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 2px $spacing-2;
+  border-radius: $radius-full;
+  background: rgba($app-danger, 0.1);
+  color: $app-danger;
   flex-shrink: 0;
 }
 
-// --- Estado vacío ---
+.card-summary__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $spacing-2;
+}
+
+.card-summary__label {
+  font-family: $font-body;
+  font-size: $font-size-xs;
+  color: $app-text-muted;
+}
+
+.card-summary__value {
+  font-family: $font-display;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $app-text;
+  white-space: nowrap;
+}
+
+.card-summary__dates {
+  display: flex;
+  gap: $spacing-4;
+  padding-top: $spacing-2;
+  border-top: 1px solid $app-border-soft;
+  font-family: $font-body;
+  font-size: $font-size-xs;
+  color: $app-text-muted;
+}
+
+// ---------------------------------------------------------------- Empty state
 .dashboard-empty {
-  text-align: center;
-  padding: $spacing-10 $spacing-4;
   border: 1px dashed $app-border;
   border-radius: $radius-lg;
   background: $app-surface;
+  overflow: hidden;
+}
+
+.dashboard-empty__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.dashboard-empty__main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-10 $spacing-6;
+  text-align: center;
 
   svg {
     color: $app-accent;
@@ -310,7 +554,7 @@
     font-size: $font-size-sm;
     color: $app-text-muted;
     margin: 0 auto $spacing-6;
-    max-width: 380px;
+    max-width: 320px;
     line-height: $line-height-normal;
   }
 }
@@ -321,7 +565,7 @@
   min-height: 42px;
   padding: 0 $spacing-5;
   border-radius: $radius-full;
-  background: $app-accent-soft; // white-on-accent (#0e9f6e) is 3.4:1 — soft is AA
+  background: $app-accent-soft;
   color: $color-white;
   font-size: $font-size-sm;
   font-weight: $font-weight-semibold;
@@ -333,34 +577,75 @@
   }
 }
 
+.dashboard-empty__preview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-3;
+  padding: $spacing-8 $spacing-6;
+  background: $app-bg;
+}
+
+.dashboard-empty__preview-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-2;
+  padding: $spacing-5 $spacing-3;
+  background: $app-surface;
+  border: 1px solid $app-border-soft;
+  border-radius: $radius-lg;
+
+  svg {
+    color: $app-text-faint;
+  }
+
+  span {
+    font-family: $font-body;
+    font-size: $font-size-xs;
+    color: $app-text-muted;
+  }
+}
+
 // ---------------------------------------------------------------- Responsive
 @include respond(tablet) {
   .dashboard-header__title {
     font-size: $font-size-2xl;
   }
 
-  .bento-row-main {
+  .bento-row-hero {
     grid-template-columns: 1fr;
   }
 
-  .bento-row-tertiary {
+  .bento-hero-side {
+    flex-direction: row;
+
+    &__item {
+      flex: 1;
+    }
+  }
+
+  .bento-row-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bento-row-content {
     grid-template-columns: 1fr;
   }
 
-  .bento-main {
-    &__primary {
-      font-size: $font-size-3xl;
-    }
+  .bento-hero-main__primary {
+    font-size: $font-size-3xl;
   }
 
-  .bento-secondary {
-    &__amount {
-      font-size: $font-size-xl;
-    }
+  .bento-hero-side__amount {
+    font-size: $font-size-xl;
   }
 
-  .bento-tertiary {
-    padding: $spacing-3 $spacing-4;
+  .card-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-empty__grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -373,7 +658,7 @@
     font-size: $font-size-xl;
   }
 
-  .bento-main {
+  .bento-hero-main {
     padding: $spacing-4;
 
     &__amounts {
@@ -389,7 +674,34 @@
     }
   }
 
-  .action-card {
+  .bento-hero-side {
+    flex-direction: column;
+
+    &__item {
+      padding: $spacing-4;
+    }
+
+    &__amount {
+      font-size: $font-size-xl;
+    }
+  }
+
+  .bento-row-metrics {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-3;
+  }
+
+  .bento-metric {
     padding: $spacing-3 $spacing-4;
+  }
+
+  .panel {
+    padding: $spacing-4;
+  }
+
+  .dashboard-empty__preview {
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-2;
+    padding: $spacing-5 $spacing-4;
   }
 }

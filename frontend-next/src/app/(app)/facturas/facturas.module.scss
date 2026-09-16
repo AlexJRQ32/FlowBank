@@ -1,7 +1,6 @@
 @use "tokens" as *;
 
-// Ported from legacy frontend/src/features/facturas/pages/FacturasPage.scss
-// (light theme via migrated _tokens.scss).
+// Facturas page — bento metrics + structured list
 
 .facturas-page {
   max-width: 960px;
@@ -16,15 +15,16 @@
 
     h1 {
       font-size: $font-size-3xl;
-      font-weight: $font-weight-medium;
-      color: $color-text;
+      font-weight: $font-weight-bold;
+      color: $app-text;
       margin: 0 0 $spacing-1;
+      letter-spacing: -0.02em;
     }
 
     p {
-      color: $color-text-muted;
+      color: $app-text-muted;
       margin: 0;
-      font-size: $font-size-base;
+      font-size: $font-size-sm;
       max-width: 560px;
     }
   }
@@ -36,44 +36,89 @@
     min-height: 42px;
     padding: 0 $spacing-5;
     border-radius: $radius-full;
-    background: $color-primary;
+    background: $app-accent-soft;
     color: $color-white;
     font-size: $font-size-sm;
     font-weight: $font-weight-semibold;
     text-decoration: none;
     flex-shrink: 0;
-    transition: background 0.2s;
+    transition: filter 0.2s;
 
     &:hover {
-      background: $color-primary-dark;
+      filter: brightness(0.92);
     }
   }
 
   &__section-title {
-    font-size: $font-size-xl;
-    font-weight: $font-weight-medium;
-    color: $color-text;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $app-text;
     margin: 0 0 $spacing-4;
   }
 
+  // --- Empty state ---
   &__empty-state {
-    text-align: center;
-    padding: $spacing-10 $spacing-4;
-    border: 1px dashed $color-border;
+    border: 1px dashed $app-border;
     border-radius: $radius-lg;
-    background: $color-surface;
+    background: $app-surface;
+    overflow: hidden;
+  }
+
+  &__empty-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  &__empty-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-10 $spacing-6;
+    text-align: center;
 
     svg {
-      color: $color-primary;
+      color: $app-accent;
       margin-bottom: $spacing-3;
     }
 
     p {
-      color: $color-text-muted;
-      margin: 0;
+      color: $app-text-muted;
+      margin: 0 auto $spacing-5;
+      font-size: $font-size-sm;
     }
   }
 
+  &__empty-preview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-3;
+    padding: $spacing-8 $spacing-6;
+    background: $app-bg;
+  }
+
+  &__empty-preview-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-2;
+    padding: $spacing-5 $spacing-3;
+    background: $app-surface;
+    border: 1px solid $app-border-soft;
+    border-radius: $radius-lg;
+
+    svg {
+      color: $app-text-faint;
+    }
+
+    span {
+      font-family: $font-body;
+      font-size: $font-size-xs;
+      color: $app-text-muted;
+    }
+  }
+
+  // --- List ---
   &__list {
     list-style: none;
     margin: 0;
@@ -87,10 +132,15 @@
     display: flex;
     align-items: center;
     gap: $spacing-4;
-    padding: $spacing-4;
-    background: $color-surface;
-    border: 1px solid $color-border;
+    padding: $spacing-4 $spacing-5;
+    background: $app-surface;
+    border: 1px solid $app-border-soft;
     border-radius: $radius-lg;
+    transition: border-color 0.15s ease;
+
+    &:hover {
+      border-color: $app-border-strong;
+    }
   }
 
   &__item-icon {
@@ -100,8 +150,8 @@
     width: 40px;
     height: 40px;
     border-radius: $radius-full;
-    background: rgba($color-primary, 0.1);
-    color: $color-primary;
+    background: rgba($app-accent, 0.08);
+    color: $app-accent;
     flex-shrink: 0;
   }
 
@@ -112,7 +162,7 @@
     h3 {
       font-size: $font-size-base;
       font-weight: $font-weight-semibold;
-      color: $color-text;
+      color: $app-text;
       margin: 0;
       overflow: hidden;
       white-space: nowrap;
@@ -121,7 +171,7 @@
 
     p {
       font-size: $font-size-xs;
-      color: $color-text-muted;
+      color: $app-text-muted;
       margin: 0;
     }
   }
@@ -129,7 +179,7 @@
   &__item-monto {
     font-size: $font-size-base;
     font-weight: $font-weight-semibold;
-    color: $color-text;
+    color: $app-text;
     white-space: nowrap;
   }
 
@@ -148,7 +198,7 @@
     background: transparent;
     border: 1px solid transparent;
     border-radius: $radius-full;
-    color: $color-danger;
+    color: $app-danger;
     font-size: $font-size-xs;
     font-weight: $font-weight-semibold;
     padding: $spacing-2 $spacing-3;
@@ -157,73 +207,128 @@
 
     &:hover {
       color: $color-white;
-      background: $color-danger;
+      background: $app-danger;
     }
   }
 }
 
-// ---------------------------------------------------------------- Metrics bar
-.facturas-metrics {
-  display: flex;
-  gap: $spacing-3;
+// ---------------------------------------------------------------- Bento metrics
+.facturas-bento-metrics {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: $spacing-4;
   margin-bottom: $spacing-6;
 }
 
-.facturas-metric {
+.facturas-bento-metric--hero {
+  padding: $spacing-5;
+  background: $app-surface;
+  border: 1px solid $app-border-soft;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+}
+
+.facturas-bento-metric--side {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-4;
+}
+
+.facturas-bento-metric__item {
+  flex: 1;
+  padding: $spacing-4;
+  background: $app-surface;
+  border: 1px solid $app-border-soft;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-sm;
+}
+
+.facturas-bento-metric__header {
   display: flex;
   align-items: center;
   gap: $spacing-2;
-  padding: $spacing-3 $spacing-4;
-  background: $color-surface;
-  border: 1px solid $color-border;
-  border-radius: $radius-lg;
-  flex: 1;
-  min-width: 0;
+  margin-bottom: $spacing-3;
 
   svg {
-    color: $app-text-faint;
+    color: $app-accent;
     flex-shrink: 0;
   }
 }
 
-.facturas-metric__data {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.facturas-metric__label {
+.facturas-bento-metric__label {
   font-family: $font-body;
-  font-size: 11px;
-  font-weight: $font-weight-medium;
-  color: $color-text-muted;
-  letter-spacing: 0.02em;
-}
-
-.facturas-metric__value {
-  font-family: $font-display;
   font-size: $font-size-sm;
-  font-weight: $font-weight-semibold;
-  color: $color-text;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-weight: $font-weight-medium;
+  color: $app-text-muted;
 }
 
-@media (max-width: 640px) {
+.facturas-bento-metric__big-number {
+  font-family: $font-display;
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  letter-spacing: -0.03em;
+  color: $app-text;
+  line-height: 1;
+}
+
+.facturas-bento-metric__value {
+  font-family: $font-display;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  letter-spacing: -0.02em;
+  color: $app-text;
+  line-height: 1;
+}
+
+.facturas-bento-metric__sub {
+  margin-top: $spacing-2;
+  font-family: $font-body;
+  font-size: $font-size-xs;
+  color: $app-text-muted;
+}
+
+// ---------------------------------------------------------------- Responsive
+@media (max-width: 768px) {
   .facturas-page {
     &__header {
       flex-direction: column;
       align-items: stretch;
     }
 
+    &__empty-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .facturas-bento-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .facturas-bento-metric--side {
+    flex-direction: row;
+
+    & > * {
+      flex: 1;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .facturas-page {
     &__item {
       flex-wrap: wrap;
     }
   }
 
-  .facturas-metrics {
+  .facturas-bento-metric--hero {
+    padding: $spacing-4;
+  }
+
+  .facturas-bento-metric__big-number {
+    font-size: $font-size-3xl;
+  }
+
+  .facturas-bento-metric--side {
     flex-direction: column;
-    gap: $spacing-2;
   }
 }

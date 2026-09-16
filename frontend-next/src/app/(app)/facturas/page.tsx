@@ -37,8 +37,6 @@ export default async function FacturasPage() {
     .order("fecha_compra", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false });
 
-  // Cast: the plain client's select-string inference types the FK relation as
-  // an array; at runtime PostgREST returns an object for the FK embed.
   const facturas = (facturasRaw ?? null) as FacturaItem[] | null;
 
   // Métricas reales
@@ -49,6 +47,7 @@ export default async function FacturasPage() {
   const totalColones = (facturas ?? [])
     .filter((f) => f.moneda !== "USD")
     .reduce((s, f) => s + (f.monto_total ?? 0), 0);
+  const facturasConImagen = (facturas ?? []).filter((f) => f.imagen_url).length;
 
   // Private bucket: imagen_url stores the storage path; sign it for the "Ver"
   // link. Legacy rows with an absolute URL are used as-is.
@@ -84,49 +83,77 @@ export default async function FacturasPage() {
       </div>
 
       {totalFacturas > 0 && (
-        <div className={styles["facturas-metrics"]}>
-          <div className={styles["facturas-metric"]}>
-            <FileTextIcon size={14} />
-            <div className={styles["facturas-metric__data"]}>
-              <span className={styles["facturas-metric__label"]}>Total facturas</span>
-              <span className={styles["facturas-metric__value"]}>
-                {totalFacturas}
-              </span>
+        <div className={styles["facturas-bento-metrics"]}>
+          <div className={styles["facturas-bento-metric--hero"]}>
+            <div className={styles["facturas-bento-metric__header"]}>
+              <FileTextIcon size={16} />
+              <span className={styles["facturas-bento-metric__label"]}>Total facturas</span>
+            </div>
+            <div className={styles["facturas-bento-metric__big-number"]}>
+              {totalFacturas}
+            </div>
+            <div className={styles["facturas-bento-metric__sub"]}>
+              {facturasConImagen} con imagen
             </div>
           </div>
-          {totalColones > 0 && (
-            <div className={styles["facturas-metric"]}>
-              <BanknoteIcon size={14} />
-              <div className={styles["facturas-metric__data"]}>
-                <span className={styles["facturas-metric__label"]}>Total colones</span>
-                <span className={styles["facturas-metric__value"]}>
+
+          <div className={styles["facturas-bento-metric--side"]}>
+            {totalColones > 0 && (
+              <div className={styles["facturas-bento-metric__item"]}>
+                <div className={styles["facturas-bento-metric__header"]}>
+                  <BanknoteIcon size={14} />
+                  <span className={styles["facturas-bento-metric__label"]}>Total colones</span>
+                </div>
+                <div className={styles["facturas-bento-metric__value"]}>
                   ₡{formatoColones(totalColones)}
-                </span>
+                </div>
               </div>
-            </div>
-          )}
-          {totalUsd > 0 && (
-            <div className={styles["facturas-metric"]}>
-              <BanknoteIcon size={14} />
-              <div className={styles["facturas-metric__data"]}>
-                <span className={styles["facturas-metric__label"]}>Total dólares</span>
-                <span className={styles["facturas-metric__value"]}>
+            )}
+            {totalUsd > 0 && (
+              <div className={styles["facturas-bento-metric__item"]}>
+                <div className={styles["facturas-bento-metric__header"]}>
+                  <BanknoteIcon size={14} />
+                  <span className={styles["facturas-bento-metric__label"]}>Total dólares</span>
+                </div>
+                <div className={styles["facturas-bento-metric__value"]}>
                   ${formatoDolares(totalUsd)}
-                </span>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       )}
 
       <h2 className={styles["facturas-page__section-title"]}>Historial</h2>
       {!facturas?.length ? (
         <div className={styles["facturas-page__empty-state"]}>
-          <FileTextIcon size={32} />
-          <p>Aún no has registrado facturas.</p>
-          <Link href="/facturas/subir" className={styles["facturas-page__subir"]}>
-            Subir primera factura
-          </Link>
+          <div className={styles["facturas-page__empty-grid"]}>
+            <div className={styles["facturas-page__empty-main"]}>
+              <FileTextIcon size={32} />
+              <p>Aún no has registrado facturas.</p>
+              <Link href="/facturas/subir" className={styles["facturas-page__subir"]}>
+                Subir primera factura
+              </Link>
+            </div>
+            <div className={styles["facturas-page__empty-preview"]}>
+              <div className={styles["facturas-page__empty-preview-item"]}>
+                <FileTextIcon size={16} />
+                <span>Total facturas</span>
+              </div>
+              <div className={styles["facturas-page__empty-preview-item"]}>
+                <BanknoteIcon size={16} />
+                <span>Total colones</span>
+              </div>
+              <div className={styles["facturas-page__empty-preview-item"]}>
+                <BanknoteIcon size={16} />
+                <span>Total dólares</span>
+              </div>
+              <div className={styles["facturas-page__empty-preview-item"]}>
+                <ScanBarcodeIcon size={16} />
+                <span>Con imagen</span>
+              </div>
+            </div>
+          </div>
         </div>
       ) : (
         <ul className={styles["facturas-page__list"]}>

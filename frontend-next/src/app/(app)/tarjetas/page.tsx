@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CreditCardIcon, TrendingDownIcon, TrendingUpIcon } from "@/components/icons";
+import { CreditCardIcon, TrendingDownIcon, TrendingUpIcon, WalletIcon } from "@/components/icons";
 import { getTarjetasConDeuda } from "@/lib/queries/tarjetas";
 import { formatoColones, formatoDolares } from "@/lib/currency";
 import TarjetaCard from "./_components/tarjeta-card";
@@ -10,7 +10,7 @@ import styles from "./tarjetas.module.scss";
 export const dynamic = "force-dynamic";
 
 export default async function TarjetasPage() {
-  const { tarjetas } = await getTarjetasConDeuda();
+  const { tarjetas, tipoCambio } = await getTarjetasConDeuda();
 
   // Métricas reales
   const totalDeudaUsd = tarjetas.reduce((s, t) => s + t.total_adeudado_usd, 0);
@@ -24,6 +24,11 @@ export default async function TarjetasPage() {
     0,
   );
   const activas = tarjetas.filter((t) => t.es_activa).length;
+  const totalLimiteUsd = tarjetas.reduce((s, t) => s + (t.limite_credito ?? 0), 0);
+  const totalLimiteColones = tarjetas.reduce(
+    (s, t) => s + (t.limite_credito_colones ?? 0),
+    0,
+  );
 
   return (
     <div className={styles["tarjetas-page"]}>
@@ -39,48 +44,107 @@ export default async function TarjetasPage() {
       </div>
 
       {tarjetas.length > 0 && (
-        <div className={styles["tarjetas-metrics"]}>
-          <div className={styles["tarjetas-metric"]}>
-            <TrendingDownIcon size={14} />
-            <div className={styles["tarjetas-metric__data"]}>
-              <span className={styles["tarjetas-metric__label"]}>Deuda total</span>
-              <span className={styles["tarjetas-metric__value"]}>
-                ₡{formatoColones(totalDeudaColones)} · ${formatoDolares(totalDeudaUsd)}
-              </span>
+        <>
+          {/* Bento metrics */}
+          <div className={styles["tarjetas-bento-metrics"]}>
+            <div className={styles["tarjetas-bento-metric--hero"]}>
+              <div className={styles["tarjetas-bento-metric__header"]}>
+                <TrendingDownIcon size={16} />
+                <span className={styles["tarjetas-bento-metric__label"]}>Deuda total</span>
+              </div>
+              <div className={styles["tarjetas-bento-metric__amounts"]}>
+                <span className={styles["tarjetas-bento-metric__primary"]}>
+                  ₡{formatoColones(totalDeudaColones)}
+                </span>
+                <span className={styles["tarjetas-bento-metric__secondary"]}>
+                  ${formatoDolares(totalDeudaUsd)}
+                </span>
+              </div>
+            </div>
+
+            <div className={styles["tarjetas-bento-metric--side"]}>
+              <div className={styles["tarjetas-bento-metric__item"]}>
+                <div className={styles["tarjetas-bento-metric__header"]}>
+                  <TrendingUpIcon size={14} />
+                  <span className={styles["tarjetas-bento-metric__label"]}>Disponible</span>
+                </div>
+                <div className={styles["tarjetas-bento-metric__value"]}>
+                  ₡{formatoColones(totalDisponibleColones)}
+                </div>
+                <div className={styles["tarjetas-bento-metric__sub"]}>
+                  ${formatoDolares(totalDisponibleUsd)}
+                </div>
+              </div>
+              <div className={styles["tarjetas-bento-metric__item"]}>
+                <div className={styles["tarjetas-bento-metric__header"]}>
+                  <WalletIcon size={14} />
+                  <span className={styles["tarjetas-bento-metric__label"]}>Límite</span>
+                </div>
+                <div className={styles["tarjetas-bento-metric__value"]}>
+                  ₡{formatoColones(totalLimiteColones)}
+                </div>
+                <div className={styles["tarjetas-bento-metric__sub"]}>
+                  ${formatoDolares(totalLimiteUsd)}
+                </div>
+              </div>
+            </div>
+
+            <div className={styles["tarjetas-bento-metric--count"]}>
+              <div className={styles["tarjetas-bento-metric__header"]}>
+                <CreditCardIcon size={14} />
+                <span className={styles["tarjetas-bento-metric__label"]}>Registradas</span>
+              </div>
+              <div className={styles["tarjetas-bento-metric__big-number"]}>
+                {activas}<span className={styles["tarjetas-bento-metric__denom"]}> / {tarjetas.length}</span>
+              </div>
+              <div className={styles["tarjetas-bento-metric__sub"]}>
+                activa{tarjetas.length !== 1 && "s"}
+              </div>
             </div>
           </div>
-          <div className={styles["tarjetas-metric"]}>
-            <TrendingUpIcon size={14} />
-            <div className={styles["tarjetas-metric__data"]}>
-              <span className={styles["tarjetas-metric__label"]}>Disponible</span>
-              <span className={styles["tarjetas-metric__value"]}>
-                ₡{formatoColones(totalDisponibleColones)} · ${formatoDolares(totalDisponibleUsd)}
-              </span>
+
+          {tipoCambio.venta && (
+            <div className={styles["tarjetas-tipo-cambio"]}>
+              Tipo de cambio: ₡{tipoCambio.venta.toFixed(2)} / ${tipoCambio.compra?.toFixed(2)}
+              <span> — {tipoCambio.fuente}</span>
             </div>
-          </div>
-          <div className={styles["tarjetas-metric"]}>
-            <CreditCardIcon size={14} />
-            <div className={styles["tarjetas-metric__data"]}>
-              <span className={styles["tarjetas-metric__label"]}>Registradas</span>
-              <span className={styles["tarjetas-metric__value"]}>
-                {activas} de {tarjetas.length} activa{tarjetas.length !== 1 && "s"}
-              </span>
-            </div>
-          </div>
-        </div>
+          )}
+        </>
       )}
 
       {!tarjetas?.length ? (
         <div className={styles["tarjetas-page__empty-state"]}>
-          <CreditCardIcon size={40} />
-          <h2>Sin tarjetas todavía</h2>
-          <p>
-            Registra tu primera tarjeta para empezar a controlar tus fechas de corte
-            y pago, y ver el resumen de tu deuda.
-          </p>
-          <Link href="/tarjetas/nueva" className={styles["tarjetas-page__nueva"]}>
-            Registrar tarjeta
-          </Link>
+          <div className={styles["tarjetas-page__empty-grid"]}>
+            <div className={styles["tarjetas-page__empty-main"]}>
+              <CreditCardIcon size={40} />
+              <h2>Sin tarjetas todavía</h2>
+              <p>
+                Registra tu primera tarjeta para empezar a controlar tus fechas de corte
+                y pago, y ver el resumen de tu deuda.
+              </p>
+              <Link href="/tarjetas/nueva" className={styles["tarjetas-page__nueva"]}>
+                Registrar tarjeta
+              </Link>
+            </div>
+            <div className={styles["tarjetas-page__empty-preview"]}>
+              <div className={styles["tarjetas-page__empty-preview-item"]}>
+                <TrendingDownIcon size={16} />
+                <span>Deuda total</span>
+              </div>
+              <div className={styles["tarjetas-page__empty-preview-item"]}>
+                <TrendingUpIcon size={16} />
+                <span>Disponible</span>
+              </div>
+              <div className={styles["tarjetas-page__empty-preview-item"]}>
+                <WalletIcon size={16} />
+                <span>Límite</span>
+              </div>
+              <div className={styles["tarjetas-page__empty-preview-item"]}>
+                <CreditCardIcon size={16} />
+                <span>Activas</span>
+              </div>
+            </div>
+          </div>
         </div>
       ) : (
         <ul className={styles["tarjetas-page__grid"]}>
