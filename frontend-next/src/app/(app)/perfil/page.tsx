@@ -15,7 +15,7 @@ export default async function PerfilPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("nombre, apellido")
+    .select("nombre, apellido, avatar_url")
     .eq("id", user!.id)
     .single();
 
@@ -31,7 +31,20 @@ export default async function PerfilPage() {
       </div>
 
       <div className={styles["perfil-page__card"]}>
-        <div className={styles["perfil-page__avatar"]}>{inicial}</div>
+        <div className={styles["perfil-page__avatar"]}>
+          {profile?.avatar_url ? (
+            <img
+              src={profile.avatar_url}
+              alt=""
+              width={72}
+              height={72}
+              referrerPolicy="no-referrer"
+              style={{ borderRadius: "50%", objectFit: "cover", display: "block" }}
+            />
+          ) : (
+            inicial
+          )}
+        </div>
         <dl className={styles["perfil-page__fields"]}>
           <div>
             <dt>Nombre</dt>

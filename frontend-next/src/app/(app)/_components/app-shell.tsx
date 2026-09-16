@@ -64,9 +64,10 @@ function PanelLeftIcon({ size = 20 }: { size?: number }) {
 interface AppShellProps {
   children: ReactNode;
   nombre: string;
+  avatarUrl?: string | null;
 }
 
-export function AppShell({ children, nombre }: AppShellProps) {
+export function AppShell({ children, nombre, avatarUrl }: AppShellProps) {
   const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [collapsed, toggleCollapsed] = useSidebarCollapsed();
@@ -98,7 +99,20 @@ export function AppShell({ children, nombre }: AppShellProps) {
               aria-haspopup="menu"
               aria-expanded={dropdownOpen}
             >
-              <span className={styles["topbar-avatar"]}>{inicial}</span>
+              <span className={styles["topbar-avatar"]}>
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt=""
+                  width={28}
+                  height={28}
+                  referrerPolicy="no-referrer"
+                  style={{ borderRadius: "50%", display: "block" }}
+                />
+              ) : (
+                inicial
+              )}
+            </span>
               <span className={styles["topbar-name"]}>{nombre}</span>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M6 9l6 6 6-6" />
