@@ -23,13 +23,11 @@ export async function createFacturaAction(
   if (!MONEDAS.includes(moneda as (typeof MONEDAS)[number])) {
     return { error: "Selecciona una moneda valida." };
   }
-  if (!imagen || imagen.size === 0) {
-    return { error: "Selecciona la foto de tu factura." };
-  }
-  if (imagen.size > 10 * 1024 * 1024) {
+  const tieneImagen = !!imagen && imagen.size > 0;
+  if (tieneImagen && imagen.size > 10 * 1024 * 1024) {
     return { error: "La imagen supera el maximo de 10 MB." };
   }
-  if (imagen.type && !imagen.type.startsWith("image/")) {
+  if (tieneImagen && imagen.type && !imagen.type.startsWith("image/")) {
     return { error: "El archivo debe ser una imagen (JPG, PNG, WEBP)." };
   }
   // tarjeta_id nullable: "" = "Sin asociar" is allowed (matches legacy).
@@ -40,27 +38,24 @@ export async function createFacturaAction(
   } = await supabase.auth.getUser();
   if (!user) return { error: "Tu sesion expiro. Inicia sesion de nuevo." };
 
-  // TODO(OCR): real data extraction is gated behind the Phase 0 Vercel spike
-  // (src/app/api/ocr-spike — tesseract.js cold-start/memory/accuracy). Port the
-  // regexes from backend OcrService.cs (monto/fecha/comercio) into
-  // src/app/api/ocr/route.ts ONLY after the spike passes; until then the user
-  // enters the data manually here. Do not half-implement the extraction.
-  // See PLAN.md Phase 5.
+  let imagenUrl: string | null = null;
+  if (tieneImagen) {
+    const ext = (imagen.name.split(".").pop() ?? "jpg").toLowerCase().replace(/\W/g, "");
+    const path = `${user.id}/${crypto.randomUUID()}.${ext || "jpg"}`;
 
-  const ext = (imagen.name.split(".").pop() ?? "jpg").toLowerCase().replace(/\W/g, "");
-  const path = `${user.id}/${crypto.randomUUID()}.${ext || "jpg"}`;
+    // Bucket 'facturas' created by supabase/migrations/20260912000011 (private,
+    // authenticated-only policies scoped to `${auth.uid()}/...` first segment).
+    const { error: uploadError } = await supabase.storage
+      .from("facturas")
+      .upload(path, imagen, {
+        contentType: imagen.type || undefined,
+        upsert: false,
+      });
 
-  // Bucket 'facturas' created by supabase/migrations/20260912000011 (private,
-  // authenticated-only policies scoped to `${auth.uid()}/...` first segment).
-  const { error: uploadError } = await supabase.storage
-    .from("facturas")
-    .upload(path, imagen, {
-      contentType: imagen.type || undefined,
-      upsert: false,
-    });
-
-  if (uploadError) {
-    return { error: "No se pudo subir la imagen de la factura. Intenta de nuevo." };
+    if (uploadError) {
+      return { error: "No se pudo subir la imagen de la factura. Intenta de nuevo." };
+    }
+    imagenUrl = path;
   }
 
   const { error: insertError } = await supabase.from("facturas").insert({
@@ -69,7 +64,7 @@ export async function createFacturaAction(
     moneda,
     fecha_compra: fecha || null,
     comercio: comercio || null,
-    imagen_url: path, // storage path; signed URL generated on render (bucket is private)
+    imagen_url: imagenUrl, // storage path; signed URL generated on render (bucket is private)
   });
 
   if (insertError) {

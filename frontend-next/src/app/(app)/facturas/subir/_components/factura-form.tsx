@@ -18,6 +18,34 @@ interface OcrResultado {
   comercio: string;
 }
 
+// Resize to max 1600px + JPEG q0.85 via canvas. Fixes the mobile-capture
+// failure chain: raw camera blobs (5-12 MB) hit the 60s OCR timeout, HEIC
+// from iOS cameras cannot be decoded by tesseract.js on the server, and the
+// compressed JPEG replaces the input file so the Storage upload gets a
+// browser-renderable image too.
+async function comprimirImagen(file: File): Promise<Blob | File> {
+  try {
+    const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+    const max = 1600;
+    const scale = Math.min(1, max / Math.max(bitmap.width, bitmap.height));
+    const width = Math.max(1, Math.round(bitmap.width * scale));
+    const height = Math.max(1, Math.round(bitmap.height * scale));
+
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    canvas.getContext("2d")?.drawImage(bitmap, 0, 0, width, height);
+    bitmap.close();
+
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/jpeg", 0.85),
+    );
+    return blob ?? file;
+  } catch {
+    return file; // fallback: server gets the original
+  }
+}
+
 export function FacturaForm({
   action,
   tarjetas,
@@ -43,16 +71,33 @@ export function FacturaForm({
     const comercioInput = document.getElementById("comercio") as HTMLInputElement | null;
 
     try {
+      const comprimida = await comprimirImagen(file);
+
+      // Swap the form's file too: the Storage upload gets the compressed JPEG
+      // (smaller, and HEIC becomes browser-renderable for the signed link).
+      if (comprimida !== file) {
+        const dt = new DataTransfer();
+        dt.items.add(
+          new File([comprimida], file.name.replace(/\.[^.]*$/, "") + ".jpg", {
+            type: "image/jpeg",
+          }),
+        );
+        if (imagenRef.current) imagenRef.current.files = dt.files;
+      }
+
       const formData = new FormData();
-      formData.append("image", file);
+      formData.append("image", comprimida, "factura.jpg");
       const res = await fetch("/api/ocr", { method: "POST", body: formData });
       if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? "Error de OCR");
       const resultado: OcrResultado = await res.json();
       if (montoInput && resultado.monto > 0) montoInput.value = String(resultado.monto);
       if (fechaInput && resultado.fecha) fechaInput.value = resultado.fecha;
       if (comercioInput && resultado.comercio) comercioInput.value = resultado.comercio;
+      if (!resultado.monto && !resultado.fecha && !resultado.comercio) {
+        setExtractError("No se detectaron datos automaticamente. Completa los campos a mano.");
+      }
     } catch {
-      setExtractError("No se pudo leer la factura. Completa los datos manualmente.");
+      setExtractError("No se pudo leer la factura. Completa los datos a mano y guarda.");
     } finally {
       setExtracting(false);
     }
@@ -116,13 +161,12 @@ export function FacturaForm({
       </div>
 
       <div className={styles["form-field"]}>
-        <label htmlFor="imagen">Foto de la factura</label>
+        <label htmlFor="imagen">Foto de la factura (opcional)</label>
         <input
           id="imagen"
           name="imagen"
           type="file"
           accept="image/*"
-          required
           ref={imagenRef}
           onChange={handleImagenChange}
         />
@@ -130,7 +174,11 @@ export function FacturaForm({
           JPG, PNG, WEBP - maximo 10 MB
           {extracting && " — Extrayendo datos..."}
         </small>
-        {extractError && <small role="alert">{extractError}</small>}
+        {extractError && (
+          <p className={styles["form-error"]} role="alert">
+            {extractError}
+          </p>
+        )}
       </div>
 
       <div className={styles["form-actions"]}>
