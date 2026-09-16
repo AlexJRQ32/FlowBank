@@ -190,7 +190,7 @@ export default function LandingView({ isAuthed, nombre }: LandingViewProps) {
 
       {/* --------------------------------------------------------- FEATURES: alternating rows */}
       <section className={styles.features} id="features">
-        <p className={styles.kicker}>Funcionalidades</p>
+        <span className={`${styles["section-badge"]} ${styles["section-badge--emerald"]}`}>Funcionalidades</span>
         <h2 className={styles["section-title"]}>
           Lo que hace por ti
           <br />
@@ -219,7 +219,7 @@ export default function LandingView({ isAuthed, nombre }: LandingViewProps) {
 
       {/* -------------------------------------------------------------- HOW */}
       <section className={styles.how} id="how">
-        <p className={styles.kicker}>Cómo funciona</p>
+        <span className={`${styles["section-badge"]} ${styles["section-badge--blue"]}`}>Cómo funciona</span>
         <h2 className={styles["section-title"]}>
           Tres pasos
           <br />
@@ -240,6 +240,32 @@ export default function LandingView({ isAuthed, nombre }: LandingViewProps) {
           ) : (
             <Link href="/registro" className={styles["btn"] + " " + styles["btn--primary"]}>Dejar de adivinar fechas</Link>
           )}
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------- CTA BANNER */}
+      <section className={styles["cta-banner"]}>
+        <div className={styles["cta-banner__card"]}>
+          <h2>Dejá de adivinar tus fechas de pago</h2>
+          <p>
+            Uní todas tus tarjetas en un solo panel. Gratis, sin tarjeta de crédito.
+          </p>
+          <div className={styles["cta-banner__actions"]}>
+            {isAuthed ? (
+              <Link href="/dashboard" className={styles["btn"] + " " + styles["btn--primary"]}>
+                Ir al dashboard
+              </Link>
+            ) : (
+              <>
+                <Link href="/registro" className={styles["btn"] + " " + styles["btn--primary"]}>
+                  Crear cuenta gratis
+                </Link>
+                <Link href="/login" className={styles["btn-ghost-light"]}>
+                  Ya tengo una
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </section>
 
