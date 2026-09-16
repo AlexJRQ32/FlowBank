@@ -58,6 +58,10 @@ export function LoginPage() {
           )}
         </form>
 
+        <div className={styles["auth-card__divider"]}>
+          <span>o continua con</span>
+        </div>
+
         <GoogleAuthButton />
 
         <p className={styles["auth-card__switch"]}>
