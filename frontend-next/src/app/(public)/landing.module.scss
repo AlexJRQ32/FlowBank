@@ -147,30 +147,32 @@ $color-purple-light: #ede9fe;
   pointer-events: none;
 }
 
-// ── Navbar ──────────────────────────────────────────────────────────
+// ── Navbar (floating pill, Trustride pattern) ──────────────────────
 .hero-nav {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 12px;
+  left: 16px;
+  right: 16px;
   z-index: 100;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: $spacing-4 $spacing-8;
-  background: transparent;
-  border-bottom: 1px solid transparent;
+  padding: 0 $spacing-5;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
   transition: background 0.25s ease, box-shadow 0.25s ease,
-    border-color 0.25s ease, padding 0.25s ease;
+    border-color 0.25s ease;
 }
 
 .hero-nav--solid {
-  padding: $spacing-3 $spacing-8;
-  background: rgba($landing-surface, 0.92);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border-bottom-color: $landing-border;
-  box-shadow: $shadow-sm;
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(16, 32, 26, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .hero-nav__brand {
@@ -846,11 +848,15 @@ $color-purple-light: #ede9fe;
   }
 
   .hero-nav {
-    padding: $spacing-3 $spacing-5;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    height: 52px;
+    padding: 0 $spacing-4;
   }
 
   .hero-nav--solid {
-    padding: $spacing-2 $spacing-5;
+    background: rgba(255, 255, 255, 0.65);
   }
 
   .hero-nav__links {
