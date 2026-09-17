@@ -716,18 +716,19 @@ $color-purple-light: #ede9fe;
   }
 }
 
-// ── CTA Banner: full-width ──────────────────────────────────────────
+// ── CTA Banner: full-bleed gradient to the viewport edges, content centered ──
 .cta-banner {
   padding: $spacing-12 0;
-  background: $landing-bg-elevated;
+  // AA-safe dark gradient (white text 5.4:1 → 7.1:1), spans full viewport.
+  background: linear-gradient(135deg, $color-primary-dark, $color-secondary);
 }
 
+// Pure centering container on top of the full-bleed banner — no card, no
+// radius, content hugs the max-width like the other sections.
 .cta-banner__inner {
   max-width: 720px;
   margin: 0 auto;
-  padding: $spacing-10 $spacing-8;
-  background: linear-gradient(135deg, $color-primary-dark, $color-secondary);
-  border-radius: $radius-xl;
+  padding: 0 $spacing-4;
   text-align: center;
   color: $color-white;
 
@@ -853,7 +854,7 @@ $color-purple-light: #ede9fe;
   }
 
   .cta-banner__inner {
-    padding: $spacing-8 $spacing-5;
+    padding: 0 $spacing-5;
   }
 }
 
@@ -894,6 +895,6 @@ $color-purple-light: #ede9fe;
   }
 
   .cta-banner__inner {
-    padding: $spacing-6 $spacing-4;
+    padding: 0 $spacing-4;
   }
 }
