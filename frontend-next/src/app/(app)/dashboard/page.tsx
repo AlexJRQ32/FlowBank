@@ -167,7 +167,7 @@ export default async function DashboardPage() {
                   {tipoCambio.compra?.toFixed(2)}
                   <span className={styles["bento-hero-main__source"]}>
                     {" "}
-                    — {tipoCambio.fuente}
+                   : {tipoCambio.fuente}
                   </span>
                 </div>
               )}
@@ -317,7 +317,7 @@ export default async function DashboardPage() {
                       </div>
                       <div className={styles["panel__item-info"]}>
                         <span className={styles["panel__item-title"]}>
-                          {f.tipo === "corte" ? "Corte" : "Pago"} — {f.nombre}
+                          {f.tipo === "corte" ? "Corte" : "Pago"}: {f.nombre}
                         </span>
                         <span className={styles["panel__item-sub"]}>{f.banco}</span>
                       </div>

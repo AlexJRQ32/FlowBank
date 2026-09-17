@@ -21,7 +21,7 @@ export async function updatePerfilAction(
   if (!nombre) return { error: "Ingresa tu nombre." };
 
   // RLS scopes the update to own row (USING auth.uid() = id). Email change is
-  // out of MVP scope (plan section 6: dropped like legacy) — not offered here.
+  // out of MVP scope (plan section 6: dropped like legacy): not offered here.
   const { error } = await supabase
     .from("profiles")
     .update({ nombre, apellido })

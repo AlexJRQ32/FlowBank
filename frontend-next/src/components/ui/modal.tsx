@@ -1,6 +1,6 @@
 "use client";
 
-// Port of legacy src/components/ui/Modal/Modal.tsx — 1:1 behavior:
+// Port of legacy src/components/ui/Modal/Modal.tsx: 1:1 behavior:
 // portal to document.body, ESC close, click-outside close, tab focus-trap,
 // body scroll lock, focus restored on close. Footer is optional
 // (Cancelar/Guardar pattern from the legacy TarjetaFormModal/BancoFormModal).

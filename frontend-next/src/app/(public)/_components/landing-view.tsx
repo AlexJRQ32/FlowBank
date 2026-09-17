@@ -32,7 +32,7 @@ const FEATURES = [
   {
     icon: CreditCardIcon,
     title: "Todas tus tarjetas, todos tus bancos",
-    text: "Registrá cada tarjeta con su banco, día de corte y día de pago. Solo los últimos 4 dígitos — nunca el número completo.",
+    text: "Registrá cada tarjeta con su banco, día de corte y día de pago. Solo los últimos 4 dígitos ,  nunca el número completo.",
   },
   {
     icon: TrendingDownIcon,
@@ -83,7 +83,7 @@ const FAQS = [
   },
   {
     q: "¿Mis datos están seguros?",
-    a: "Guardamos solo los últimos 4 dígitos de cada tarjeta — nunca el número completo. Tus datos están protegidos y solo tú puedes verlos: cada persona accede únicamente a lo suyo, y tu sesion no puede ser leída por otras páginas ni programas.",
+    a: "Guardamos solo los últimos 4 dígitos de cada tarjeta ,  nunca el número completo. Tus datos están protegidos y solo tú puedes verlos: cada persona accede únicamente a lo suyo, y tu sesion no puede ser leída por otras páginas ni programas.",
   },
   {
     q: "¿Necesito ingresar mis contraseñas de banco?",

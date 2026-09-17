@@ -71,7 +71,7 @@ async function obtenerDeBccr(): Promise<{ compra: number; venta: number } | null
   try {
     // NOTE: BCCR may reject requests from non-CR IPs (e.g. Vercel serverless
     // regions). Token + Referer flow verified locally from CR; cannot be tested
-    // outside CR — if production fails, fuente='fallback' covers the miss.
+    // outside CR: if production fails, fuente='fallback' covers the miss.
     const resToken = await fetch(TOKEN_URL, {
       signal: AbortSignal.timeout(BCCR_TIMEOUT_MS),
       cache: "no-store",

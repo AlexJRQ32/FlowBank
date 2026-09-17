@@ -172,7 +172,7 @@ export function FacturaForm({
         />
         <small>
           JPG, PNG, WEBP - maximo 10 MB
-          {extracting && " — Extrayendo datos..."}
+          {extracting && ": Extrayendo datos..."}
         </small>
         {extractError && (
           <p className={styles["form-error"]} role="alert">

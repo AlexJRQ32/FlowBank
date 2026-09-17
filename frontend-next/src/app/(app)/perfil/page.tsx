@@ -48,15 +48,15 @@ export default async function PerfilPage() {
         <dl className={styles["perfil-page__fields"]}>
           <div>
             <dt>Nombre</dt>
-            <dd>{nombre || "—"}</dd>
+            <dd>{nombre || "-"}</dd>
           </div>
           <div>
             <dt>Apellido</dt>
-            <dd>{apellido || "—"}</dd>
+            <dd>{apellido || "-"}</dd>
           </div>
           <div>
             <dt>Correo electronico</dt>
-            <dd>{user?.email ?? "—"}</dd>
+            <dd>{user?.email ?? "-"}</dd>
           </div>
         </dl>
       </div>

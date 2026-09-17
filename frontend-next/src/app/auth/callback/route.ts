@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 /**
- * OAuth callback — Supabase-hosted flow code exchange.
+ * OAuth callback: Supabase-hosted flow code exchange.
  * Supabase redirects here with ?code=...; we exchange it for a session,
  * cookies are set on the redirect response, and the user lands on the
  * `next` path (default /dashboard). Failure (invalid/expired code) →
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
       if (error) throw error;
 
       // Backfill the profile with Google OAuth metadata (full_name, name,
-      // avatar_url) so the trigger-created row isn't stuck as "Nombre → —".
+      // avatar_url) so the trigger-created row isn't stuck as "Nombre → -".
       // Only fills empty fields; explicit profile edits are never overwritten.
       const {
         data: { user },

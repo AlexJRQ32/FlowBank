@@ -1,4 +1,4 @@
-// Catalog page — legacy handled banks inline from /tarjetas ("Nuevo banco"
+// Catalog page: legacy handled banks inline from /tarjetas ("Nuevo banco"
 // modal); this page replaces the old stand-in placeholder with the full
 // borrower catalog listing + the same create modal.
 import { CreditCardIcon } from "@/components/icons";

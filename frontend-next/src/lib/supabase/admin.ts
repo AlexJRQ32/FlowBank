@@ -1,4 +1,4 @@
-// Service-role client — BYPASSES ALL RLS. Only import from Route Handlers /
+// Service-role client: BYPASSES ALL RLS. Only import from Route Handlers /
 // Server Actions that need admin writes (tipo-cambio cache refresh); never
 // from "use client" code (Gothic Failure #4).
 import { createClient } from "@supabase/supabase-js";

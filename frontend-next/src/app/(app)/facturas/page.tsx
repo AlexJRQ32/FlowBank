@@ -154,7 +154,7 @@ export default async function FacturasPage() {
                 <span className={styles["facturas-bento-metric__label"]}>Más frecuente</span>
               </div>
               <div className={styles["facturas-bento-metric__value"]}>
-                {topComercio ? topComercio[0] : "—"}
+                {topComercio ? topComercio[0] : "-"}
               </div>
               <div className={styles["facturas-bento-metric__sub"]}>
                 {topComercio ? `${topComercio[1]} compra${topComercio[1] !== 1 ? "s" : ""}` : "Sin datos"}

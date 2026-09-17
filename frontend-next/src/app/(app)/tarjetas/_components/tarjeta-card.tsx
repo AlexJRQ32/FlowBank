@@ -9,7 +9,7 @@ function formatoDigitos(digitos: string): string {
 }
 
 // Static port of legacy TarjetaCard (CSS-only; motion animations dropped per
-// the minimal port — gradient/chip/visual language preserved). Info rows match
+// the minimal port: gradient/chip/visual language preserved). Info rows match
 // legacy: "Limite disponible" (₡ | $) and "Debes" (₡ | $), computed server-side
 // with the day's tipo de cambio.
 export default function TarjetaCard({ tarjeta }: { tarjeta: TarjetaConDeuda }) {
@@ -41,11 +41,11 @@ export default function TarjetaCard({ tarjeta }: { tarjeta: TarjetaConDeuda }) {
           <div className={styles["tarjeta-card__dates"]}>
             <div className={styles["tarjeta-card__field"]}>
               <span>Corte</span>
-              <strong>Dia {tarjeta.dia_corte ?? "—"}</strong>
+              <strong>Dia {tarjeta.dia_corte ?? "-"}</strong>
             </div>
             <div className={styles["tarjeta-card__field"]}>
               <span>Pago</span>
-              <strong>Dia {tarjeta.dia_pago ?? "—"}</strong>
+              <strong>Dia {tarjeta.dia_pago ?? "-"}</strong>
             </div>
           </div>
           <span className={styles["tarjeta-card__tipo"]}>{tarjeta.tipo}</span>

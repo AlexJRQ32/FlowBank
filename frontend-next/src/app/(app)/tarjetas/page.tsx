@@ -72,7 +72,7 @@ export default async function TarjetasPage() {
 
       {tarjetas.length > 0 && (
         <>
-          {/* Bento metrics — ÚNICOS de tarjetas */}
+          {/* Bento metrics: ÚNICOS de tarjetas */}
           <div className={styles["tarjetas-bento-metrics"]}>
             {/* Hero: % uso de límite */}
             <div className={styles["tarjetas-bento-metric--hero"]}>
@@ -160,7 +160,7 @@ export default async function TarjetasPage() {
           {tipoCambio.venta && (
             <div className={styles["tarjetas-tipo-cambio"]}>
               Tipo de cambio: ₡{tipoCambio.venta.toFixed(2)} / ${tipoCambio.compra?.toFixed(2)}
-              <span> — {tipoCambio.fuente}</span>
+              <span>: {tipoCambio.fuente}</span>
             </div>
           )}
         </>

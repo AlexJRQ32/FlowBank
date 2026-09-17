@@ -1,5 +1,5 @@
 // ============================================================================
-// LandingPage v2 — professional centered layout
+// LandingPage v2 ,  professional centered layout
 // Editorial typography, consistent max-width container, timeline steps,
 // FAQ accordion, full-width CTA. Anti-slop: no card grids, no hover
 // translateY uniform, no testimonials, no fake stats.
@@ -243,6 +243,8 @@ $color-purple-light: #ede9fe;
   border-radius: $radius-full;
   background: rgba($color-white, 0.14);
   backdrop-filter: blur(8px);
+  // Stands apart from the plain nav links (which stay medium weight).
+  font-weight: $font-weight-semibold;
 
   &:hover {
     background: rgba($color-white, 0.24);
@@ -252,7 +254,7 @@ $color-purple-light: #ede9fe;
 
 .hero-nav--solid .hero-nav__cta {
   border-color: transparent;
-  // AA: white text on $landing-accent (#0e9f6e) is 3.4:1 — the deep token
+  // AA: white text on $landing-accent (#0e9f6e) is 3.4:1 ,  the deep token
   // (#0b7a54) reaches 5.4:1 with the same white.
   background: $landing-accent-deep;
   color: $landing-on-accent;
@@ -729,7 +731,7 @@ $color-purple-light: #ede9fe;
   background: linear-gradient(135deg, $color-primary-dark, $color-secondary);
 }
 
-// Pure centering container on top of the full-bleed banner — no card, no
+// Pure centering container on top of the full-bleed banner ,  no card, no
 // radius, content hugs the max-width like the other sections.
 .cta-banner__inner {
   max-width: 720px;

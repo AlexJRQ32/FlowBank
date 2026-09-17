@@ -1,4 +1,4 @@
-// OCR endpoint — 1:1 port of backend/FlowBank.WebAPI/Services/OcrService.cs
+// OCR endpoint: 1:1 port of backend/FlowBank.WebAPI/Services/OcrService.cs
 // (ExtraerMonto / ExtraerFecha / ExtraerComercio). Same regexes, same fallbacks.
 import { createWorker } from "tesseract.js";
 import spaLang from "@tesseract.js-data/spa";

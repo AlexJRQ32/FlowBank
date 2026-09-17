@@ -1,4 +1,4 @@
-// Port of legacy src/components/ui/CreditCardPreview/CreditCardPreview.tsx —
+// Port of legacy src/components/ui/CreditCardPreview/CreditCardPreview.tsx -
 // same visual and live-reflection of form state; framer-motion animations are
 // replicated with CSS keyframes in the module (shine sweep, glow pulse, chip
 // glow, hover lift) so no animation dependency is introduced.

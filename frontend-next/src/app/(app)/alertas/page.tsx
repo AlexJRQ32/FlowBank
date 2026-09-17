@@ -100,8 +100,8 @@ export default async function AlertasPage() {
             </div>
             <div className={styles["alertas-bento-metric__big-number"]}>
               {primeraFecha
-                ? `${primeraFecha.tipo === "corte" ? "Corte" : "Pago"} — Día ${primeraFecha.dia}`
-                : "—"
+                ? `${primeraFecha.tipo === "corte" ? "Corte" : "Pago"}: Día ${primeraFecha.dia}`
+                : "-"
               }
             </div>
             <div className={styles["alertas-bento-metric__sub"]}>
