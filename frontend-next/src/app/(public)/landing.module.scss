@@ -1,21 +1,19 @@
 // ============================================================================
-// LandingPage - editorial premium redesign
-// Ported 1:1 from legacy features/landing/pages/LandingPage.scss.
-// Typographic hero over the arches artwork, serif display type, generous
-// negative space. Palette: emerald #0e9f6e / blue #1a56db / light #f7f9f8.
-// Trustride-inspired: alternating section bgs, colored badges, card rows,
-// colored icon backgrounds, CTA banner.
+// LandingPage v2 — professional centered layout
+// Editorial typography, consistent max-width container, timeline steps,
+// FAQ accordion, full-width CTA. Anti-slop: no card grids, no hover
+// translateY uniform, no testimonials, no fake stats.
+// Palette: emerald #0e9f6e / blue #1a56db / light #f7f9f8.
 // ============================================================================
 
 @use "tokens" as *;
 @use "mixins" as *;
 
-// Google Font @import stays first in the emitted CSS (@use emits no CSS here).
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap");
 
 $font-editorial: "Playfair Display", Georgia, "Times New Roman", serif;
 
-// Trustride-inspired color tokens for feature icons and step accents
+// Feature icon colors
 $color-blue: #1a56db;
 $color-blue-light: #e1effe;
 $color-teal: #0d9488;
@@ -25,13 +23,20 @@ $color-orange-light: #ffedd5;
 $color-purple: #7c3aed;
 $color-purple-light: #ede9fe;
 
+// ── Shared container ────────────────────────────────────────────────
+.section-container {
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding: 0 $spacing-6;
+}
+
 .landing-page {
   background: $color-background;
   color: $color-text;
   font-family: $font-body;
 }
 
-// ---------------------------------------------------------------- Reveal
+// ── Reveal animation (hero only) ────────────────────────────────────
 @keyframes reveal {
   from {
     opacity: 0;
@@ -45,18 +50,11 @@ $color-purple-light: #ede9fe;
 
 .hero__title,
 .hero__sub,
-.hero__actions,
-.kicker,
-.section-title,
-.step {
+.hero__actions {
   animation: reveal 0.6s ease both;
 }
 
-.feature-row {
-  animation: reveal 0.6s ease both;
-}
-
-// ---------------------------------------------------------------- Buttons
+// ── Buttons ─────────────────────────────────────────────────────────
 .btn {
   display: inline-flex;
   align-items: center;
@@ -68,8 +66,7 @@ $color-purple-light: #ede9fe;
   font-size: $font-size-sm;
   font-weight: $font-weight-semibold;
   text-decoration: none;
-  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 
   &:active {
     transform: translateY(1px);
@@ -97,7 +94,6 @@ $color-purple-light: #ede9fe;
   }
 }
 
-// Ghost variant for CTA banner (white text on emerald bg)
 .btn-ghost-light {
   display: inline-flex;
   align-items: center;
@@ -119,7 +115,7 @@ $color-purple-light: #ede9fe;
   }
 }
 
-// ---------------------------------------------------------------- Hero
+// ── Hero ────────────────────────────────────────────────────────────
 .hero {
   position: relative;
   min-height: 100svh;
@@ -147,7 +143,7 @@ $color-purple-light: #ede9fe;
   pointer-events: none;
 }
 
-// Top navbar
+// ── Navbar ──────────────────────────────────────────────────────────
 .hero-nav {
   position: fixed;
   top: 0;
@@ -323,17 +319,15 @@ $color-purple-light: #ede9fe;
   span:nth-child(1) {
     transform: translateY(7px) rotate(45deg);
   }
-
   span:nth-child(2) {
     opacity: 0;
   }
-
   span:nth-child(3) {
     transform: translateY(-7px) rotate(-45deg);
   }
 }
 
-// Mobile dropdown menu
+// ── Mobile menu ─────────────────────────────────────────────────────
 .mobile-menu {
   position: fixed;
   inset: 0;
@@ -372,27 +366,16 @@ $color-purple-light: #ede9fe;
 }
 
 @keyframes menuBackdropIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes menuPanelIn {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
+// ── Hero content ────────────────────────────────────────────────────
 .hero__content {
   position: relative;
   z-index: 1;
@@ -440,17 +423,7 @@ $color-purple-light: #ede9fe;
   flex-wrap: wrap;
 }
 
-// ---------------------------------------------------------------- Sections
-.kicker {
-  margin: 0 0 $spacing-3;
-  font-size: $font-size-xs;
-  font-weight: $font-weight-semibold;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: $color-primary;
-}
-
-// Trustride-inspired section badge (colored chip)
+// ── Section badges & titles ─────────────────────────────────────────
 .section-badge {
   display: inline-block;
   padding: $spacing-1 $spacing-3;
@@ -488,80 +461,82 @@ $color-purple-light: #ede9fe;
   }
 }
 
-// ---------------------------------------------------------------- Features
-// Trustride-inspired: soft alternating bg, card rows with colored icon bgs
-.features {
-  padding: $spacing-12 $spacing-6;
-  max-width: 880px;
-  margin: 0 auto;
-  background: $landing-bg-elevated;
-  border-radius: $radius-xl;
-  margin-top: $spacing-10;
-  margin-bottom: $spacing-10;
+// ── All-in-one band ─────────────────────────────────────────────────
+.all-in-one {
+  padding: $spacing-12 0;
+  background: $color-surface;
+  border-bottom: 1px solid $color-border;
 }
 
-.features__rows {
+.all-in-one__list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-4 $spacing-8;
+  max-width: 640px;
+}
+
+.all-in-one__item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  color: $color-text;
+
+  svg {
+    flex-shrink: 0;
+    color: $color-primary;
+  }
+}
+
+// ── Features: editorial list ────────────────────────────────────────
+.features {
+  padding: $spacing-12 0;
+  background: $landing-bg-elevated;
+  border-bottom: 1px solid $color-border;
+}
+
+.features__list {
   display: flex;
   flex-direction: column;
   gap: $spacing-6;
-  margin-top: $spacing-8;
 }
 
-.feature-row {
+.feature-item {
   display: flex;
   align-items: flex-start;
   gap: $spacing-5;
-  padding: $spacing-5 $spacing-6;
-  background: $color-white;
-  border: 1px solid $color-border;
-  border-radius: $radius-lg;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
 
-  &:hover {
-    box-shadow: $shadow-md;
-    transform: translateY(-2px);
-  }
-
-  // Colored icon backgrounds per feature (Trustride pattern)
   &__icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 52px;
-    height: 52px;
+    width: 48px;
+    height: 48px;
     flex-shrink: 0;
     border-radius: $radius-lg;
-    transition: background 0.2s ease;
-  }
 
-  // Feature 1: Multi-banco → blue
-  &:nth-child(1) &__icon {
-    background: $color-blue-light;
-    color: $color-blue;
-  }
-
-  // Feature 2: Deuda dual → emerald
-  &:nth-child(2) &__icon {
-    background: $color-primary-light;
-    color: $color-primary;
-  }
-
-  // Feature 3: Límite vivo → teal
-  &:nth-child(3) &__icon {
-    background: $color-teal-light;
-    color: $color-teal;
-  }
-
-  // Feature 4: Facturas foto → orange
-  &:nth-child(4) &__icon {
-    background: $color-orange-light;
-    color: $color-orange;
-  }
-
-  // Feature 5: Alertas → purple
-  &:nth-child(5) &__icon {
-    background: $color-purple-light;
-    color: $color-purple;
+    // Unique color per feature (no uniform tinted circles)
+    .feature-item:nth-child(1) & {
+      background: $color-blue-light;
+      color: $color-blue;
+    }
+    .feature-item:nth-child(2) & {
+      background: $color-primary-light;
+      color: $color-primary;
+    }
+    .feature-item:nth-child(3) & {
+      background: $color-teal-light;
+      color: $color-teal;
+    }
+    .feature-item:nth-child(4) & {
+      background: $color-orange-light;
+      color: $color-orange;
+    }
+    .feature-item:nth-child(5) & {
+      background: $color-purple-light;
+      color: $color-purple;
+    }
   }
 
   &__body {
@@ -585,81 +560,89 @@ $color-purple-light: #ede9fe;
       max-width: 56ch;
     }
   }
-
-  &--flip {
-    flex-direction: row-reverse;
-
-    .feature-row__body {
-      text-align: right;
-
-      p {
-        margin-left: auto;
-      }
-    }
-  }
 }
 
-// ---------------------------------------------------------------- How it works
-// Trustride-inspired: white bg (contrasts with features elevated bg),
-// card steps with colored number accents
+// ── How it works: editorial timeline ────────────────────────────────
 .how {
-  padding: $spacing-12 $spacing-6;
+  padding: $spacing-12 0;
   background: $color-surface;
   border-top: 1px solid $color-border;
   border-bottom: 1px solid $color-border;
 }
 
-.how__strip {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: $spacing-8;
-  max-width: 960px;
+.how__timeline {
+  max-width: 640px;
   margin: 0 auto;
   padding: 0;
   list-style: none;
 }
 
-.step {
-  text-align: center;
-  padding: $spacing-6 $spacing-5;
-  background: $landing-bg-elevated;
-  border-radius: $radius-lg;
-  border: 1px solid $color-border;
+.timeline-step {
+  display: flex;
+  gap: $spacing-5;
+
+  &__marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
 
   &__num {
-    display: block;
-    margin-bottom: $spacing-3;
-    font-family: $font-editorial;
-    font-size: $font-size-3xl;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    font-family: var(--font-landing-display), $font-editorial, Georgia, serif;
+    font-size: $font-size-xl;
+    font-weight: 600;
     font-style: italic;
-    font-weight: 500;
+
+    .timeline-step:nth-child(1) & {
+      background: $color-primary-light;
+      color: $color-primary;
+    }
+    .timeline-step:nth-child(2) & {
+      background: $color-secondary-light;
+      color: $color-secondary;
+    }
+    .timeline-step:nth-child(3) & {
+      background: $color-teal-light;
+      color: $color-teal;
+    }
   }
 
-  // Colored step numbers (Trustride pattern)
-  &:nth-child(1) &__num {
-    color: $color-primary;
+  &__line {
+    display: block;
+    width: 2px;
+    flex: 1;
+    min-height: 32px;
+    background: $color-border;
   }
 
-  &:nth-child(2) &__num {
-    color: $color-secondary;
+  &__body {
+    padding-bottom: $spacing-8;
+
+    h3 {
+      margin: 0 0 $spacing-2;
+      font-size: $font-size-lg;
+      font-weight: $font-weight-semibold;
+      color: $color-text;
+    }
+
+    p {
+      margin: 0;
+      font-size: $font-size-sm;
+      line-height: $line-height-relaxed;
+      color: $color-text-muted;
+      max-width: 48ch;
+    }
   }
 
-  &:nth-child(3) &__num {
-    color: $color-teal;
-  }
-
-  h3 {
-    margin: 0 0 $spacing-2;
-    font-size: $font-size-base;
-    font-weight: $font-weight-semibold;
-    color: $color-text;
-  }
-
-  p {
-    margin: 0;
-    font-size: $font-size-sm;
-    line-height: $line-height-normal;
-    color: $color-text-muted;
+  &:last-child &__body {
+    padding-bottom: 0;
   }
 }
 
@@ -669,20 +652,80 @@ $color-purple-light: #ede9fe;
   margin-top: $spacing-8;
 }
 
-// ---------------------------------------------------------------- CTA Banner
-// Trustride-inspired: gradient card CTA before footer
+// ── FAQ ─────────────────────────────────────────────────────────────
+.faq {
+  padding: $spacing-12 0;
+  background: $color-background;
+}
+
+.faq__list {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+}
+
+.faq-item {
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+
+  &:not([open]):hover {
+    box-shadow: $shadow-sm;
+  }
+
+  &__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-4 $spacing-5;
+    cursor: pointer;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: $color-text;
+    list-style: none;
+    gap: $spacing-3;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &::after {
+      content: "+";
+      font-size: $font-size-xl;
+      font-weight: $font-weight-normal;
+      color: $color-text-muted;
+      transition: transform 0.2s ease;
+    }
+  }
+
+  &[open] &__q::after {
+    transform: rotate(45deg);
+  }
+
+  &__a {
+    margin: 0;
+    padding: 0 $spacing-5 $spacing-5;
+    font-size: $font-size-sm;
+    line-height: $line-height-relaxed;
+    color: $color-text-muted;
+    max-width: 56ch;
+  }
+}
+
+// ── CTA Banner: full-width ──────────────────────────────────────────
 .cta-banner {
-  padding: $spacing-12 $spacing-6;
+  padding: $spacing-12 0;
   background: $landing-bg-elevated;
 }
 
-.cta-banner__card {
+.cta-banner__inner {
   max-width: 720px;
   margin: 0 auto;
   padding: $spacing-10 $spacing-8;
-  // AA: white text needs ≥4.5:1 — $landing-gradient's light stop (#34d399 ≈
-  // 1.9:1) fails, so the banner gradient mixes the existing dark tokens only
-  // (deep emerald #0b7a54 5.4:1 → info blue #1a56db 7.1:1).
   background: linear-gradient(135deg, $color-primary-dark, $color-secondary);
   border-radius: $radius-xl;
   text-align: center;
@@ -716,7 +759,7 @@ $color-purple-light: #ede9fe;
   flex-wrap: wrap;
 }
 
-// ---------------------------------------------------------------- Footer
+// ── Footer ──────────────────────────────────────────────────────────
 .footer {
   display: flex;
   flex-direction: column;
@@ -767,31 +810,26 @@ $color-purple-light: #ede9fe;
   }
 }
 
-// ---------------------------------------------------------------- Responsive
+// ── Responsive ──────────────────────────────────────────────────────
 @include respond(tablet) {
-  .features__rows {
-    gap: $spacing-5;
+  .all-in-one__list {
+    grid-template-columns: 1fr;
+    gap: $spacing-3;
   }
 
-  .feature-row,
-  .feature-row--flip {
+  .feature-item,
+  .feature-item .feature-item--flip {
     flex-direction: column;
     gap: $spacing-3;
 
-    .feature-row__body {
+    .feature-item__body {
       text-align: left;
       max-width: none;
-
-      p {
-        margin-left: 0;
-      }
     }
   }
 
-  .how__strip {
-    grid-template-columns: 1fr;
-    gap: $spacing-6;
-    max-width: 420px;
+  .how__timeline {
+    max-width: 100%;
   }
 
   .hero-nav {
@@ -814,36 +852,48 @@ $color-purple-light: #ede9fe;
     padding: calc(#{$header-height} + #{$spacing-2}) $spacing-5 $spacing-10;
   }
 
-  .cta-banner__card {
+  .cta-banner__inner {
     padding: $spacing-8 $spacing-5;
   }
 }
 
 @include respond(mobile) {
-  .features {
-    padding: $spacing-10 $spacing-4;
-    margin-top: $spacing-8;
-    margin-bottom: $spacing-8;
-    border-radius: $radius-lg;
+  .section-container {
+    padding: 0 $spacing-4;
   }
 
-  .feature-row {
-    padding: $spacing-4;
+  .all-in-one {
+    padding: $spacing-10 0;
+  }
+
+  .features {
+    padding: $spacing-10 0;
+  }
+
+  .feature-item__icon {
+    width: 40px;
+    height: 40px;
   }
 
   .how {
-    padding: $spacing-10 $spacing-4;
+    padding: $spacing-10 0;
   }
 
-  .step {
-    padding: $spacing-5 $spacing-4;
+  .timeline-step__num {
+    width: 40px;
+    height: 40px;
+    font-size: $font-size-base;
+  }
+
+  .faq {
+    padding: $spacing-10 0;
   }
 
   .cta-banner {
-    padding: $spacing-10 $spacing-4;
+    padding: $spacing-10 0;
   }
 
-  .cta-banner__card {
+  .cta-banner__inner {
     padding: $spacing-6 $spacing-4;
   }
 }
