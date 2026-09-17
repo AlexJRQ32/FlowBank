@@ -34,6 +34,10 @@ $color-purple-light: #ede9fe;
   background: $color-background;
   color: $color-text;
   font-family: $font-body;
+  // Root guard: horizontal overflow anywhere inside forces the body into a
+  // side-scroll, which shifts full-bleed sections and reads as "text clipped
+  // at the viewport edge" (reported on the CTA banner). Nothing overflows.
+  overflow-x: clip;
 }
 
 // ── Reveal animation (hero only) ────────────────────────────────────
