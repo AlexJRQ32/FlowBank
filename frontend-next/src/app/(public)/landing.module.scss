@@ -252,12 +252,14 @@ $color-purple-light: #ede9fe;
 
 .hero-nav--solid .hero-nav__cta {
   border-color: transparent;
-  background: $landing-accent;
+  // AA: white text on $landing-accent (#0e9f6e) is 3.4:1 — the deep token
+  // (#0b7a54) reaches 5.4:1 with the same white.
+  background: $landing-accent-deep;
   color: $landing-on-accent;
   backdrop-filter: none;
 
   &:hover {
-    background: $landing-accent-deep;
+    filter: brightness(0.92);
   }
 }
 

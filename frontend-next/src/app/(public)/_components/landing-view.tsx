@@ -31,7 +31,7 @@ const playfair = Playfair_Display({
 const FEATURES = [
   {
     icon: CreditCardIcon,
-    title: "Multi-banco, todas tus tarjetas",
+    title: "Todas tus tarjetas, todos tus bancos",
     text: "Registrá cada tarjeta con su banco, día de corte y día de pago. Solo los últimos 4 dígitos — nunca el número completo.",
   },
   {
@@ -42,12 +42,12 @@ const FEATURES = [
   {
     icon: WalletIcon,
     title: "Límite disponible en vivo",
-    text: "Tu límite menos lo que debes, convertido con el tipo de cambio de referencia del BCCR actualizado. Sin calculadoras ni apps de banco.",
+    text: "Tu límite menos lo que debes, usando el tipo de cambio del día. Sin calculadoras ni apps de banco.",
   },
   {
     icon: ScanBarcodeIcon,
     title: "Facturas por foto",
-    text: "Tomale foto a tu factura y FlowBank extrae el monto, la fecha y el comercio con OCR. Vos revisás los datos antes de guardar.",
+    text: "Tomale foto a tu factura y FlowBank la lee solo: saca el monto, la fecha y el comercio. Vos revisás los datos antes de guardar.",
   },
   {
     icon: BellIcon,
@@ -71,7 +71,7 @@ const STEPS = [
   {
     num: "03",
     title: "Dejá de adivinar",
-    text: "Dashboard con deuda total (CRC y USD por separado), límite disponible y próximas fechas, siempre al día.",
+    text: "Tu resumen con la deuda en colones y dólares por separado, el límite disponible y las próximas fechas, siempre al día.",
   },
 ];
 
@@ -83,15 +83,15 @@ const FAQS = [
   },
   {
     q: "¿Mis datos están seguros?",
-    a: "Almacenamos solo los últimos 4 dígitos de cada tarjeta — nunca el número completo. La base de datos usa Supabase con Row Level Security (RLS): cada usuario solo ve sus propios datos. Las sesiones usan cookies httpOnly que no son accesibles desde JavaScript.",
+    a: "Guardamos solo los últimos 4 dígitos de cada tarjeta — nunca el número completo. Tus datos están protegidos y solo tú puedes verlos: cada persona accede únicamente a lo suyo, y tu sesion no puede ser leída por otras páginas ni programas.",
   },
   {
     q: "¿Necesito ingresar mis contraseñas de banco?",
     a: "No. FlowBank no conecta con tus bancos. Vos registrás manualmente el banco, los últimos 4 dígitos, el día de corte y el de pago. Sin credenciales bancarias, sin riesgo.",
   },
   {
-    q: "¿Cómo funciona el OCR de facturas?",
-    a: "Sacás una foto de la factura con tu celular. El sistema extrae el monto, la fecha y el comercio. Vos revisás y confirmás antes de guardar. No se almacena la imagen.",
+    q: "¿Cómo funciona leer las facturas por foto?",
+    a: "Sacás una foto de la factura con tu celular. FlowBank lee la imagen y saca el monto, la fecha y el comercio por vos. Vos revisás y confirmás antes de guardar. No se guarda la foto.",
   },
 ];
 
@@ -148,7 +148,7 @@ export default function LandingView({ isAuthed, nombre }: LandingViewProps) {
             <a href="#how">Cómo funciona</a>
             <a href="#faq">Preguntas</a>
             {isAuthed ? (
-              <Link href="/dashboard" className={styles["hero-nav__pill"]} title="Ir al dashboard">
+              <Link href="/dashboard" className={styles["hero-nav__pill"]} title="Ver mi resumen">
                 <span className={styles["hero-nav__avatar"]}>{nombre?.[0]?.toUpperCase() ?? "U"}</span>
                 <span>{nombre ?? "Usuario"}</span>
               </Link>
@@ -180,7 +180,7 @@ export default function LandingView({ isAuthed, nombre }: LandingViewProps) {
               <a href="#how" onClick={closeMenu}>Cómo funciona</a>
               <a href="#faq" onClick={closeMenu}>Preguntas</a>
               {isAuthed ? (
-                <Link href="/dashboard" onClick={closeMenu}>Ir al dashboard</Link>
+                <Link href="/dashboard" onClick={closeMenu}>Ver mi resumen</Link>
               ) : (
                 <>
                   <Link href="/login" onClick={closeMenu}>Iniciar sesión</Link>
@@ -207,7 +207,7 @@ export default function LandingView({ isAuthed, nombre }: LandingViewProps) {
           <div className={styles["hero__actions"]}>
             {isAuthed ? (
               <Link href="/dashboard" className={`${styles.btn} ${styles["btn--primary"]}`}>
-                Ir al dashboard
+                Ver mi resumen
               </Link>
             ) : (
               <>
@@ -237,15 +237,15 @@ export default function LandingView({ isAuthed, nombre }: LandingViewProps) {
           <div className={styles["all-in-one__list"]}>
             <div className={styles["all-in-one__item"]}>
               <CreditCardIcon size={20} />
-              <span>Multi-banco con todas tus tarjetas</span>
+              <span>Todas tus tarjetas de todos los bancos</span>
             </div>
             <div className={styles["all-in-one__item"]}>
               <TrendingDownIcon size={20} />
-              <span>Deuda CRC y USD por separado</span>
+              <span>Deuda en colones y dólares por separado</span>
             </div>
             <div className={styles["all-in-one__item"]}>
               <ScanBarcodeIcon size={20} />
-              <span>Facturas por foto con OCR</span>
+              <span>Facturas por foto, leídas por la app</span>
             </div>
             <div className={styles["all-in-one__item"]}>
               <BellIcon size={20} />
@@ -257,7 +257,7 @@ export default function LandingView({ isAuthed, nombre }: LandingViewProps) {
             </div>
             <div className={styles["all-in-one__item"]}>
               <FileTextIcon size={20} />
-              <span>Tipo de cambio BCCR actualizado</span>
+              <span>Tipo de cambio del día, siempre al día</span>
             </div>
           </div>
         </div>
@@ -320,7 +320,7 @@ export default function LandingView({ isAuthed, nombre }: LandingViewProps) {
           <div className={styles["how__cta"]}>
             {isAuthed ? (
               <Link href="/dashboard" className={`${styles.btn} ${styles["btn--primary"]}`}>
-                Ir al dashboard
+                Ver mi resumen
               </Link>
             ) : (
               <Link href="/registro" className={`${styles.btn} ${styles["btn--primary"]}`}>
@@ -373,7 +373,7 @@ export default function LandingView({ isAuthed, nombre }: LandingViewProps) {
           <div className={styles["cta-banner__actions"]}>
             {isAuthed ? (
               <Link href="/dashboard" className={`${styles.btn} ${styles["btn--primary"]}`}>
-                Ir al dashboard
+                Ver mi resumen
               </Link>
             ) : (
               <>
@@ -407,3 +407,4 @@ export default function LandingView({ isAuthed, nombre }: LandingViewProps) {
     </div>
   );
 }
+
