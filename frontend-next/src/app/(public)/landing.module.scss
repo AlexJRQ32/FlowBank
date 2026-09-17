@@ -252,15 +252,19 @@ $color-purple-light: #ede9fe;
   }
 }
 
-.hero-nav--solid .hero-nav__cta {
+// Specificity: `.hero-nav--solid .hero-nav__links > a` (0,2,1) beats the
+// plain `.hero-nav--solid .hero-nav__cta` (0,2,0) and paints the button text
+// dark. Re-add a class layer so white wins for both states.
+.hero-nav--solid .hero-nav__links .hero-nav__cta {
   border-color: transparent;
-  // AA: white text on $landing-accent (#0e9f6e) is 3.4:1 ,  the deep token
+  // AA: white text on $landing-accent (#0e9f6e) is 3.4:1; the deep token
   // (#0b7a54) reaches 5.4:1 with the same white.
   background: $landing-accent-deep;
-  color: $landing-on-accent;
+  color: $color-white;
   backdrop-filter: none;
 
   &:hover {
+    color: $color-white;
     filter: brightness(0.92);
   }
 }
