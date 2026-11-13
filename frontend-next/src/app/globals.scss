@@ -1,0 +1,21 @@
+@use "tokens";
+@use "../styles/mixins" as mixins;
+
+/* respects prefers-reduced-motion globally (landing reveal, mobile menu, steps, toasts) */
+@include mixins.reduced-motion;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: tokens.$color-background;
+  color: tokens.$color-text;
+  font-family: tokens.$font-family-base;
+  font-size: tokens.$font-size-base;
+  line-height: tokens.$line-height-normal;
+  -webkit-font-smoothing: antialiased;
+}

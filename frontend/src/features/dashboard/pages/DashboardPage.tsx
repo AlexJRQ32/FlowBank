@@ -10,6 +10,7 @@ import BancoFormModal from "../../bancos/components/BancoFormModal";
 import {
   CreditCardIcon,
   BellIcon,
+  ClockIcon,
   ScanBarcodeIcon,
   WalletIcon,
 } from "../../../components/icons";
@@ -85,10 +86,17 @@ export default function DashboardPage() {
   return (
     <AppShell>
       <div className="dashboard-page">
-        <div className="dashboard-greeting">
-          <h1>Bienvenido, {nombreUsuario}</h1>
-          <span className="dashboard-role-badge">Usuario</span>
-        </div>
+        {/* OpenPaw header banner: meta row (role badge) above the title */}
+        <section className="dashboard-header">
+          <div className="dashboard-header__info">
+            <div className="dashboard-header__meta">
+              <span className="dashboard-role-badge">Usuario</span>
+            </div>
+            <h1 className="dashboard-header__title">
+              Bienvenido, <span className="dashboard-header__name">{nombreUsuario}</span>
+            </h1>
+          </div>
+        </section>
 
         {loading ? (
           <Loader label="Cargando tus datos..." />
@@ -96,7 +104,17 @@ export default function DashboardPage() {
           <StatCards config={STAT_CONFIG} data={statsData} />
         )}
 
-        <h2 className="dashboard-section-title">Acciones rapidas</h2>
+        <section className="dashboard-section-header">
+          <div className="dashboard-section-icon">
+            <ClockIcon size={16} />
+          </div>
+          <div className="dashboard-section-text">
+            <h2 className="dashboard-section-title">Acciones rapidas</h2>
+            <p className="dashboard-section-subtitle">
+              Atajos para registrar tarjetas, bancos y facturas
+            </p>
+          </div>
+        </section>
         <div className="dashboard-actions">
           {acciones.map((a) => {
             const Icon = a.icon;

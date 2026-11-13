@@ -121,6 +121,8 @@ $app-surface: #ffffff;
 $app-surface-raised: #ffffff;
 $app-border: rgba(16, 32, 26, 0.12);
 $app-border-strong: rgba(16, 32, 26, 0.25);
+// Divisor sutil estilo Trustride (rgba(0,0,0,0.06)) para bordes de layout
+$app-border-soft: rgba(16, 32, 26, 0.07);
 $app-text: #101a14;
 $app-text-muted: #5a6b61;
 $app-text-faint: #8a9a90;
